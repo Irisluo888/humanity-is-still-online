@@ -1,0 +1,22 @@
+# Godot generated cache
+.godot/
+# Local saves, credentials and editor state
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+saves/*
+!saves/.gitkeep
+# Reference images are internal-only, not cleared for redistribution
+人类暂未下线_视觉参考整合包/
+references/visual/**/*.png
+# Local backup
+artifacts/pre_visual_pack_snapshot/
+# OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Downloaded web references (internal only)
+ui/refers/
