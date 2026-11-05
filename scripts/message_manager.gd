@@ -58,8 +58,9 @@ func process_due() -> void:
  for message in records.values():
   if not message.delivered and message.arrive_at<=current_minute and eligible(message.requires):
    message.delivered=true;modified=true
-   if message.sender_id!="player" and not started.has(message.thread_id):post_notification("pending_"+message.thread_id,"message",catalog.threads[message.thread_id].name,"收到新消息，打开会话查看。",message.thread_id)
+   begin_thread(message.thread_id)
    message_arrived.emit(message.duplicate(true))
+  if message.delivered:begin_thread(message.thread_id)
  for article in articles.values():
   if not article.published and article.published_at<=current_minute and eligible(article.requires):
    article.published=true;modified=true;post_notification("news_"+article.id,"news",article.title,article.text,"news");news_published.emit(article.duplicate(true))

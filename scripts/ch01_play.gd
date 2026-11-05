@@ -66,10 +66,13 @@ func rebuild() -> void:
  if Chapter.state.flags.get("ch01_complete",false):ending()
  elif Chapter.state.encounter:encounter_ui()
  elif Chapter.state.event_active:show_dialogue()
- var toast=preload("res://ui/notification_toast.gd").new();toast.position=Vector2(925,92);toast.allow_display=func():return not opened
+ var toast=preload("res://ui/notification_toast.gd").new();toast.position=Vector2(925,92)
  notification_toast=toast;ui_scale.add_child(toast)
  toast.requested.connect(func(target):
   if Chapter.modal():return
+  if opened:
+   if is_instance_valid(phone):phone.queue_free()
+   opened=false
   if MessageManager.catalog.threads.has(target):selected_thread=target;show_phone(false,"消息")
   elif target=="news":show_phone(false,"新闻"))
  map_world.locked=Chapter.modal()
@@ -80,7 +83,10 @@ func digital_hud_text() -> String:
 func update_digital_hud() -> void:
  if is_instance_valid(hud):hud.text=digital_hud_text()
 func objective() -> String:
- var objectives={"delivery":"餐食已在箱中：前往右上方临街民居，靠近黄色送餐标记按E。","repair":"电动车故障：到驿站修车摊找老周。","group":"回家后在电脑或手机里读完骑手群。","lunch":"查看小鱼的私信。","orders":"出门，到取餐窗口领取幸福花园1203餐食；普通订单可在手机查看。","1203":"到幸福花园三栋入口，给1203交付。","1404":"1404门前，纸条另一行字是什么？","elevator":"电梯下行中。","store":"从小区进入陈姨便利店，先观察环境，再接近柜台。","night":"回家查看骑手群和新闻，之后到床边休息。","knock1":"门外有人。","call":"手机响了。","reveal":"再次确认门外的人。","final":"决定如何帮助老周。","end":"回复骑手群，再查看章末消息。"}
+ if saved_notice.is_empty():
+  if Chapter.beat().id=="1203" and Chapter.state.place=="hallway12":return "12楼：靠近1203门口，按E交付餐食。"
+  if Chapter.beat().id=="1404" and Chapter.state.place=="hallway":return "14楼：靠近1404门口，按E查看纸条。"
+ var objectives={"delivery":"餐食已在箱中：前往右上方临街民居，靠近黄色送餐标记按E。","repair":"电动车故障：到驿站修车摊找老周。","group":"回家后在电脑或手机里读完骑手群。","lunch":"查看小鱼的私信。","orders":"出门，到取餐窗口领取幸福花园1203餐食；普通订单可在手机查看。","1203":"到幸福花园三栋入口，给1203交付。","1404":"从12楼楼梯前往14楼，再到1404门前查看。","elevator":"电梯下行中。","store":"从小区进入陈姨便利店，先观察环境，再接近柜台。","night":"回家查看骑手群和新闻，之后到床边休息。","knock1":"门外有人。","call":"手机响了。","reveal":"再次确认门外的人。","final":"决定如何帮助老周。","end":"回复骑手群，再查看章末消息。"}
  return saved_notice if not saved_notice.is_empty() else objectives.get(Chapter.beat().id,"")
 func show_dialogue() -> void:
  if Chapter.beat().id in ["call","reveal","final"] or (Chapter.beat().id=="knock1" and Chapter.state.page>=1):
@@ -157,7 +163,7 @@ func encounter_ui() -> void:
 func show_phone(computer=false,tab="消息") -> void:
  if Chapter.modal() or opened:return
  opened=true;app_tab=tab;map_world.locked=true
- if is_instance_valid(notification_toast):notification_toast.hide()
+ if is_instance_valid(notification_toast):notification_toast.position=Vector2(24,150)
  phone=PanelContainer.new();phone.position=Vector2(700,104) if not computer else Vector2(120,100);phone.size=Vector2(540,540) if not computer else Vector2(1040,540);style(phone);ui_scale.add_child(phone)
  render_phone(computer)
 func render_phone(computer: bool=false) -> void:
@@ -190,7 +196,7 @@ func render_phone(computer: bool=false) -> void:
   "地图":
    label(box,"当前位置："+Chapter.catalog.places[Chapter.state.place],width,22)
    label(box,"住处 ↔ 老城区街道 ↔ 幸福花园 ↔ 便利店
-三栋入口：1203交付 / 可选1404 / 电梯下楼
+三栋入口 → 12楼1203交付 → 可选楼梯前往14楼 → 电梯下楼
 靠近场景标记按E交互。",width)
   "通知":
    for n in MessageManager.get_notifications():
@@ -260,12 +266,21 @@ func interact_point(id: String) -> void:
      if Chapter.complete_delivery(selected.id):notice("普通配送已完成。可继续接单或送1203。")
     else:notice("1203需从幸福花园三栋入口送上楼。")
   "building":
-   if beat=="1203":
+   if beat=="1404":travel("hallway12")
+   elif beat=="1203":
     var main=WorldData.order_by_id("order_ch01_003")
     if main.status!="配送中":notice("请先去取餐窗口领取1203的餐食。");return
     WorldData.active_order_id=main.id;WorldData.location="city";WorldData.period="day";WorldData.city_position=WorldData.delivery_target()
-    if Chapter.complete_delivery(main.id):Chapter.enter("hallway");Chapter.start_event()
+    Chapter.enter("hallway12")
    else:notice("三栋门口暂时没有需要配送的订单。")
+  "resident":
+   if Chapter.state.place=="hallway12" and beat=="1203":
+    var main=WorldData.order_by_id("order_ch01_003")
+    WorldData.active_order_id=main.id;WorldData.location="city";WorldData.period="day";WorldData.city_position=WorldData.delivery_target()
+    if main.status=="已送达" or Chapter.complete_delivery(main.id):Chapter.start_event()
+  "up14":
+   if beat=="1404":travel("hallway")
+   else:notice("请先到1203门口交付餐食。")
   "extinguisher":Chapter.state.flags.extinguisher_seen=true;notice("柜台旁挂着灭火器，紧急时可以取用。")
   "attack":
    if beat=="store":Chapter.start_event()

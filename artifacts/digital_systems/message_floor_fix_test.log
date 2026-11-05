@@ -1,0 +1,24 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 616.56 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4060 Ti
+
+PASS: unopened group starts without manual selection
+PASS: unopened group notification visible
+PASS: other contact delivers while group open
+PASS: other contact banner visible over phone
+PASS: capture 10_private_push
+PASS: banner opens new conversation and marks read
+PASS: delivery does not advance game clock
+PASS: building loads independent floor12
+PASS: building entrance does not finish delivery
+PASS: floor12 has no1404 door
+PASS: capture 11_floor12
+PASS: floor12 save restores independent position
+PASS: 1203 doorstep delivers meal
+PASS: choosing14 keeps player on12 until stairs used
+PASS: optional investigation can leave temporarily
+PASS: unfinished14 investigation can reenter building
+PASS: stairs load floor14 without1203
+PASS: capture 12_floor14
+PASS: 1404 interaction starts at correct door
+PASS: elevator storyline still returns garden
+MESSAGE FLOOR FIX FAILURES: 0

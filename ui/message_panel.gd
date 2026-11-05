@@ -15,6 +15,10 @@ var layout_busy=false
 var notification_audio: AudioStreamPlayer
 const Kit=preload("res://ui/kit.gd")
 func _ready() -> void:
+ if MessageManager.get_unread_count(thread_id)==0 and MessageManager.pending(thread_id).is_empty():
+  for id in MessageManager.catalog.threads:
+   if MessageManager.get_unread_count(id)>0 or (not MessageManager.pending(id).is_empty() and MessageManager.pending(id).get("delivered",false)):
+    thread_id=id;break
  size_flags_horizontal=SIZE_EXPAND_FILL;size_flags_vertical=SIZE_EXPAND_FILL
  add_theme_constant_override("separation",8)
  selector=OptionButton.new();selector.custom_minimum_size.y=36;add_child(selector)

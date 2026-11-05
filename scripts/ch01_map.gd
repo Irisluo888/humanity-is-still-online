@@ -29,13 +29,13 @@ func prop(id: String,pos: Vector3,height: float=2.0) -> Sprite3D:
  var s=Sprite3D.new();s.texture=load(ART+id+".png");s.pixel_size=height/96.0;s.position=pos+Vector3(0,height/2,0);s.billboard=BaseMaterial3D.BILLBOARD_ENABLED;s.texture_filter=BaseMaterial3D.TEXTURE_FILTER_NEAREST;add_child(s);return s
 func marker(id: String,text: String,pos: Vector3) -> void:
  points[id]={"pos":pos,"text":text}
- var label=Label3D.new();label.text=text if id in ["delivery","repair","pickup","garden","building","store","home"] else "◆";label.position=pos+Vector3(0,1.8,0);label.billboard=BaseMaterial3D.BILLBOARD_ENABLED;label.font_size=40;label.pixel_size=0.012;label.modulate=Color("e0d4b5");add_child(label)
+ var label=Label3D.new();label.text=text if id in ["delivery","repair","pickup","garden","building","store","home","up14"] else "◆";label.position=pos+Vector3(0,1.8,0);label.billboard=BaseMaterial3D.BILLBOARD_ENABLED;label.font_size=40;label.pixel_size=0.012;label.modulate=Color("e0d4b5");add_child(label)
 func plaque(text: String,pos: Vector3) -> void:
  var l=Label3D.new();l.text=text;l.position=pos;l.font_size=64;l.pixel_size=0.008;l.billboard=BaseMaterial3D.BILLBOARD_ENABLED;l.modulate=Color("e4c998");add_child(l)
 func _ready() -> void:
- var dimensions=Vector3(6,0.3,6) if kind=="elevator" else (Vector3(16,0.3,8) if kind=="hallway" else Vector3(18,0.3,14))
- block(Vector3(0,-0.15,0),dimensions,"wood" if kind=="home" else ("tile" if kind in ["store","elevator","hallway"] else "paving"))
- var camera=Camera3D.new();camera.projection=Camera3D.PROJECTION_ORTHOGONAL;camera.size=9 if kind=="elevator" else (16 if kind=="hallway" else 19);camera.position=Vector3(14,18,20);add_child(camera);camera.look_at(Vector3(0,1.0,0));camera.current=true
+ var dimensions=Vector3(6,0.3,6) if kind=="elevator" else (Vector3(16,0.3,8) if kind in ["hallway","hallway12"] else Vector3(18,0.3,14))
+ block(Vector3(0,-0.15,0),dimensions,"wood" if kind=="home" else ("tile" if kind in ["store","elevator","hallway","hallway12"] else "paving"))
+ var camera=Camera3D.new();camera.projection=Camera3D.PROJECTION_ORTHOGONAL;camera.size=9 if kind=="elevator" else (16 if kind in ["hallway","hallway12"] else 19);camera.position=Vector3(14,18,20);add_child(camera);camera.look_at(Vector3(0,1.0,0));camera.current=true
  var env=WorldEnvironment.new();var e=Environment.new();e.background_mode=Environment.BG_COLOR;e.background_color=Color("263647");e.ambient_light_source=Environment.AMBIENT_SOURCE_COLOR;e.ambient_light_color=Color("c6c9c3");e.ambient_light_energy=0.75;env.environment=e;add_child(env)
  var sun=DirectionalLight3D.new();sun.rotation_degrees=Vector3(-55,-40,0);sun.light_energy=0.8;add_child(sun)
  match kind:
@@ -43,9 +43,10 @@ func _ready() -> void:
   "garden":garden()
   "store":store()
   "hallway":hallway()
+  "hallway12":hallway12()
   "elevator":elevator()
   "home":home()
- player=CharacterBody3D.new();player.name="Rider";player.position=Vector3(-1,0.1,1.5 if kind=="elevator" else (2.5 if kind=="hallway" else 4));add_child(player)
+ player=CharacterBody3D.new();player.name="Rider";player.position=Vector3(-1,0.1,1.5 if kind=="elevator" else (2.5 if kind in ["hallway","hallway12"] else 4));add_child(player)
  var capsule=CapsuleShape3D.new();capsule.radius=0.28;capsule.height=1.6
  var col=CollisionShape3D.new();col.shape=capsule;col.position.y=0.8;player.add_child(col)
  var s=Sprite3D.new();s.texture=load("res://assets/art/refined/"+("rider_home.png" if kind=="home" else "rider_uniform.png"));s.pixel_size=0.022;s.position.y=1.05;s.billboard=BaseMaterial3D.BILLBOARD_ENABLED;s.texture_filter=BaseMaterial3D.TEXTURE_FILTER_NEAREST;player.add_child(s)
@@ -117,11 +118,19 @@ func store() -> void:
  if Chapter.state.scene_states.get("store",{}).get("broken",false):
   prop("blood",Vector3(5,0,1),1);prop("glass",Vector3(5,0,0.5),1);prop("briefcase",Vector3(4,0,0.8),1);prop("bags",Vector3(3,0,0),0.8)
   block(Vector3(4.5,0.1,1.8),Vector3(1.4,0.2,0.4),"shelf",false)
+func hallway12() -> void:
+ block(Vector3(0,1.8,-4),Vector3(16,3.6,0.3),"plaster")
+ for x in [-5,0,5]:block(Vector3(x,1.4,-3.7),Vector3(2,2.8,0.25),"door")
+ for pair in [[-5,"1203"],[0,"1202"],[5,"1201"]]:plaque(pair[1],Vector3(pair[0],2.8,-3.4))
+ plaque("12F",Vector3(-7,2.6,-3.4))
+ marker("resident","1203 / 交付餐食",Vector3(-5,0,-2.3))
+ marker("up14","楼梯 / 前往14楼",Vector3(6,0,3))
 func hallway() -> void:
  block(Vector3(0,1.8,-4),Vector3(16,3.6,0.3),"plaster")
  for x in [-5,0,5]:block(Vector3(x,1.4,-3.7),Vector3(2,2.8,0.25),"door")
- plaque("1404",Vector3(0,2.8,-3.4));plaque("1203",Vector3(-5,2.8,-3.4))
- prop("bags",Vector3(0,0,-2.9),1.1);marker("door","1404 / 纸条与门内声音",Vector3(0,0,-2.3));marker("resident","1203 / 交付",Vector3(-5,0,-2.3));marker("exit","电梯间",Vector3(6,0,3))
+ for pair in [[-5,"1403"],[0,"1404"],[5,"1405"]]:plaque(pair[1],Vector3(pair[0],2.8,-3.4))
+ plaque("14F",Vector3(-7,2.6,-3.4))
+ prop("bags",Vector3(0,0,-2.9),1.1);marker("door","1404 / 纸条与门内声音",Vector3(0,0,-2.3))
 func elevator() -> void:
  block(Vector3(0,1.7,-3),Vector3(6,3.4,0.3),"plaster");block(Vector3(-3,1.7,0),Vector3(0.3,3.4,6),"plaster")
  block(Vector3(0,1.5,-2.7),Vector3(3,3,0.2),"elevator");block(Vector3(2.5,1.6,-2.6),Vector3(0.4,0.8,0.1),"counter")
@@ -154,7 +163,7 @@ func _physics_process(delta: float) -> void:
  var move=Vector3(x+z,0,z-x).normalized()*3
  player.velocity=Vector3(move.x,-2,move.z);player.move_and_slide()
  var limit=2.5 if kind=="elevator" else 8.0
- player.position.x=clampf(player.position.x,-limit,limit);player.position.z=clampf(player.position.z,-2.5 if kind=="elevator" else (-3.5 if kind=="hallway" else -6),2.5 if kind=="elevator" else (3.5 if kind=="hallway" else 6))
+ player.position.x=clampf(player.position.x,-limit,limit);player.position.z=clampf(player.position.z,-2.5 if kind=="elevator" else (-3.5 if kind in ["hallway","hallway12"] else -6),2.5 if kind=="elevator" else (3.5 if kind in ["hallway","hallway12"] else 6))
  Chapter.remember_position(player.position)
  hint="";var nearest=1.9
  for id in points:

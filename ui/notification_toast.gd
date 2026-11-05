@@ -17,9 +17,17 @@ func _ready() -> void:
  var button=Button.new();button.text="查看";button.pressed.connect(func():requested.emit(target);hide());box.add_child(button)
  audio=AudioStreamPlayer.new();audio.stream=preload("res://assets/audio/ch01/vibrate.wav");audio.volume_db=-27;add_child(audio)
  MessageManager.notification_posted.connect(on_notification);hide()
+ restore_pending.call_deferred()
+func restore_pending() -> void:
+ var pending=MessageManager.get_notifications()
+ pending.reverse()
+ for n in pending:
+  if not n.read and not n.get("presented",false):
+   on_notification(n);break
 func on_notification(n: Dictionary) -> void:
  if not is_inside_tree():return
  if allow_display.is_valid() and not allow_display.call():audio.play();hide();return
+ if MessageManager.notifications.has(n.id):MessageManager.notifications[n.id]["presented"]=true
  title.text=n.title;body.text=n.text.left(60);target=n.target;lifetime=4.5;show()
  audio.play()
 func _process(delta: float) -> void:

@@ -22,7 +22,8 @@ PASS: main meal picked through original order logic
 PASS: actual map point garden
 PASS: garden actual resource loaded
 PASS: actual map point building
-PASS: building enters independent hallway
+PASS: building enters independent floor12
+PASS: actual map point resident
 PASS: dialogue active 1203
 PASS: choice UI skip
 PASS: optional1404 precedes elevator
@@ -210,4 +211,4 @@ PASS: insufficient durability rejected
 PASS: overweight pickup rejected
 PASS: per-map position retained
 PASS: malformed position rejected before mutation
-QA CHECKS: 209 FAILURES: 0
+QA CHECKS: 210 FAILURES: 0

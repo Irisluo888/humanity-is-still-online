@@ -136,3 +136,11 @@ F6运行scenes/messaging_test.tscn：等待逐条聊天、选择回复、滚动�
 - `ui/news_panel.gd.uid`
 - `ui/notification_toast.gd`
 - `ui/notification_toast.gd.uid`
+
+## 2026-11-05 消息自动推送与12/14楼分离修复
+- 消息达到时间/剧情条件后自动启动逐条演出，不再等待逐个打开联系人；手机打开时保留新消息横幅，点击切换到对应会话。新挂载通知控件补显尚未展示的通知，保留已展示标记。
+- 新增hallway12.tscn；12楼仅1201—1203，14楼仅1403—1405。三栋入口只进楼，1203门口才结算；选择调查后从楼梯交互进入14楼，1404门口触发剧情，跳过调查仍直接进入下行事件。
+- 旧1203存档的hallway位置迁移到hallway12。补测发现读档后原配送位置未同步会导致交付失败，已在门口交付时适配。可中途回家再入楼，楼层位置分别保存。
+- 实际Godot4.7.2 Windows图形运行：message_floor_fix_test 20、messaging_core_test 24、messaging_ui_test 8、ch01_qa_test 228、ch01_alternate_qa 210 PASS；最终日志均无FAIL/ERROR/WARNING。合计490次断言含截图，不等于490个功能。首次受限运行缓存目录报错，后续允许写入测试目录后重新运行通过。
+- 真实截图artifacts/digital_systems/10_private_push.png、11_floor12.png、12_floor14.png已输入模型视觉检查：手机旁横幅可见，中文正常，两层门牌独立，目标指引匹配。楼梯仍为交互入口，未制作可逐级行走的楼梯美术；楼道沿用现有简化美术。macOS未验证。
+- F5主场景；群聊到达后等待推送，手机内也可点击其他联系人横幅；三栋入楼后到1203按E，选择调查后到楼梯标记按E，再到1404按E。用户体验验收待确认。

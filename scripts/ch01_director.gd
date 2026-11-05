@@ -7,7 +7,7 @@ var session_active=false
 var developer_mode=false
 const SAVE="user://ch01_campaign.json"
 var save_path=SAVE
-const MAPS={"home":"res://scenes/ch01_maps/home.tscn","street":"res://scenes/ch01_maps/street.tscn","garden":"res://scenes/ch01_maps/garden.tscn","store":"res://scenes/ch01_maps/store.tscn","hallway":"res://scenes/ch01_maps/hallway.tscn","elevator":"res://scenes/ch01_maps/elevator.tscn"}
+const MAPS={"hallway12":"res://scenes/ch01_maps/hallway12.tscn","home":"res://scenes/ch01_maps/home.tscn","street":"res://scenes/ch01_maps/street.tscn","garden":"res://scenes/ch01_maps/garden.tscn","store":"res://scenes/ch01_maps/store.tscn","hallway":"res://scenes/ch01_maps/hallway.tscn","elevator":"res://scenes/ch01_maps/elevator.tscn"}
 func fresh() -> void:
  session_active=false;WorldData.new_campaign();session_active=true
  MessageManager.reset("chapter")
@@ -68,9 +68,10 @@ func travel_reason(place: String) -> String:
  if modal():return "请先完成当前对话或事件。"
  if not MAPS.has(place):return "这里暂时无法进入。"
  if place=="garden" and int(state.beat)<5:return "先完成今晚送餐、修车和回家群聊；次日领取1203餐食后再前往幸福花园。"
+ if place=="hallway" and beat().id!="1404":return "先到12楼完成1203送餐，再决定是否前往14楼。"
  if place=="store" and not state.completed.has("elevator"):return "先完成三栋配送并乘电梯下楼，再前往便利店。"
  if place=="street" and beat().id in ["group","lunch"]:return "先在家查看骑手群和小鱼私信，明天再出门。"
- var links={"home":["street"],"street":["home","garden"],"garden":["street","store","hallway"],"store":["garden"],"hallway":["elevator"],"elevator":["garden"]}
+ var links={"home":["street"],"street":["home","garden"],"garden":["street","store","hallway12"],"hallway12":["hallway","elevator"],"store":["garden"],"hallway":["elevator"],"elevator":["garden"]}
  if place not in links.get(state.place,[]):return "请从对应的出入口前往这里。"
  return ""
 func enter(place: String) -> bool:
@@ -136,7 +137,8 @@ func next(choice: String="continue") -> bool:
  if id!="end":state.beat+=1
  if id=="1203" and choice=="skip":state.beat+=1
  # Scene travel follows actual doors, except short mandatory scene transitions.
- if id in ["1203","1404"]:state.place=beat().place;state.event_active=true
+ if id=="1203" and choice=="skip":state.place="elevator";state.event_active=true
+ if id=="1404":state.place=beat().place;state.event_active=true
  if id=="elevator":state.place="garden"
  if id=="lunch":state.place="home"
  if id in ["night","knock1","call","reveal"]:state.event_active=true
@@ -266,6 +268,7 @@ func restore() -> bool:
   for k in ["events","daytime_orders","encountered_npcs","pending_posts","pending_messages"]:
    if d.world.get(k) is Array:WorldData.set(k,d.world[k])
  session_active=true;state=s
+ if beat().id=="1203" and state.place=="hallway":state.place="hallway12"
  if d.has("digital_system"):
   MessageManager.load_data(d.digital_system)
   WorldData.day=MessageManager.current_minute/1440+1;WorldData.minute=MessageManager.current_minute%1440
