@@ -1,0 +1,7 @@
+[gd_resource type="AtlasTexture" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/art/refined/rider_uniform.png" id="1_eroju"]
+
+[resource]
+atlas = ExtResource("1_eroju")
+region = Rect2(10, 4, 35, 37.8)

@@ -224,6 +224,14 @@ func show_phone(computer=false,tab="消息") -> void:
  render_phone(computer)
 func render_phone(computer: bool=false) -> void:
  for node in phone.get_children():phone.remove_child(node);node.queue_free()
+ if not computer and app_tab=="消息":
+  phone.position=Vector2(818,18);phone.size=Vector2(438,684)
+  phone.add_theme_stylebox_override("panel",StyleBoxEmpty.new())
+  var messenger=preload("res://ui/phone/messenger.gd").new();messenger.initial_thread=phone_notification_target;phone_notification_target="";phone.add_child(messenger)
+  messenger.close_requested.connect(close_phone)
+  messenger.app_requested.connect(func(tab):app_tab=tab;render_phone(false))
+  return
+ phone.position=Vector2(700,104) if not computer else Vector2(120,100);phone.size=Vector2(540,540) if not computer else Vector2(1040,540);style(phone)
  var col=VBoxContainer.new();phone.add_child(col)
  var row=HBoxContainer.new();col.add_child(row);label(row,"本地电脑" if computer else "本地手机 / 离线",0,22)
  button(row,"关闭",close_phone)

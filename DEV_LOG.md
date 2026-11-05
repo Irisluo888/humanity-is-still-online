@@ -344,3 +344,6 @@ before.zip保存改前版本；verified.zip和verified_manifest.json保存当前
 - 实际Godot4.7.2：audio_settings_test 12PASS（真实滑杆、独立静音、ConfigFile保存重读、场景音乐、危险退出、设置阻止移动）；ch01_qa_test 228PASS。最终日志无错误。测试写独立audio_settings_test.cfg，未修改玩家正式音量文件。
 - 截图artifacts/digital_systems/30_audio_settings.png、31_ingame_audio_settings.png已实际作为图像读取，检查中文/滑杆/百分比/按钮与游戏底部入口；既有回归图更新。主菜单scenes/start.tscn按F5→设置；游戏内点击声音设置；电脑任务栏声音入口。
 - 限制：音乐为短循环，主观听感、长时耐听程度、macOS尚未验收；女性尖叫仍待素材，不扩大本轮。保留开始已存在project.godot与5个.import变化，不混入提交；scene_sound_test.gd.uid为前轮脚本生成标识。
+
+## 2026-11-05 / 手机通讯重设计
+聊天、通讯录、群聊/私聊已接入可交互Y2K主题；专项36项、第一章228项实际运行检查通过。保留统一数据层和电脑主题，未扩写剧情。截图与文件清单见docs/DIGITAL_SYSTEMS_TEST_REPORT.md；等待用户视觉验收。

@@ -267,3 +267,9 @@
 - 实际Godot4.7.2：audio_settings_test 12PASS（真实滑杆、独立静音、ConfigFile保存重读、场景音乐、危险退出、设置阻止移动）；ch01_qa_test 228PASS。最终日志无错误。测试写独立audio_settings_test.cfg，未修改玩家正式音量文件。
 - 截图artifacts/digital_systems/30_audio_settings.png、31_ingame_audio_settings.png已实际作为图像读取，检查中文/滑杆/百分比/按钮与游戏底部入口；既有回归图更新。主菜单scenes/start.tscn按F5→设置；游戏内点击声音设置；电脑任务栏声音入口。
 - 限制：音乐为短循环，主观听感、长时耐听程度、macOS尚未验收；女性尖叫仍待素材，不扩大本轮。保留开始已存在project.godot与5个.import变化，不混入提交；scene_sound_test.gd.uid为前轮脚本生成标识。
+
+## 2026-11-05 — 手机通讯 Y2K 重设计
+- 手机聊天列表、通讯录、资料、群聊和私聊统一为粉紫原生交互UI；保留消息队列、已读、剧情预设回复和电脑展示。
+- 新增4个独立预览场景、可复用组件、7个已有原创角色头像的AtlasTexture资源、群头盔/通知图标与心形银环装饰。
+- Godot实际运行：phone_y2k_test 36项检查通过；ch01_qa_test 228项通过。13张真实截图见artifacts/phone_y2k，已进行图像视觉检查。
+- 语音录制、表情发送、自由聊天和新增联系人剧情未实现；macOS未测试。原有6项未提交配置/导入变更保留。

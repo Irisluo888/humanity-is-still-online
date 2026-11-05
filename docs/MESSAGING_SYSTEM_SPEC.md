@@ -40,3 +40,12 @@ Phase1—8已完成本轮技术集成验收，详见DIGITAL_SYSTEMS_TEST_REPORT.
 2026-11-05：opening_delivery脚本使用xiaoyu线程，开场送餐即入队，含原剧本预设回复。手机通知UI显示7秒、轻摆0.65秒；桌面使用相同控件且z_index=100，点击可更新已打开会话。
 
 2026-11-05：第一章手机和电脑复用phone_messages.gd联系人行；按已展示消息display_order降序排序，不使用queued ordinal。电脑通知调用open_thread(target)，列表保持统一未读状态；聊天内部不逆序。
+
+## 2026-11-05 / 手机 Y2K 展示层
+- 第一章手机消息入口改为 ui/phone/messenger.gd；电脑仍用 phone_messages.gd。两者继续读取同一个 MessageManager；没有第二份历史、未读、队列或存档。
+- message_panel.gd 新增 phone_skin（默认false）与 reply_selected(message_id,choice_id,text)。手机选预设后填入只读输入栏，点发送才调用既有 choose_reply；桌面仍直接选预设发送。
+- 手机按 display_order 聚合骑手群两个时段、小鱼两个时段；列表最新置顶，往期会话可访问。通讯录资料入口选择该联系人的最新已显示时段，不提前投递内容。
+- data/messaging.json 只增加陈姨/林晓联系人及阿强/老马/陈姨/林晓空私聊线程；不新增任何剧情台词或触发条件。空会话没有自由聊天和自动NPC回复。
+- 原生可复用组件：list_item、contact_item、message_bubble；palette统一主题；原有逐条送达、输入中、滚动、已读、提示音保留。
+- 手机气泡附件继续接受 res://assets/ 本地路径：Texture2D显示图片，AudioStream提供播放/停止并走SFX总线。当前章节无新增语音剧情；麦克风/表情/附件发送按钮为明确说明的预留入口。参考图未作为背景素材。
+- F6预览场景 scenes/phone/{chat_list,contacts,group_chat,private_chat}.tscn 在无消息时载入已有剧情测试脚本，不写入玩家存档；正式入口始终使用实时剧情状态。
