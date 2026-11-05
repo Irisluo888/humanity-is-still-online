@@ -210,3 +210,60 @@
 - `scripts/local_audio.gd`
 - `scripts/scene_sound_test.gd`
 - `tools/generate_scene_audio.py`
+
+## 2026-11-05 音量设置与低音量背景音乐
+- ui/audio_settings.gd新增四滑杆：总音量、背景音乐、环境音、音效，0独立静音/恢复推荐值，实时生效并保存user://audio_settings.cfg。LocalAudio创建对应总线，读取时检查数值并限幅；默认80/55/65/80%。
+- scripts/start.gd替换占位设置；ch01_play游戏底部“声音设置”、desktop_night任务栏“声音”共用设置界面。打开设置暂停人物移动，关闭恢复。
+- scripts/local_audio.gd新增音乐播放器、场景路由和淡入淡出；菜单/menu、配送/city、住所和电脑/night；Chapter对话/危险/深夜敲门等音乐退出。雨声走Environment，脚步/电机/剧情/手机消息通知走SFX，均受总音量控制。
+- 新增tools/generate_background_music.py，assets/audio/music/menu.wav、city.wav、night.wav及ASSET_RECORD.md；各16秒原创器乐短循环，无第三方采样/在线API。播放-17dB叠加默认Music55%以轻量背景为目标；未人工试听，不把参数设置等同听感验收。
+- 实际Godot4.7.2：audio_settings_test 12PASS（真实滑杆、独立静音、ConfigFile保存重读、场景音乐、危险退出、设置阻止移动）；ch01_qa_test 228PASS。最终日志无错误。测试写独立audio_settings_test.cfg，未修改玩家正式音量文件。
+- 截图artifacts/digital_systems/30_audio_settings.png、31_ingame_audio_settings.png已实际作为图像读取，检查中文/滑杆/百分比/按钮与游戏底部入口；既有回归图更新。主菜单scenes/start.tscn按F5→设置；游戏内点击声音设置；电脑任务栏声音入口。
+- 限制：音乐为短循环，主观听感、长时耐听程度、macOS尚未验收；女性尖叫仍待素材，不扩大本轮。保留开始已存在project.godot与5个.import变化，不混入提交；scene_sound_test.gd.uid为前轮脚本生成标识。
+
+本轮新增/修改清单（无删除；排除任务前已有project.godot及5个.import）：
+- `CHANGELOG.md`
+- `DEV_LOG.md`
+- `ROADMAP.md`
+- `artifacts/ch01_qa/01_street.png`
+- `artifacts/ch01_qa/02_garden.png`
+- `artifacts/ch01_qa/03_hallway.png`
+- `artifacts/ch01_qa/04_elevator.png`
+- `artifacts/ch01_qa/05_store_before.png`
+- `artifacts/ch01_qa/06_attack.png`
+- `artifacts/ch01_qa/07_store_after.png`
+- `artifacts/ch01_qa/08_home.png`
+- `artifacts/ch01_qa/09_knock.png`
+- `artifacts/ch01_qa/10_reveal.png`
+- `artifacts/ch01_qa/11_ending.png`
+- `artifacts/ch01_qa/12_desktop_chat.png`
+- `artifacts/ch01_qa/13_desktop_news.png`
+- `artifacts/ch01_qa/14_attack_choices.png`
+- `artifacts/ch01_qa/15_final_choices.png`
+- `artifacts/ch01_qa/16_phone_call.png`
+- `artifacts/ch01_qa/17_second_knock.png`
+- `artifacts/digital_systems/30_audio_settings.png`
+- `artifacts/digital_systems/31_ingame_audio_settings.png`
+- `artifacts/digital_systems/audio_settings_test.log`
+- `assets/audio/music/ASSET_RECORD.md`
+- `assets/audio/music/city.wav`
+- `assets/audio/music/city.wav.import`
+- `assets/audio/music/menu.wav`
+- `assets/audio/music/menu.wav.import`
+- `assets/audio/music/night.wav`
+- `assets/audio/music/night.wav.import`
+- `docs/CH01_BUGFIX_REPORT.md`
+- `docs/CH01_TEST_REPORT.md`
+- `docs/DEVELOPMENT_LOG.md`
+- `scripts/audio_settings_test.gd`
+- `scripts/audio_settings_test.gd.uid`
+- `scripts/ch01_map.gd`
+- `scripts/ch01_play.gd`
+- `scripts/desktop_night.gd`
+- `scripts/local_audio.gd`
+- `scripts/scene_sound_test.gd.uid`
+- `scripts/start.gd`
+- `tools/generate_background_music.py`
+- `ui/audio_settings.gd`
+- `ui/audio_settings.gd.uid`
+- `ui/message_panel.gd`
+- `ui/notification_toast.gd`

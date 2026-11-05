@@ -25,7 +25,7 @@ func _ready() -> void:
  title=Label.new();title.add_theme_font_size_override("font_size",18);box.add_child(title)
  body=Label.new();body.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART;body.custom_minimum_size.x=300;body.add_theme_font_size_override("font_size",15);box.add_child(body)
  var button=Button.new();button.text="查看";button.pressed.connect(func():requested.emit(target);hide());box.add_child(button)
- audio=AudioStreamPlayer.new();audio.stream=preload("res://assets/audio/ch01/vibrate.wav");audio.volume_db=-27;add_child(audio)
+ audio=AudioStreamPlayer.new();audio.bus="SFX";audio.stream=preload("res://assets/audio/ch01/vibrate.wav");audio.volume_db=-27;add_child(audio)
  MessageManager.notification_posted.connect(on_notification);hide()
  restore_pending.call_deferred()
 func restore_pending() -> void:

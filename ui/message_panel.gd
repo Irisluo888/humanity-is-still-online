@@ -36,7 +36,7 @@ func _ready() -> void:
   if is_visible_in_tree():request_refresh())
  MessageManager.changed.connect(request_refresh)
  MessageManager.message_revealed.connect(on_reveal)
- notification_audio=AudioStreamPlayer.new();notification_audio.stream=preload("res://assets/audio/ch01/vibrate.wav");notification_audio.volume_db=-22;add_child(notification_audio)
+ notification_audio=AudioStreamPlayer.new();notification_audio.bus="SFX";notification_audio.stream=preload("res://assets/audio/ch01/vibrate.wav");notification_audio.volume_db=-22;add_child(notification_audio)
  MessageManager.begin_thread(thread_id);refresh()
 func request_refresh() -> void:
  if pending_refresh:return

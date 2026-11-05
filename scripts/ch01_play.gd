@@ -74,6 +74,7 @@ func rebuild() -> void:
  button(bottom,"立即回家",func():Chapter.fast_home()).disabled=Chapter.modal() or Chapter.state.place=="home"
  button(bottom,"保存",func():
   notice("已保存第一章" if Chapter.save() else "保存失败，请检查本地目录"))
+ button(bottom,"声音设置",func():LocalAudio.show_settings(self))
  button(bottom,"菜单",func():get_tree().change_scene_to_file("res://scenes/start.tscn")).disabled=Chapter.modal()
  if Chapter.state.flags.get("ch01_complete",false):ending()
  elif Chapter.state.encounter:encounter_ui()
@@ -153,7 +154,7 @@ func show_dialogue() -> void:
   last_cue=cue_id
   if cue in ["glass_break","finger_clamp","door_impact"]:LocalAudio.play(cue)
   else:
-   var audio=AudioStreamPlayer.new();audio.stream=load("res://assets/audio/ch01/"+cue+".wav");audio.volume_db=-20;add_child(audio);audio.finished.connect(audio.queue_free);audio.play()
+   var audio=AudioStreamPlayer.new();audio.bus="SFX";audio.stream=load("res://assets/audio/ch01/"+cue+".wav");audio.volume_db=-20;add_child(audio);audio.finished.connect(audio.queue_free);audio.play()
  var portrait=TextureRect.new();portrait.custom_minimum_size=Vector2(76,144);portrait.expand_mode=TextureRect.EXPAND_IGNORE_SIZE;portrait.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED;portrait.texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST
  if not page.portrait.is_empty():portrait.texture=load("res://assets/art/refined/rider_uniform.png" if page.portrait=="rider" else ART+page.portrait+".png")
  row.add_child(portrait)

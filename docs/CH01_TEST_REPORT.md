@@ -85,3 +85,12 @@ artifacts/ch01_qa/01至26命名PNG均已进入模型视觉上下文查看（其�
 - 实际Godot4.7.2：scene_sound_test 11 PASS，ch01_qa_test 228 PASS，最终日志无解析/运行错误。复现：--path . --script res://scripts/scene_sound_test.gd；场景F5，骑行/步行/停止、出入室内及原剧情事件试听。音频验证播放器启动及条件，不代表主观听感验收。
 - 尚未完成：女性尖叫（缺少授权明确且合适的人声录音），BGM及独立音量设置未在本轮扩展。合成声音质量需玩家试听，不将本轮描述为全部音效完成；macOS未测。
 - 保留任务开始已存在的project.godot空行变化与5个.import变化，不混入本次提交。asset_integration_test.gd.uid为上轮脚本自动生成标识，保留。
+
+## 2026-11-05 音量设置与低音量背景音乐
+- ui/audio_settings.gd新增四滑杆：总音量、背景音乐、环境音、音效，0独立静音/恢复推荐值，实时生效并保存user://audio_settings.cfg。LocalAudio创建对应总线，读取时检查数值并限幅；默认80/55/65/80%。
+- scripts/start.gd替换占位设置；ch01_play游戏底部“声音设置”、desktop_night任务栏“声音”共用设置界面。打开设置暂停人物移动，关闭恢复。
+- scripts/local_audio.gd新增音乐播放器、场景路由和淡入淡出；菜单/menu、配送/city、住所和电脑/night；Chapter对话/危险/深夜敲门等音乐退出。雨声走Environment，脚步/电机/剧情/手机消息通知走SFX，均受总音量控制。
+- 新增tools/generate_background_music.py，assets/audio/music/menu.wav、city.wav、night.wav及ASSET_RECORD.md；各16秒原创器乐短循环，无第三方采样/在线API。播放-17dB叠加默认Music55%以轻量背景为目标；未人工试听，不把参数设置等同听感验收。
+- 实际Godot4.7.2：audio_settings_test 12PASS（真实滑杆、独立静音、ConfigFile保存重读、场景音乐、危险退出、设置阻止移动）；ch01_qa_test 228PASS。最终日志无错误。测试写独立audio_settings_test.cfg，未修改玩家正式音量文件。
+- 截图artifacts/digital_systems/30_audio_settings.png、31_ingame_audio_settings.png已实际作为图像读取，检查中文/滑杆/百分比/按钮与游戏底部入口；既有回归图更新。主菜单scenes/start.tscn按F5→设置；游戏内点击声音设置；电脑任务栏声音入口。
+- 限制：音乐为短循环，主观听感、长时耐听程度、macOS尚未验收；女性尖叫仍待素材，不扩大本轮。保留开始已存在project.godot与5个.import变化，不混入提交；scene_sound_test.gd.uid为前轮脚本生成标识。

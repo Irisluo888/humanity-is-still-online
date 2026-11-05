@@ -173,8 +173,8 @@ func _physics_process(delta: float) -> void:
  encounter_cooldown=maxf(0,encounter_cooldown-delta)
  if not is_instance_valid(player):return
  var riding=kind=="street" and Chapter.beat().id=="delivery"
- LocalAudio.ambience(kind in ["street","garden"],riding and not locked and not held.is_empty() and player.velocity.length()>0.2)
- if locked or Chapter.state.place!=kind:return
+ LocalAudio.ambience(kind in ["street","garden"],riding and not locked and not LocalAudio.settings_open and not held.is_empty() and player.velocity.length()>0.2)
+ if locked or LocalAudio.settings_open or Chapter.state.place!=kind:return
  var x=float(held.get(KEY_D,false) or held.get(KEY_RIGHT,false))-float(held.get(KEY_A,false) or held.get(KEY_LEFT,false))
  var z=float(held.get(KEY_S,false) or held.get(KEY_DOWN,false))-float(held.get(KEY_W,false) or held.get(KEY_UP,false))
  var move=Vector3(x+z,0,z-x).normalized()*3

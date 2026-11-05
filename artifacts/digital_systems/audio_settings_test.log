@@ -1,0 +1,16 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 616.56 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4060 Ti
+
+PASS: menu music plays quietly
+PASS: menu volume settings opens
+PASS: music slider0 mutes music only
+PASS: music mute preserves effects
+PASS: settings persist and restore independently
+PASS: capture actual settings
+PASS: closing restores controls
+PASS: delivery uses city background loop
+PASS: settings prevents player movement
+PASS: capture ingame settings
+PASS: danger fades music out
+PASS: home uses night music
+AUDIO SETTINGS FAILURES: 0
