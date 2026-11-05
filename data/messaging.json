@@ -686,6 +686,27 @@
             "text": "已经收工"
           }
         ]
+      },
+      {
+        "id": "opening_xiaoyu_002",
+        "thread_id": "xiaoyu",
+        "sender_id": "xiaoyu",
+        "text": "好，路上慢点。钱明天还能赚。",
+        "delay_seconds": 1.6
+      },
+      {
+        "id": "opening_xiaoyu_003",
+        "thread_id": "xiaoyu",
+        "sender_id": "xiaoyu",
+        "text": "到家在群里说一声，别又忘了。",
+        "delay_seconds": 2.0
+      },
+      {
+        "id": "opening_xiaoyu_004",
+        "thread_id": "xiaoyu",
+        "sender_id": "player",
+        "text": "知道啦，到家报平安。",
+        "delay_seconds": 1.6
       }
     ]
   }

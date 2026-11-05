@@ -6,7 +6,7 @@ func _ready() -> void:
  if Chapter.session_active and not Chapter.state.is_empty():
   tasks.add_child(small_button("返回第一章",return_chapter,110))
   tasks.add_child(small_button("章节消息",chapter_inbox,90))
-  var toast=preload("res://ui/notification_toast.gd").new();toast.position=Vector2(925,32);add_child(toast)
+  var toast=preload("res://ui/notification_toast.gd").new();toast.desktop_mode=true;toast.position=Vector2(925,32);add_child(toast)
   toast.requested.connect(func(target):
    if target=="news":open_app("热榜")
    elif MessageManager.catalog.threads.has(target):

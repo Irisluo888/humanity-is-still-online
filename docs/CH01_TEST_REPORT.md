@@ -47,3 +47,12 @@ artifacts/ch01_qa/01至26命名PNG均已进入模型视觉上下文查看（其�
 - 五张真实PNG（artifacts/digital_systems/13_delivery_guidance至17_elevator_hand）已输入模型视觉上下文检查；中文/任务卡/手机外壳/电脑通知层级/特写位置可见，最终素材更新后重新截图查看。既有回归截图也由脚本更新。
 - F5新游戏可体验送餐消息→交付→断电→找老周；WASD跟随金色指引，接近按E。电脑打开多个窗口仍可接收通知。夹手近景在第一章电梯对应对白自动出现。
 - 限制：自动化步行测试不等于陌生玩家盲玩验收；macOS、真人试玩改善程度和主观音效未验证。人物车辆没有完整骑行动画，夹手是简化原创像素近景，不宣称最终美术。无新在线服务、插件或第三方素材。
+
+## 2026-11-05 开场续聊、次日过场与设备通知
+- data/messaging.json：开场回复后增加小鱼两句关心与女主报平安回应，沿用逐条队列，避免突然结束。两种预设回复共用自然收尾。
+- scripts/ch01_director.gd、scripts/ch01_play.gd：夜间午餐邀约结束后，进入约4秒深色到晨光淡入淡出过场，提示第二天清晨出门取餐；结束恢复移动，待播放标记进入存档状态。
+- ui/notification_toast.gd、scripts/desktop_night.gd：手机打开时抑制弹窗，未展示通知保留，关闭后继续；电脑采用直角桌面通知，无手机状态栏或震动，点击进入对应会话。
+- 新增scripts/ch01_transition_test.gd；实际Godot Windows运行专项11 PASS、第一章主线228 PASS，最终日志无错误；共239断言含截图/重复分支，不是239功能。截图18_phone_followup、19_morning_transition、20_desktop_notification已实际作为图像检查；发现并修复过场通知遮挡后重新截图。
+- 更新既有artifacts/ch01_qa/01_street.png、12_desktop_chat.png、13_desktop_news.png为回归运行输出；新增artifacts/digital_systems/ch01_transition_test.log及上述3张PNG。无删除。
+- F5新游戏：回复小鱼后等待连续消息；手机关闭后恢复通知；完成首夜聊天后查看清晨过场；电脑通知“查看”打开聊天。
+- 限制：过场为文字/色调渐变，不是完整日出场景动画；macOS及真人盲玩未验收。旧message_floor_fix_test中的“手机打开仍显示横幅”是已被本次需求取代的历史断言，本次以transition专项为准。

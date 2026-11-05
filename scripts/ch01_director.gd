@@ -141,7 +141,7 @@ func next(choice: String="continue") -> bool:
  if id=="1203" and choice=="skip":state.place="elevator";state.event_active=true
  if id=="1404":state.place=beat().place;state.event_active=true
  if id=="elevator":state.place="garden"
- if id=="lunch":state.place="home"
+ if id=="lunch":state.place="home";state.flags.morning_transition_pending=true
  if id in ["night","knock1","call","reveal"]:state.event_active=true
  if id=="final":state.event_active=true
  sync();return true

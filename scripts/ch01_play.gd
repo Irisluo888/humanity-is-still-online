@@ -72,7 +72,7 @@ func rebuild() -> void:
  if Chapter.state.flags.get("ch01_complete",false):ending()
  elif Chapter.state.encounter:encounter_ui()
  elif Chapter.state.event_active:show_dialogue()
- var toast=preload("res://ui/notification_toast.gd").new();toast.position=Vector2(925,92)
+ var toast=preload("res://ui/notification_toast.gd").new();toast.position=Vector2(925,92);toast.allow_display=func():return not opened
  if Chapter.modal():toast.position=Vector2(20,150)
  notification_toast=toast;ui_scale.add_child(toast)
  toast.requested.connect(func(target):
@@ -84,6 +84,8 @@ func rebuild() -> void:
   elif target=="news":show_phone(false,"新闻"))
  map_world.locked=Chapter.modal()
  build_guidance()
+ if Chapter.state.flags.get("morning_transition_pending",false):
+  Chapter.state.flags.morning_transition_pending=false;show_morning_transition()
  if Chapter.beat().id=="repair" and not Chapter.state.flags.get("bike_fault_shown",false):
   Chapter.state.flags.bike_fault_shown=true;fault_remaining=3.5
   fault_panel=PanelContainer.new();fault_panel.position=Vector2(330,145);style(fault_panel);ui_scale.add_child(fault_panel)
@@ -91,6 +93,15 @@ func rebuild() -> void:
   label(fault_box,"电动车突然断电",0,26)
   var closeup=preload("res://ui/ch01_closeup.gd").new();closeup.custom_minimum_size=Vector2(600,288);fault_box.add_child(closeup)
   label(fault_box,"接线松动了……推到骑手驿站，请老周帮忙。",570,21)
+func show_morning_transition() -> void:
+ fault_remaining=4.0
+ var curtain=ColorRect.new();curtain.color=Color("101c30");curtain.size=Vector2(1280,720);curtain.z_index=110;ui_scale.add_child(curtain)
+ var title=label(curtain,"第二天 · 清晨",0,42);title.position=Vector2(460,270)
+ var subtitle=label(curtain,"雨停了一会儿。该出门取餐，开始今天的配送了。",0,24);subtitle.position=Vector2(325,345)
+ curtain.modulate.a=0
+ var tween=create_tween();tween.tween_property(curtain,"modulate:a",1.0,0.5)
+ tween.tween_property(curtain,"color",Color("6b8795"),1.8)
+ tween.tween_interval(0.7);tween.tween_property(curtain,"modulate:a",0.0,1.0);tween.tween_callback(curtain.queue_free)
 func build_guidance() -> void:
  guidance=preload("res://ui/ch01_guidance.gd").new();guidance.world=map_world;ui_scale.add_child(guidance)
  task_card=PanelContainer.new();task_card.position=Vector2(24,520);task_card.custom_minimum_size=Vector2(520,126);style(task_card,"30495a");ui_scale.add_child(task_card)
@@ -199,7 +210,7 @@ func encounter_ui() -> void:
 func show_phone(computer=false,tab="消息") -> void:
  if Chapter.modal() or opened or fault_remaining>0:return
  opened=true;app_tab=tab;map_world.locked=true
- if is_instance_valid(notification_toast):notification_toast.position=Vector2(24,150)
+ if is_instance_valid(notification_toast):notification_toast.hide()
  phone=PanelContainer.new();phone.position=Vector2(700,104) if not computer else Vector2(120,100);phone.size=Vector2(540,540) if not computer else Vector2(1040,540);style(phone);ui_scale.add_child(phone)
  render_phone(computer)
 func render_phone(computer: bool=false) -> void:
