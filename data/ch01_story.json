@@ -302,7 +302,7 @@
           "speaker": "旁白",
           "portrait": "",
           "text": "【八楼开门。他迈出又伸手挡门，夹伤手却反应迟钝】",
-          "cue": "",
+          "cue": "finger_clamp",
           "visual": "elevator_hand"
         },
         {
@@ -366,7 +366,7 @@
           "speaker": "旁白",
           "portrait": "",
           "text": "公文包落地。陈姨转身，男人突然扑向她！玻璃瓶碎裂。",
-          "cue": "glass"
+          "cue": "glass_break"
         },
         {
           "speaker": "旁白",
@@ -540,7 +540,7 @@
           "speaker": "旁白",
           "portrait": "",
           "text": "【猛然撞门】",
-          "cue": "knock"
+          "cue": "door_impact"
         },
         {
           "speaker": "旁白",

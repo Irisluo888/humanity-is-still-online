@@ -8,6 +8,7 @@ var locked=false
 var encounter_cooldown=2.0
 var hint=""
 var step_distance=0.0
+var clear_signs: Array=[]
 const ART="res://assets/art/ch01/"
 func block(pos: Vector3,dim: Vector3,tex: String,solid=true) -> Node3D:
  var mesh=MeshInstance3D.new();var shape=BoxMesh.new();shape.size=dim;mesh.mesh=shape
@@ -30,9 +31,9 @@ func prop(id: String,pos: Vector3,height: float=2.0) -> Sprite3D:
  var s=Sprite3D.new();s.texture=load(ART+id+".png");s.pixel_size=height/96.0;s.position=pos+Vector3(0,height/2,0);s.billboard=BaseMaterial3D.BILLBOARD_ENABLED;s.texture_filter=BaseMaterial3D.TEXTURE_FILTER_NEAREST;add_child(s);return s
 func marker(id: String,text: String,pos: Vector3) -> void:
  points[id]={"pos":pos,"text":text}
- var label=Label3D.new();label.text=text if id in ["delivery","repair","pickup","garden","building","store","home","up14"] else "◆";label.position=pos+Vector3(0,1.8,0);label.billboard=BaseMaterial3D.BILLBOARD_ENABLED;label.font_size=40;label.pixel_size=0.012;label.modulate=Color("e0d4b5");add_child(label)
+ var label=Label3D.new();label.text=text if id in ["delivery","repair","pickup","garden","building","store","home","up14"] else "◆";label.position=pos+Vector3(0,1.8,0);label.billboard=BaseMaterial3D.BILLBOARD_ENABLED;label.visible=false;clear_signs.append({"text":label.text,"pos":pos+Vector3(0,.7,0)});label.font_size=40;label.pixel_size=0.012;label.modulate=Color("e0d4b5");add_child(label)
 func plaque(text: String,pos: Vector3) -> void:
- var l=Label3D.new();l.text=text;l.position=pos;l.font_size=64;l.pixel_size=0.008;l.billboard=BaseMaterial3D.BILLBOARD_ENABLED;l.modulate=Color("e4c998");add_child(l)
+ var l=Label3D.new();l.text=text;l.visible=false;clear_signs.append({"text":text,"pos":pos});l.position=pos;l.font_size=64;l.pixel_size=0.008;l.billboard=BaseMaterial3D.BILLBOARD_ENABLED;l.modulate=Color("e4c998");add_child(l)
 func _ready() -> void:
  var dimensions=Vector3(6,0.3,6) if kind=="elevator" else (Vector3(16,0.3,8) if kind in ["hallway","hallway12"] else Vector3(18,0.3,14))
  block(Vector3(0,-0.15,0),dimensions,"wood" if kind=="home" else ("tile" if kind in ["store","elevator","hallway","hallway12"] else "paving"))
@@ -170,14 +171,19 @@ func home() -> void:
  prop("bike",Vector3(1,0,3),1.2);marker("charger","充电器与外卖箱",Vector3(1,0,4))
 func _physics_process(delta: float) -> void:
  encounter_cooldown=maxf(0,encounter_cooldown-delta)
- if locked or not is_instance_valid(player) or Chapter.state.place!=kind:return
+ if not is_instance_valid(player):return
+ var riding=kind=="street" and Chapter.beat().id=="delivery"
+ LocalAudio.ambience(kind in ["street","garden"],riding and not locked and not held.is_empty() and player.velocity.length()>0.2)
+ if locked or Chapter.state.place!=kind:return
  var x=float(held.get(KEY_D,false) or held.get(KEY_RIGHT,false))-float(held.get(KEY_A,false) or held.get(KEY_LEFT,false))
  var z=float(held.get(KEY_S,false) or held.get(KEY_DOWN,false))-float(held.get(KEY_W,false) or held.get(KEY_UP,false))
  var move=Vector3(x+z,0,z-x).normalized()*3
  var previous=player.position
  player.velocity=Vector3(move.x,-2,move.z);player.move_and_slide()
  step_distance+=Vector2(player.position.x-previous.x,player.position.z-previous.z).length()
- if step_distance>=0.95:step_distance=0;LocalAudio.footstep()
+ if step_distance>=0.95:
+  step_distance=0
+  if not riding:LocalAudio.footstep()
  var limit=2.5 if kind=="elevator" else 8.0
  player.position.x=clampf(player.position.x,-limit,limit);player.position.z=clampf(player.position.z,-2.5 if kind=="elevator" else (-3.5 if kind in ["hallway","hallway12"] else -6),2.5 if kind=="elevator" else (3.5 if kind in ["hallway","hallway12"] else 6))
  Chapter.remember_position(player.position)
@@ -192,3 +198,6 @@ func interact() -> void:
   var distance=player.position.distance_to(points[id].pos)
   if distance<nearest:nearest=distance;selected=id
  if not selected.is_empty():hotspot.emit(selected)
+
+func _exit_tree():
+ LocalAudio.ambience(false,false)

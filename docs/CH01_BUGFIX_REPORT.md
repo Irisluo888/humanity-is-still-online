@@ -160,3 +160,53 @@
 - 截图artifacts/digital_systems/27_urban_street.png、28_urban_garden.png均实际作为图像读取；门窗朝向、中文与交互标记、像素采样可见。日志asset_integration_test.log、ch01_walk_qa.log。
 - F5新游戏，在街道WASD移动听脚步，停止或打开手机无新增脚步；经入口切换听门声；依第一章流程到幸福花园查看三栋/便利店外部。
 - 限制：音量尚为固定值，未增加音乐/音量设置、雨声；街道与花园的建筑仍需更丰富布局/照明。macOS和人工听感待验证。下一步建议只做音效听感与音量设置验收。
+
+## 2026-11-05 骑行/脚步分流、剧情音效与建筑清晰文字
+- 修改local_audio.gd、ch01_map.gd：首夜delivery骑车移动使用低音量电机循环，不触发脚步；停止/剧情锁定停电机；步行脚步从-17dB降为-29dB，其他短音-19dB。户外雨声-30dB，室内停止。声音为原创程序合成，未主观试听。
+- 新增tools/generate_scene_audio.py、assets/audio/generated/六个WAV与ASSET_RECORD.md；雨声、电机、夹手、重击、玻璃破碎、撞门。原始素材包没有找到明确适用的对应声音，未使用授权未知素材。
+- 修改ch01_story.json/ch01_play.gd：电梯夹手页与碎瓶页触发对应音效，撞门文本页接入撞门音；ch01_director.gd灭火器成功选择播放重物撞击，消耗/结果逻辑不变。原剧情其他提示音从-10dB降至-20dB。
+- 建筑名称与交互文字用ch01_play全分辨率2D标签跟随3D位置，避免半分辨率贴图模糊；原3D文字隐藏，保留像素场景。29_clear_signs.png已实际输入视觉上下文检查：字号/描边/位置清楚。
+- 实际Godot4.7.2：scene_sound_test 11 PASS，ch01_qa_test 228 PASS，最终日志无解析/运行错误。复现：--path . --script res://scripts/scene_sound_test.gd；场景F5，骑行/步行/停止、出入室内及原剧情事件试听。音频验证播放器启动及条件，不代表主观听感验收。
+- 尚未完成：女性尖叫（缺少授权明确且合适的人声录音），BGM及独立音量设置未在本轮扩展。合成声音质量需玩家试听，不将本轮描述为全部音效完成；macOS未测。
+- 保留任务开始已存在的project.godot空行变化与5个.import变化，不混入本次提交。asset_integration_test.gd.uid为上轮脚本自动生成标识，保留。
+
+本轮文件清单（排除开始已存在project.godot及5个.import；无删除）：
+- `CHANGELOG.md`
+- `DEV_LOG.md`
+- `ROADMAP.md`
+- `artifacts/ch01_qa/01_street.png`
+- `artifacts/ch01_qa/02_garden.png`
+- `artifacts/ch01_qa/03_hallway.png`
+- `artifacts/ch01_qa/04_elevator.png`
+- `artifacts/ch01_qa/05_store_before.png`
+- `artifacts/ch01_qa/06_attack.png`
+- `artifacts/ch01_qa/07_store_after.png`
+- `artifacts/ch01_qa/08_home.png`
+- `artifacts/ch01_qa/09_knock.png`
+- `artifacts/ch01_qa/14_attack_choices.png`
+- `artifacts/digital_systems/29_clear_signs.png`
+- `artifacts/digital_systems/scene_sound_test.log`
+- `assets/audio/generated/ASSET_RECORD.md`
+- `assets/audio/generated/bike.wav`
+- `assets/audio/generated/bike.wav.import`
+- `assets/audio/generated/door_impact.wav`
+- `assets/audio/generated/door_impact.wav.import`
+- `assets/audio/generated/finger_clamp.wav`
+- `assets/audio/generated/finger_clamp.wav.import`
+- `assets/audio/generated/glass_break.wav`
+- `assets/audio/generated/glass_break.wav.import`
+- `assets/audio/generated/heavy_impact.wav`
+- `assets/audio/generated/heavy_impact.wav.import`
+- `assets/audio/generated/rain.wav`
+- `assets/audio/generated/rain.wav.import`
+- `data/ch01_story.json`
+- `docs/CH01_BUGFIX_REPORT.md`
+- `docs/CH01_TEST_REPORT.md`
+- `docs/DEVELOPMENT_LOG.md`
+- `scripts/asset_integration_test.gd.uid`
+- `scripts/ch01_director.gd`
+- `scripts/ch01_map.gd`
+- `scripts/ch01_play.gd`
+- `scripts/local_audio.gd`
+- `scripts/scene_sound_test.gd`
+- `tools/generate_scene_audio.py`
