@@ -9,7 +9,11 @@ func _ready() -> void:
   var toast=preload("res://ui/notification_toast.gd").new();toast.position=Vector2(925,32);add_child(toast)
   toast.requested.connect(func(target):
    if target=="news":open_app("热榜")
-   elif MessageManager.catalog.threads.has(target):chapter_thread=target;open_app("消息"))
+   elif MessageManager.catalog.threads.has(target):
+    chapter_thread=target;open_app("消息")
+    if windows.has("消息"):
+     var pane=windows["消息"].body.get_child(0)
+     pane.thread_id=target;MessageManager.begin_thread(target);pane.refresh())
  if Chapter.session_active and get_child_count()>2:get_child(2).text="第一章 / 住所电脑\n消息与手机同步，关闭窗口后返回房间。"
  if not WorldData.campaign:return
  public_content=content.duplicate(true)

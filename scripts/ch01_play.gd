@@ -22,6 +22,12 @@ var app_tab="消息"
 var selected_thread="rider_group"
 var last_cue=""
 var rebuild_queued=false
+var guidance: Control
+var task_card: PanelContainer
+var task_title: Label
+var task_detail: Label
+var fault_remaining=0.0
+var fault_panel: PanelContainer
 func _ready() -> void:
  if Chapter.state.is_empty():Chapter.fresh()
  Chapter.updated.connect(request_rebuild)
@@ -67,6 +73,7 @@ func rebuild() -> void:
  elif Chapter.state.encounter:encounter_ui()
  elif Chapter.state.event_active:show_dialogue()
  var toast=preload("res://ui/notification_toast.gd").new();toast.position=Vector2(925,92)
+ if Chapter.modal():toast.position=Vector2(20,150)
  notification_toast=toast;ui_scale.add_child(toast)
  toast.requested.connect(func(target):
   if Chapter.modal():return
@@ -76,6 +83,33 @@ func rebuild() -> void:
   if MessageManager.catalog.threads.has(target):selected_thread=target;show_phone(false,"消息")
   elif target=="news":show_phone(false,"新闻"))
  map_world.locked=Chapter.modal()
+ build_guidance()
+ if Chapter.beat().id=="repair" and not Chapter.state.flags.get("bike_fault_shown",false):
+  Chapter.state.flags.bike_fault_shown=true;fault_remaining=3.5
+  fault_panel=PanelContainer.new();fault_panel.position=Vector2(330,145);style(fault_panel);ui_scale.add_child(fault_panel)
+  var fault_box=VBoxContainer.new();fault_panel.add_child(fault_box)
+  label(fault_box,"电动车突然断电",0,26)
+  var closeup=preload("res://ui/ch01_closeup.gd").new();closeup.custom_minimum_size=Vector2(600,288);fault_box.add_child(closeup)
+  label(fault_box,"接线松动了……推到骑手驿站，请老周帮忙。",570,21)
+func build_guidance() -> void:
+ guidance=preload("res://ui/ch01_guidance.gd").new();guidance.world=map_world;ui_scale.add_child(guidance)
+ task_card=PanelContainer.new();task_card.position=Vector2(24,520);task_card.custom_minimum_size=Vector2(520,126);style(task_card,"30495a");ui_scale.add_child(task_card)
+ var row=HBoxContainer.new();row.add_theme_constant_override("separation",16);task_card.add_child(row)
+ var icon=TextureRect.new();icon.texture=load(ART+"delivery_scooter.png");icon.custom_minimum_size=Vector2(94,80);icon.expand_mode=TextureRect.EXPAND_IGNORE_SIZE;icon.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED;icon.texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST;row.add_child(icon)
+ var col=VBoxContainer.new();row.add_child(col);task_title=label(col,"",360,24);task_detail=label(col,"",360,18)
+func update_guidance() -> void:
+ if not is_instance_valid(task_card):return
+ var stage=Chapter.beat().id
+ var target=""
+ var heading=""
+ var detail=""
+ if stage=="delivery":target="delivery";heading="最后一单 · 送到临街民居";detail="WASD移动，跟随金色路标。\n到达门前后按 E 交付餐食。"
+ elif stage=="repair":target="repair";heading="电动车故障 · 找老周";detail="前往骑手驿站，靠近老周按 E。\n位置在街道中央，金色路标已更新。"
+ elif stage=="group" and Chapter.state.place=="street":target="home";heading="车修好了 · 回家报平安";detail="沿金色路标回住所，靠近入口按 E。"
+ if not map_world.points.has(target):target=""
+ task_card.visible=not target.is_empty() and not opened and not Chapter.modal() and fault_remaining<=0
+ guidance.visible=task_card.visible;guidance.target=target
+ task_title.text=heading;task_detail.text=detail
 func digital_hud_text() -> String:
  var unseen=0
  for id in MessageManager.catalog.threads:unseen+=MessageManager.get_unread_count(id)
@@ -89,6 +123,8 @@ func objective() -> String:
  var objectives={"delivery":"餐食已在箱中：前往右上方临街民居，靠近黄色送餐标记按E。","repair":"电动车故障：到驿站修车摊找老周。","group":"回家后在电脑或手机里读完骑手群。","lunch":"查看小鱼的私信。","orders":"出门，到取餐窗口领取幸福花园1203餐食；普通订单可在手机查看。","1203":"到幸福花园三栋入口，给1203交付。","1404":"从12楼楼梯前往14楼，再到1404门前查看。","elevator":"电梯下行中。","store":"从小区进入陈姨便利店，先观察环境，再接近柜台。","night":"回家查看骑手群和新闻，之后到床边休息。","knock1":"门外有人。","call":"手机响了。","reveal":"再次确认门外的人。","final":"决定如何帮助老周。","end":"回复骑手群，再查看章末消息。"}
  return saved_notice if not saved_notice.is_empty() else objectives.get(Chapter.beat().id,"")
 func show_dialogue() -> void:
+ if Chapter.page().get("visual","")=="elevator_hand":
+  var closeup=preload("res://ui/ch01_closeup.gd").new();closeup.mode="hand";closeup.position=Vector2(340,130);closeup.custom_minimum_size=Vector2(600,288);ui_scale.add_child(closeup)
  if Chapter.beat().id in ["call","reveal","final"] or (Chapter.beat().id=="knock1" and Chapter.state.page>=1):
   var eye=load("res://scripts/ch01_peephole.gd").new();eye.position=Vector2(300,86);eye.size=Vector2(700,550);eye.clip_contents=true;eye.revealed=Chapter.beat().id in ["reveal","final"];eye.stage=10 if Chapter.beat().id!="knock1" else int(Chapter.state.page);ui_scale.add_child(eye)
  dialogue=PanelContainer.new();dialogue.position=Vector2(100,448);dialogue.size=Vector2(1080,200);style(dialogue,"202e40");ui_scale.add_child(dialogue)
@@ -161,7 +197,7 @@ func encounter_ui() -> void:
  button(box,"强行挣脱 / 生命与体力-10",func():Chapter.resolve_encounter("force"))
  label(box,"普通接触不产生感染暴露；失败也能脱离。",620)
 func show_phone(computer=false,tab="消息") -> void:
- if Chapter.modal() or opened:return
+ if Chapter.modal() or opened or fault_remaining>0:return
  opened=true;app_tab=tab;map_world.locked=true
  if is_instance_valid(notification_toast):notification_toast.position=Vector2(24,150)
  phone=PanelContainer.new();phone.position=Vector2(700,104) if not computer else Vector2(120,100);phone.size=Vector2(540,540) if not computer else Vector2(1040,540);style(phone);ui_scale.add_child(phone)
@@ -218,7 +254,7 @@ func travel(place: String) -> void:
  if not reason.is_empty():notice(reason);return
  Chapter.enter(place)
 func interact_point(id: String) -> void:
- if Chapter.modal() or opened:return
+ if Chapter.modal() or opened or fault_remaining>0:return
  saved_notice=""
  var beat: String=Chapter.beat().id
  match id:
@@ -306,6 +342,10 @@ func interact_point(id: String) -> void:
    else:notice("装备完好，或缺少维修物资。")
   _:notice("这里留下了熟悉的生活痕迹。")
 func _process(delta: float) -> void:
+ if fault_remaining>0:
+  fault_remaining=maxf(0,fault_remaining-delta)
+  if fault_remaining==0 and is_instance_valid(fault_panel):fault_panel.queue_free()
+ update_guidance()
  if is_instance_valid(call_status_label):
   var answered=MessageManager.calls.get("zhou_door_call",{}).get("status","")=="answered"
   call_status_label.text="通话中 · 老周" if answered else "来电 · 老周"
@@ -316,7 +356,7 @@ func _process(delta: float) -> void:
   if notice_timer<=0:saved_notice=""
  if is_instance_valid(ui_scale):ui_scale.scale=size/Vector2(1280,720)
  if is_instance_valid(map_world):
-  map_world.locked=opened or Chapter.modal()
+  map_world.locked=opened or Chapter.modal() or fault_remaining>0
   if not Chapter.modal() and not opened and saved_notice.is_empty():hint.text=map_world.hint if not map_world.hint.is_empty() else objective()
  if is_instance_valid(body_text):
   typing+=delta*38;body_text.visible_characters=int(typing)
@@ -334,7 +374,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
   else:show_phone()
  if event.physical_keycode==KEY_B and not opened:show_phone(false,"背包")
 
- if event.physical_keycode==KEY_E and not Chapter.modal() and not opened:map_world.interact()
+ if event.physical_keycode==KEY_E and not Chapter.modal() and not opened and fault_remaining<=0:map_world.interact()
  if event.physical_keycode==KEY_F8 and OS.is_debug_build() and Chapter.developer_mode:debug_menu()
 func debug_menu() -> void:
  if not Chapter.developer_mode:return

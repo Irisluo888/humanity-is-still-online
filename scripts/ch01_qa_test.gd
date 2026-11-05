@@ -19,6 +19,7 @@ func press(key: int) -> void:
  var e=InputEventKey.new();e.physical_keycode=key;e.pressed=true;root.push_input(e,true)
  e=InputEventKey.new();e.physical_keycode=key;root.push_input(e,true);await frames()
 func at(id: String) -> void:
+ if current_scene.fault_remaining>0:await create_timer(current_scene.fault_remaining+0.1).timeout
  var map=current_scene.map_world
  check(map.points.has(id),"actual map point "+id)
  if not map.points.has(id):quit(1);return

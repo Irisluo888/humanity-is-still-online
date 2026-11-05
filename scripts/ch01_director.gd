@@ -50,6 +50,7 @@ func sync() -> void:
    order.id="order_ch01_%03d"%(i+1);order.address=["普通居民楼","写字楼前台","幸福花园3栋1203"][i]
    order.item=["早餐","奶茶","家常菜"][i];order.pickup_name=["早餐铺","奶茶店","家常菜馆"][i];order.note=["送至门前交付","前台代收","老人腿脚不好，麻烦送上楼"][i];order.status="可接单";order.day=WorldData.day
   WorldData.active_order_id="";state.flags.chapter_orders_created=true
+ if id=="delivery":MessageManager.queue_script("opening_delivery",1296)
  if id=="group":publish_chat("rider_group")
  if id=="lunch":publish_chat("xiaoyu")
  if id=="night":

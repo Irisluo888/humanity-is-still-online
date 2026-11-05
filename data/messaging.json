@@ -662,6 +662,31 @@
         "delay_seconds": 1.0,
         "attachments": []
       }
+    ],
+    "opening_delivery": [
+      {
+        "id": "opening_xiaoyu_000",
+        "thread_id": "xiaoyu",
+        "sender_id": "xiaoyu",
+        "text": "姐，别跑了吧。",
+        "delay_seconds": 1.5
+      },
+      {
+        "id": "opening_xiaoyu_001",
+        "thread_id": "xiaoyu",
+        "sender_id": "player",
+        "text": "还差十几块",
+        "choices": [
+          {
+            "id": "last_order",
+            "text": "还差十几块"
+          },
+          {
+            "id": "finished",
+            "text": "已经收工"
+          }
+        ]
+      }
     ]
   }
 }

@@ -302,7 +302,8 @@
           "speaker": "旁白",
           "portrait": "",
           "text": "【八楼开门。他迈出又伸手挡门，夹伤手却反应迟钝】",
-          "cue": ""
+          "cue": "",
+          "visual": "elevator_hand"
         },
         {
           "speaker": "男人",

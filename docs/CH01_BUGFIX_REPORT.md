@@ -70,3 +70,55 @@
 - `scripts/message_manager.gd`
 - `ui/message_panel.gd`
 - `ui/notification_toast.gd`
+
+## 2026-11-05 开场盲玩引导、手机通知与剧情近景
+- 送餐/修车/修好回家添加常驻任务卡、WASD/E操作提示和金色方向点线/目标箭头。点线表示方向，不是避障导航。交互与配送仍走原逻辑。
+- 新增原创本地96×64电动车PNG（配送箱、后视镜、电池及脚踏板），用于任务卡、开场角色旁与车辆近景；生成源tools/generate_delivery_scooter.py，仅Python标准库。
+- 送达切入修车时播放3.5秒电动车断电/接线闪烁近景，结束恢复移动并指向老周；已播放状态保存在Chapter flags。未新增驾驶物理或骑行动画。
+- 从原始第一章剧本恢复送餐中小鱼“姐，别跑了吧”私信及两条原预设回复，使用同一xiaoyu线程，稳定ID去重。回复为聊天选择，不额外改变原配送主线。
+- 通知增加手机外壳、状态条和0.65秒轻微摆动，显示7秒；电脑通知置顶，并可切换已打开消息窗口的联系人。剧情近景期间将通知放到左侧。
+- 电梯原“八楼开门…夹伤手”对白页绑定原创程序绘制近景：门缝收窄、手部、浅色衣袖和原有暗红袖口痕迹；继续后回到原男人对白，无新增剧情结果。
+- 实际Windows Godot4.7.2：资源导入通过；ch01_onboarding_test 17、ch01_qa_test 228、ch01_walk_qa 229 PASS，最终日志无FAIL/ERROR/WARNING。共474断言含重复分支与截图，非474项独立功能。
+- 五张真实PNG（artifacts/digital_systems/13_delivery_guidance至17_elevator_hand）已输入模型视觉上下文检查；中文/任务卡/手机外壳/电脑通知层级/特写位置可见，最终素材更新后重新截图查看。既有回归截图也由脚本更新。
+- F5新游戏可体验送餐消息→交付→断电→找老周；WASD跟随金色指引，接近按E。电脑打开多个窗口仍可接收通知。夹手近景在第一章电梯对应对白自动出现。
+- 限制：自动化步行测试不等于陌生玩家盲玩验收；macOS、真人试玩改善程度和主观音效未验证。人物车辆没有完整骑行动画，夹手是简化原创像素近景，不宣称最终美术。无新在线服务、插件或第三方素材。
+
+本次文件清单（新增/修改，无删除；message_floor_fix_test.gd.uid为上一轮脚本的Godot生成标识，保留纳入）：
+- `CHANGELOG.md`
+- `DEV_LOG.md`
+- `ROADMAP.md`
+- `artifacts/ch01_qa/01_street.png`
+- `artifacts/ch01_qa/03_hallway.png`
+- `artifacts/ch01_qa/12_desktop_chat.png`
+- `artifacts/ch01_qa/13_desktop_news.png`
+- `artifacts/digital_systems/13_delivery_guidance.png`
+- `artifacts/digital_systems/14_bike_fault.png`
+- `artifacts/digital_systems/15_repair_guidance.png`
+- `artifacts/digital_systems/16_desktop_phone_push.png`
+- `artifacts/digital_systems/17_elevator_hand.png`
+- `artifacts/digital_systems/ch01_onboarding_test.log`
+- `artifacts/digital_systems/ch01_walk_qa.log`
+- `assets/art/ch01/delivery_scooter.png`
+- `assets/art/ch01/delivery_scooter.png.import`
+- `data/ch01_story.json`
+- `data/messaging.json`
+- `docs/CH01_ART_ASSET_GAP.md`
+- `docs/CH01_BUGFIX_REPORT.md`
+- `docs/CH01_TEST_REPORT.md`
+- `docs/DEVELOPMENT_LOG.md`
+- `docs/MESSAGING_SYSTEM_SPEC.md`
+- `scripts/ch01_director.gd`
+- `scripts/ch01_map.gd`
+- `scripts/ch01_onboarding_test.gd`
+- `scripts/ch01_onboarding_test.gd.uid`
+- `scripts/ch01_play.gd`
+- `scripts/ch01_qa_test.gd`
+- `scripts/ch01_walk_qa.gd`
+- `scripts/desktop_night.gd`
+- `scripts/message_floor_fix_test.gd.uid`
+- `tools/generate_delivery_scooter.py`
+- `ui/ch01_closeup.gd`
+- `ui/ch01_closeup.gd.uid`
+- `ui/ch01_guidance.gd`
+- `ui/ch01_guidance.gd.uid`
+- `ui/notification_toast.gd`

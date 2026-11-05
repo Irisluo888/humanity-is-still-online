@@ -50,6 +50,8 @@ func _ready() -> void:
  var capsule=CapsuleShape3D.new();capsule.radius=0.28;capsule.height=1.6
  var col=CollisionShape3D.new();col.shape=capsule;col.position.y=0.8;player.add_child(col)
  var s=Sprite3D.new();s.texture=load("res://assets/art/refined/"+("rider_home.png" if kind=="home" else "rider_uniform.png"));s.pixel_size=0.022;s.position.y=1.05;s.billboard=BaseMaterial3D.BILLBOARD_ENABLED;s.texture_filter=BaseMaterial3D.TEXTURE_FILTER_NEAREST;player.add_child(s)
+ if kind=="street" and Chapter.beat().id in ["delivery","repair"]:
+  var bike=prop("delivery_scooter",Vector3.ZERO,1.8);remove_child(bike);player.add_child(bike);bike.position=Vector3(0.55,0.65,0.2)
  if Chapter.state.positions.has(kind):
   var p=Chapter.state.positions[kind];player.position=Vector3(clampf(p[0],-8,8),0.1,clampf(p[2],-6,6))
  if Chapter.state.completed.has("store") and kind in ["street","garden"]:

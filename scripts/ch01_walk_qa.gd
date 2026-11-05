@@ -4,6 +4,7 @@ func _initialize():
  super._initialize()
 func capture(_name: String) -> void:pass
 func at(id: String) -> void:
+ if current_scene.fault_remaining>0:await create_timer(current_scene.fault_remaining+0.1).timeout
  var map=current_scene.map_world
  if not map.points.has(id):check(false,"missing walk point "+id);quit(1);return
  var goal: Vector3=map.points[id].pos+Vector3(0,0.1,0.6)

@@ -30,8 +30,14 @@ PASS: walk reaches E range garden
 PASS: garden actual resource loaded
 PASS: walkable path to building
 PASS: walk reaches E range building
-PASS: building enters independent hallway
+PASS: building enters independent floor12
+PASS: walkable path to resident
+PASS: walk reaches E range resident
 PASS: dialogue active 1203
+PASS: walkable path to up14
+PASS: walk reaches E range up14
+PASS: walkable path to door
+PASS: walk reaches E range door
 PASS: dialogue active 1404
 PASS: optional1404 precedes elevator
 PASS: dialogue active elevator
@@ -224,4 +230,4 @@ PASS: insufficient durability rejected
 PASS: overweight pickup rejected
 PASS: per-map position retained
 PASS: malformed position rejected before mutation
-QA CHECKS: 223 FAILURES: 0
+QA CHECKS: 229 FAILURES: 0
