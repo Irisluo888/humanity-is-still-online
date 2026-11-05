@@ -1,0 +1,62 @@
+{
+  "soup": {
+    "person_id": "resident_07",
+    "place_id": "lane_07",
+    "item": "热汤",
+    "fee": 6.5,
+    "address": "榆灯巷07号 / 一楼门口",
+    "note": "门铃没电，请敲两下。",
+    "pickup_name": "热汤铺",
+    "pickup": [
+      -7,
+      0,
+      2
+    ],
+    "target": [
+      6,
+      0,
+      -4
+    ],
+    "reply": "热汤收到了，谢谢。门铃还没修好，下次也请敲两下。"
+  },
+  "market": {
+    "person_id": "local_8",
+    "place_id": "market",
+    "item": "早餐与热饮",
+    "fee": 7.0,
+    "address": "老城早市 / 雨棚东侧",
+    "note": "摊主在雨棚下，请勿挡住通道。",
+    "pickup_name": "热汤铺",
+    "pickup": [
+      -7,
+      0,
+      2
+    ],
+    "target": [
+      -5,
+      0,
+      -1.5
+    ],
+    "reply": "早餐和热饮都到了，通道已收拾好，辛苦。"
+  },
+  "books": {
+    "person_id": "local_5",
+    "place_id": "books",
+    "item": "值守午餐",
+    "fee": 5.0,
+    "address": "旧书摊 / 棚内",
+    "note": "放到摊主手中，留出收书通道。",
+    "pickup_name": "热汤铺",
+    "pickup": [
+      -7,
+      0,
+      2
+    ],
+    "target": [
+      4,
+      0,
+      2
+    ],
+    "reply": "午餐收到。雨停前书摊还在棚里，谢谢。"
+  }
+}

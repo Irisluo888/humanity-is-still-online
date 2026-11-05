@@ -1,0 +1,310 @@
+extends Control
+const Kit=preload("res://ui/kit.gd")
+const ART="res://assets/art/ch01/"
+var map_world: Node3D
+var viewport: SubViewport
+var overlay: Control
+var dialogue: PanelContainer
+var body_text: RichTextLabel
+var hint: Label
+var hud: Label
+var phone: PanelContainer
+var opened=false
+var typing=0.0
+var saved_notice=""
+var notice_timer=0.0
+var ui_scale: Control
+var app_tab="消息"
+var selected_thread="rider_group"
+var last_cue=""
+var rebuild_queued=false
+func _ready() -> void:
+ if Chapter.state.is_empty():Chapter.fresh()
+ Chapter.updated.connect(request_rebuild)
+ rebuild()
+func button(parent: Node,text: String,fn: Callable) -> Button:
+ var b=Kit.button(text,fn);b.add_theme_font_size_override("font_size",17);parent.add_child(b);return b
+func label(parent: Node,text: String,width: int=0,size: int=18) -> Label:
+ var l=Kit.label(text,size)
+ if width>0:l.custom_minimum_size.x=width;l.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+ parent.add_child(l);return l
+func style(panel: PanelContainer,color="253345") -> void:
+ var s=StyleBoxFlat.new();s.bg_color=Color(color);s.border_color=Color("7a939b");s.set_border_width_all(2)
+ for side in ["left","right","top","bottom"]:s.set("content_margin_"+side,12)
+ panel.add_theme_stylebox_override("panel",s)
+func request_rebuild() -> void:
+ if rebuild_queued:return
+ rebuild_queued=true;rebuild.call_deferred()
+func rebuild() -> void:
+ rebuild_queued=false
+ opened=false
+ for child in get_children():remove_child(child);child.queue_free()
+ var bg=ColorRect.new();bg.color=Color("1d2c3c");bg.set_anchors_and_offsets_preset(PRESET_FULL_RECT);add_child(bg)
+ ui_scale=Control.new();ui_scale.size=Vector2(1280,720);add_child(ui_scale)
+ viewport=SubViewport.new();viewport.size=Vector2i(640,360);viewport.own_world_3d=true;viewport.render_target_update_mode=SubViewport.UPDATE_ALWAYS;ui_scale.add_child(viewport)
+ map_world=load(Chapter.MAPS[Chapter.state.place]).instantiate();viewport.add_child(map_world);map_world.hotspot.connect(interact_point)
+ var view=TextureRect.new();view.texture=viewport.get_texture();view.size=Vector2(1280,720);view.texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST;view.mouse_filter=MOUSE_FILTER_IGNORE;ui_scale.add_child(view)
+ var top=PanelContainer.new();top.position=Vector2(20,16);top.size=Vector2(1240,68);style(top);ui_scale.add_child(top)
+ var row=HBoxContainer.new();top.add_child(row)
+ label(row,"有人在敲门  /  "+str(Chapter.catalog.places[Chapter.state.place]),0,22)
+ var spacer=Control.new();spacer.size_flags_horizontal=SIZE_EXPAND_FILL;row.add_child(spacer)
+ label(row,Chapter.clock_text(),0,16)
+ var unseen=0
+ for m in Chapter.state.messages:
+  if m.id not in Chapter.state.read:unseen+=1
+ hud=label(row,"生命 %d  体力 %d  负重 %.1f/8kg  耐久 %d%s"%[WorldData.health,WorldData.stamina,Chapter.weight(),Chapter.state.durability,("  感染暴露" if Chapter.state.exposure else "")+("  新消息%d"%unseen if unseen else "")],0,17)
+ hint=Kit.label(objective(),18);hint.position=Vector2(24,98);ui_scale.add_child(hint)
+ var bottom=HBoxContainer.new();bottom.position=Vector2(24,666);bottom.add_theme_constant_override("separation",12);ui_scale.add_child(bottom)
+ button(bottom,"手机 P",func():show_phone(false)).disabled=Chapter.modal()
+ button(bottom,"背包 B",func():show_phone(false,"背包")).disabled=Chapter.modal()
+ button(bottom,"立即回家",func():Chapter.fast_home()).disabled=Chapter.modal() or Chapter.state.place=="home"
+ button(bottom,"保存",func():
+  notice("已保存第一章" if Chapter.save() else "保存失败，请检查本地目录"))
+ button(bottom,"菜单",func():get_tree().change_scene_to_file("res://scenes/start.tscn")).disabled=Chapter.modal()
+ if Chapter.state.flags.get("ch01_complete",false):ending()
+ elif Chapter.state.encounter:encounter_ui()
+ elif Chapter.state.event_active:show_dialogue()
+ map_world.locked=Chapter.modal()
+func objective() -> String:
+ var objectives={"delivery":"最后一单：到临街民居送餐处，按E交付。","repair":"电动车故障：到驿站修车摊找老周。","group":"回家后在电脑或手机里读完骑手群。","lunch":"查看小鱼的私信。","orders":"出门，到取餐窗口领取幸福花园1203餐食；普通订单可在手机查看。","1203":"到幸福花园三栋入口，给1203交付。","1404":"1404门前，纸条另一行字是什么？","elevator":"电梯下行中。","store":"从小区进入陈姨便利店，先观察环境，再接近柜台。","night":"回家查看骑手群和新闻，之后到床边休息。","knock1":"门外有人。","call":"手机响了。","reveal":"再次确认门外的人。","final":"决定如何帮助老周。","end":"回复骑手群，再查看章末消息。"}
+ return saved_notice if not saved_notice.is_empty() else objectives.get(Chapter.beat().id,"")
+func show_dialogue() -> void:
+ if Chapter.beat().id in ["call","reveal","final"] or (Chapter.beat().id=="knock1" and Chapter.state.page>=1):
+  var eye=load("res://scripts/ch01_peephole.gd").new();eye.position=Vector2(300,86);eye.size=Vector2(700,550);eye.clip_contents=true;eye.revealed=Chapter.beat().id in ["reveal","final"];eye.stage=10 if Chapter.beat().id!="knock1" else int(Chapter.state.page);ui_scale.add_child(eye)
+ dialogue=PanelContainer.new();dialogue.position=Vector2(100,448);dialogue.size=Vector2(1080,200);style(dialogue,"202e40");ui_scale.add_child(dialogue)
+ var row=HBoxContainer.new();row.add_theme_constant_override("separation",18);dialogue.add_child(row)
+ var page: Dictionary=Chapter.page()
+ var cue=page.get("cue","")
+ var cue_id=Chapter.beat().id+str(Chapter.state.page)
+ if not cue.is_empty() and last_cue!=cue_id:
+  last_cue=cue_id
+  var audio=AudioStreamPlayer.new();audio.stream=load("res://assets/audio/ch01/"+cue+".wav");audio.volume_db=-10;add_child(audio);audio.finished.connect(audio.queue_free);audio.play()
+ var portrait=TextureRect.new();portrait.custom_minimum_size=Vector2(76,144);portrait.expand_mode=TextureRect.EXPAND_IGNORE_SIZE;portrait.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED;portrait.texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST
+ if not page.portrait.is_empty():portrait.texture=load("res://assets/art/refined/rider_uniform.png" if page.portrait=="rider" else ART+page.portrait+".png")
+ row.add_child(portrait)
+ var box=VBoxContainer.new();box.size_flags_horizontal=SIZE_EXPAND_FILL;row.add_child(box)
+ label(box,page.speaker,0,20)
+ body_text=RichTextLabel.new();body_text.bbcode_enabled=false;body_text.text=page.text;body_text.custom_minimum_size=Vector2(900,82);body_text.fit_content=true;body_text.scroll_active=false;body_text.add_theme_font_size_override("normal_font_size",21);box.add_child(body_text);typing=0;body_text.visible_characters=0
+ if Chapter.beat().id=="call":
+  var call_card=PanelContainer.new();call_card.position=Vector2(980,130);call_card.size=Vector2(260,210);style(call_card);ui_scale.add_child(call_card)
+  var call_box=VBoxContainer.new();call_card.add_child(call_box);label(call_box,"来电 · 老周",0,24)
+  label(call_box,"手机振动与门外声音对应。",230,17)
+  if Chapter.state.page==0:button(call_box,"接听",func():Chapter.step_page())
+  else:label(call_box,"通话中……",230)
+ var choices=HBoxContainer.new();choices.add_theme_constant_override("separation",8);box.add_child(choices)
+ if Chapter.state.page<Chapter.beat().pages.size()-1:button(choices,"继续 / 空格",continue_dialogue)
+ else:build_choices(box)
+func continue_dialogue() -> void:
+ if is_instance_valid(body_text) and body_text.visible_characters>=0 and body_text.visible_characters<body_text.get_total_character_count():typing=999;body_text.visible_characters=-1;return
+ if Chapter.step_page():return
+ if Chapter.beat().id not in ["1203","lunch","store","final","end"]:finish()
+func finish(choice="continue") -> void:Chapter.next(choice)
+func build_choices(box: VBoxContainer) -> void:
+ var id: String=Chapter.beat().id
+ match id:
+  "1203":
+   button(box,"去14楼看看（可选）",func():finish())
+   button(box,"直接下楼",func():finish("skip"))
+  "lunch":
+   button(box,"答应午餐",func():finish("yes"));button(box,"明天再说",func():finish("no"))
+  "store":
+   button(box,"使用武器 / 耐久-3",func():finish("weapon")).disabled=Chapter.state.durability<3
+   button(box,"使用柜台旁灭火器（用后耗尽）",func():finish("extinguisher")).disabled=Chapter.state.flags.get("extinguisher_used",false)
+   button(box,"徒手救援 / 生命-25",func():finish("hands"))
+   button(box,"逃离现场 / 陈姨未获救",func():finish("leave"))
+  "final":
+   for pair in [["联系医疗救援","quarantine"],["联系老马和小鱼","colleague_help"],["隔门提供医疗物资（需1）","aid_pending"],["拒绝开门","missing"]]:
+    var key: String=pair[1];button(box,pair[0],func():finish(key)).disabled=key=="aid_pending" and WorldData.inventory.medicine<1
+   button(box,"直接开门 / 特殊高风险",confirm_open)
+  "end":
+   button(box,"向群里公开",func():finish("public"));button(box,"暂时隐瞒",func():finish("private"))
+  _:button(box,"继续 / 空格",continue_dialogue)
+ # Choices grow upward so nothing crosses the bottom HUD.
+ dialogue.position.y=448 if id not in ["store","final"] else 300
+func confirm_open() -> void:
+ var dialog=ConfirmationDialog.new();dialog.dialog_text="开门会触发特殊高风险接触，可能受伤并记录感染暴露。确认？";add_child(dialog);dialog.confirmed.connect(func():finish("opened_door"));dialog.popup_centered(Vector2i(500,180))
+func ending() -> void:
+ var p=PanelContainer.new();p.position=Vector2(270,210);p.size=Vector2(740,300);style(p);ui_scale.add_child(p)
+ var box=VBoxContainer.new();p.add_child(box);label(box,"第一章 · 有人在敲门 — 完",0,30)
+ label(box,Chapter.catalog.outcomes.get(Chapter.state.flags.get("ch01_zhou_outcome",""),""),680,21)
+ label(box,"临川市多地出现异常暴力事件。部分区域配送暂停。
+冰箱里的食物和饮水有限，你需要为明天作准备。",680)
+ label(box,"你"+("已经向骑手群说明情况。" if Chapter.state.flags.get("ch01_told_group",false) else "暂时没有公开老周的去向。"),680)
+func encounter_ui() -> void:
+ var p=PanelContainer.new();p.position=Vector2(300,230);p.size=Vector2(680,330);style(p);ui_scale.add_child(p)
+ var box=VBoxContainer.new();p.add_child(box);label(box,"近距离接触 / 必须先脱离",0,24)
+ button(box,"逃跑 / 成功率%d%%"%int(Chapter.escape_chance()*100),func():Chapter.resolve_encounter("escape"))
+ button(box,"使用装备 / 耐久-2",func():Chapter.resolve_encounter("weapon")).disabled=Chapter.state.durability<2
+ button(box,"饮水防护 / 水-1",func():Chapter.resolve_encounter("protect")).disabled=WorldData.inventory.water<1
+ button(box,"强行挣脱 / 生命与体力-10",func():Chapter.resolve_encounter("force"))
+ label(box,"普通接触不产生感染暴露；失败也能脱离。",620)
+func show_phone(computer=false,tab="消息") -> void:
+ if Chapter.modal() or opened:return
+ opened=true;app_tab=tab;map_world.locked=true
+ phone=PanelContainer.new();phone.position=Vector2(700,104) if not computer else Vector2(120,100);phone.size=Vector2(540,540) if not computer else Vector2(1040,540);style(phone);ui_scale.add_child(phone)
+ render_phone(computer)
+func render_phone(computer: bool=false) -> void:
+ for node in phone.get_children():phone.remove_child(node);node.queue_free()
+ var col=VBoxContainer.new();phone.add_child(col)
+ var row=HBoxContainer.new();col.add_child(row);label(row,"本地电脑" if computer else "本地手机 / 离线",0,22)
+ button(row,"关闭",close_phone)
+ var tabs=HBoxContainer.new();col.add_child(tabs)
+ for name in ["消息","接单","地图","新闻","背包"]:
+  var selected: String=name;button(tabs,name,func():app_tab=selected;render_phone(computer)).custom_minimum_size.x=70
+ var scroll=ScrollContainer.new();scroll.custom_minimum_size=Vector2(490 if not computer else 980,410);scroll.size_flags_vertical=SIZE_EXPAND_FILL;col.add_child(scroll)
+ var box=VBoxContainer.new();box.custom_minimum_size.x=460 if not computer else 940;scroll.add_child(box)
+ var width=450 if not computer else 920
+ match app_tab:
+  "消息":
+   for record in Chapter.state.messages:
+    if record.thread==selected_thread:Chapter.mark_read(record.id)
+   for pair in [["骑手群","rider_group"],["小鱼","xiaoyu"],["夜间骑手群","night_group"],["老周私信","zhou_warning"],["小鱼晚间私信","xiaoyu_late"]]:
+    var thread: String=pair[1];var unread=0
+    for m in Chapter.state.messages:
+     if m.thread==thread and m.id not in Chapter.state.read:unread+=1
+    button(box,pair[0]+(" / 未读%d"%unread if unread else ""),func():selected_thread=thread;render_phone(computer))
+   for m in Chapter.state.messages:
+    if m.thread==selected_thread:
+     var message_row=HBoxContainer.new();box.add_child(message_row)
+     var icon=TextureRect.new();icon.custom_minimum_size=Vector2(32,48);icon.expand_mode=TextureRect.EXPAND_IGNORE_SIZE;icon.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED;icon.texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST
+     var actor="zhou" if m.text.begins_with("老周") else ("xiaoyu" if m.text.begins_with("小鱼") else "")
+     if not actor.is_empty():icon.texture=load(ART+actor+".png")
+     message_row.add_child(icon);label(message_row,m.text,width-46,18);Chapter.mark_read(m.id)
+     if "[照片]" in m.text:
+      var photo=TextureRect.new();photo.texture=load(ART+"door.png");photo.custom_minimum_size=Vector2(144,144);photo.expand_mode=TextureRect.EXPAND_IGNORE_SIZE;photo.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED;box.add_child(photo)
+  "新闻":
+   for n in Chapter.state.news:label(box,n.text,width);box.add_child(HSeparator.new());Chapter.mark_read(n.id)
+   if Chapter.state.news.is_empty():label(box,"暂无新新闻。",width)
+  "接单":
+   label(box,"本段配送收入 ¥%.2f · 可用金额 ¥%.2f"%[WorldData.income(),Chapter.state.money],width)
+   for order in WorldData.orders:
+    label(box,order.item+" → "+order.address+"
+"+order.status,width)
+    var order_id: String=order.id
+    if order.status=="可接单":button(box,"接受这笔订单",func():WorldData.accept_order(order_id);render_phone(computer))
+    elif order.status in ["待取餐","配送中"]:button(box,"追踪这笔订单",func():WorldData.focus_order(order_id);render_phone(computer))
+  "地图":
+   label(box,"当前位置："+Chapter.catalog.places[Chapter.state.place],width,22)
+   label(box,"住处 ↔ 老城区街道 ↔ 幸福花园 ↔ 便利店
+三栋入口：1203交付 / 可选1404 / 电梯下楼
+靠近场景标记按E交互。",width)
+  "背包":
+   label(box,"携带 %.1f / 8kg · 装备耐久 %d"%[Chapter.weight(),Chapter.state.durability],width)
+   for pair in [["饭团","food"],["饮水","water"],["医疗物资","medicine"]]:
+    var item: String=pair[1];button(box,pair[0]+" ×%d / 使用"%WorldData.inventory[item],func():Chapter.use_item(item))
+func close_phone() -> void:
+ if is_instance_valid(phone):phone.queue_free()
+ opened=false;map_world.locked=false
+ if Chapter.beat().id=="group" and Chapter.state.read.has("rider_group_%03d"%(Chapter.catalog.chat.rider_group.size()-1)):
+  Chapter.start_event()
+ elif Chapter.beat().id=="lunch":Chapter.start_event()
+ elif Chapter.beat().id=="night":Chapter.state.flags.night_read=true
+ request_rebuild()
+func notice(text: String) -> void:
+ saved_notice=text;notice_timer=4;hint.text=text
+func interact_point(id: String) -> void:
+ if Chapter.modal() or opened:return
+ saved_notice=""
+ var beat: String=Chapter.beat().id
+ match id:
+  "home":Chapter.enter("home")
+  "street":Chapter.enter("street")
+  "garden":Chapter.enter("garden")
+  "store":Chapter.enter("store")
+  "exit":Chapter.enter("garden" if Chapter.state.place=="store" else "street")
+  "pc":get_tree().change_scene_to_file("res://scenes/desktop.tscn")
+  "door":
+   if Chapter.state.place=="home":Chapter.enter("street")
+   elif Chapter.state.place=="hallway":Chapter.start_event()
+  "bed":
+   if beat=="night" and Chapter.state.flags.get("night_read",false):
+    Chapter.start_event()
+   else:notice("先查看今天的消息，再休息。")
+  "repair":
+   if beat=="repair":Chapter.start_event()
+   else:notice("老周修过的接线还牢固。")
+  "pickup":
+   if beat in ["orders","1203"]:
+    var chosen: Dictionary=WorldData.current_order()
+    if chosen.is_empty() or chosen.status not in ["待取餐","配送中"]:
+     chosen=WorldData.order_by_id("order_ch01_003")
+     if chosen.status=="可接单":WorldData.accept_order(chosen.id)
+    WorldData.active_order_id=chosen.id;WorldData.location="city";WorldData.period="day";WorldData.city_position=WorldData.SHOP
+    if WorldData.pickup_order():
+     if chosen.id=="order_ch01_003" and beat=="orders":Chapter.next()
+     notice("已取餐："+chosen.address)
+    else:notice("餐食已领取，请前往收餐处。")
+  "delivery":
+   if beat=="delivery":
+    WorldData.location="city";WorldData.period="day";WorldData.city_position=WorldData.SHOP;WorldData.pickup_order()
+    WorldData.city_position=WorldData.delivery_target()
+    if Chapter.complete_delivery(WorldData.active_order_id):Chapter.next()
+   elif beat in ["orders","1203"]:
+    var selected: Dictionary=WorldData.current_order()
+    if selected.id!="order_ch01_003" and selected.status=="配送中":
+     WorldData.location="city";WorldData.period="day";WorldData.city_position=WorldData.delivery_target()
+     if Chapter.complete_delivery(selected.id):notice("普通配送已完成。可继续接单或送1203。")
+    else:notice("1203需从幸福花园三栋入口送上楼。")
+  "building":
+   if beat=="1203":
+    var main=WorldData.order_by_id("order_ch01_003")
+    if main.status!="配送中":notice("请先去取餐窗口领取1203的餐食。");return
+    WorldData.active_order_id=main.id;WorldData.location="city";WorldData.period="day";WorldData.city_position=WorldData.delivery_target()
+    if Chapter.complete_delivery(main.id):Chapter.enter("hallway");Chapter.start_event()
+   else:notice("三栋门口暂时没有需要配送的订单。")
+  "extinguisher":Chapter.state.flags.extinguisher_seen=true;notice("柜台旁挂着灭火器，紧急时可以取用。")
+  "attack":
+   if beat=="store":Chapter.start_event()
+   else:notice("柜台已经清理，便利店暂停营业。")
+  "supplies":
+   if Chapter.buy("water"):notice("已购买饮水，支出3元。")
+   else:notice("容量不足、库存不足或便利店已停业。")
+  "shop":
+   if beat=="store":
+    Chapter.state.flags.extinguisher_seen=true;Chapter.start_event()
+   elif Chapter.buy("water"):notice("购买饮水成功，支出3元。")
+   else:notice("暂时无法购买。")
+  "rack":notice("三份1404外卖：交易号A014、A027、A039。地址相同，交易编号不同。")
+  "board":notice("近期楼道异味请注意卫生。手写：已经好几天了，你们到底管不管？")
+  "guard":notice("门卫：三栋从花园北侧进去，便利店在右边。")
+  "supply":
+   if Chapter.collect_loose("street_water","water"):notice("拾取饮水，负重增加0.5kg。")
+   else:notice("已经取走，或背包容量不足。")
+  "photo":notice("照片上是刚入行时的你和老周。他教过你修车，也送你回过家。")
+  "fridge":notice("冰箱里有饭团和饮水，可在背包中使用。")
+  "storage":
+   if Chapter.repair_weapon():notice("装备修复，消耗一份食物和饮水。")
+   else:notice("装备完好，或缺少维修物资。")
+  _:notice("这里留下了熟悉的生活痕迹。")
+func _process(delta: float) -> void:
+ if notice_timer>0:
+  notice_timer-=delta
+  if notice_timer<=0:saved_notice=""
+ if is_instance_valid(ui_scale):ui_scale.scale=size/Vector2(1280,720)
+ if is_instance_valid(map_world):
+  map_world.locked=opened or Chapter.modal()
+  if not Chapter.modal() and not opened and saved_notice.is_empty():hint.text=map_world.hint if not map_world.hint.is_empty() else objective()
+ if is_instance_valid(body_text):
+  typing+=delta*38;body_text.visible_characters=int(typing)
+func _notification(what: int) -> void:
+ if what==NOTIFICATION_APPLICATION_FOCUS_OUT and is_instance_valid(map_world):map_world.held.clear()
+func _input(event: InputEvent) -> void:
+ if event is InputEventKey and is_instance_valid(map_world):
+  map_world.held[event.physical_keycode]=event.pressed
+  if event.pressed and not event.echo and event.physical_keycode in [KEY_SPACE,KEY_ENTER] and Chapter.state.event_active:
+   continue_dialogue();get_viewport().set_input_as_handled()
+func _unhandled_key_input(event: InputEvent) -> void:
+ if not event is InputEventKey or not event.pressed or event.echo:return
+ if event.physical_keycode==KEY_P:
+  if opened:close_phone()
+  else:show_phone()
+ if event.physical_keycode==KEY_B and not opened:show_phone(false,"背包")
+
+ if event.physical_keycode==KEY_E and not Chapter.modal() and not opened:map_world.interact()
+ if event.physical_keycode==KEY_F8 and OS.is_debug_build() and Chapter.developer_mode:debug_menu()
+func debug_menu() -> void:
+ if not Chapter.developer_mode:return
+ var dialog=AcceptDialog.new();dialog.title="开发调试 / 默认关闭";var box=VBoxContainer.new();dialog.add_child(box)
+ for pair in [["修车",1],["群聊",2],["花园",5],["电梯",7],["便利店",8],["夜间",9],["敲门",10],["结尾",14]]:
+  var i: int=pair[1];button(box,pair[0],func():dialog.queue_free();Chapter.debug_jump(i))
+ add_child(dialog);dialog.popup_centered(Vector2i(330,430))

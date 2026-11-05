@@ -1,0 +1,36 @@
+extends "res://scripts/night_system_test.gd"
+func run() -> void:
+ var w=root.get_node("WorldData")
+ check(w.load_game("user://phase3_night_test.json"),"new process restores first-night system save")
+ check(w.desktop_state.chat.resident_07.size()==1,"outgoing chat persists across process")
+ check(w.unread_for("resident_07")==0 and w.unread_for("local_8")==1,"read and unread contacts persist independently")
+ check(w.notes.contains("明日") and w.clues.size()>=2 and w.assistant_history.size()>=3,"notes clues and assistant history persist")
+ check(w.followups.size()==1 and w.followups[0].status=="accepted","scheduled goal persists")
+ check(w.unlocked_content.size()==3 and not w.unlocked_content.has("day2_door_video"),"unlocks preserve date gate")
+ var message_id: String=w.night_messages[0].message_id
+ change_scene_to_file(w.scene_for_location());await frames();current_scene.open_app("消息");await frames()
+ check(w.night_messages[0].message_id==message_id and w.unread_for("local_8")==1,"reopening does not generate new message IDs or mark others read")
+ var transcript=current_scene.windows["消息"].body.get_child(1).get_child(1)
+ transcript.scroll_vertical=int(transcript.get_v_scroll_bar().max_value)
+ await snap("05_restored_chat")
+ # Contact button is the same interaction path used by the UI.
+ find_button(current_scene.windows["消息"],"早市摊主").pressed.emit();await frames()
+ check(w.unread_for("local_8")==0,"selecting unread contact marks only its messages read")
+ check(w.save_game("user://phase3_read_test.json") and w.load_game("user://phase3_read_test.json") and w.unread_for("local_8")==0,"read flag remains after saving and reloading")
+ var data: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("user://phase3_night_test.json"))
+ data.night_system.desktop.chat["unknown_person"]=[]
+ var file=FileAccess.open("user://phase3_invalid_test.json",FileAccess.WRITE);file.store_string(JSON.stringify(data));file.close()
+ check(not w.load_game("user://phase3_invalid_test.json") and w.unread_for("local_8")==0,"invalid chat person rejected without partial mutation")
+ data=JSON.parse_string(FileAccess.get_file_as_string("user://phase3_night_test.json"))
+ data.night_messages[1].message_id=data.night_messages[0].message_id
+ file=FileAccess.open("user://phase3_invalid_test.json",FileAccess.WRITE);file.store_string(JSON.stringify(data));file.close()
+ check(not w.load_game("user://phase3_invalid_test.json"),"duplicate incoming message IDs rejected")
+ data=JSON.parse_string(FileAccess.get_file_as_string("user://phase3_night_test.json"));data.erase("night_system")
+ file=FileAccess.open("user://phase3_legacy_test.json",FileAccess.WRITE);file.store_string(JSON.stringify(data));file.close()
+ check(w.load_game("user://phase3_legacy_test.json"),"older schema without optional night extension loads")
+ check(w.desktop_state.chat.is_empty() and w.followups.is_empty() and w.unlocked_content.has("door_followup"),"legacy import uses safe defaults and derives known unlocks")
+ check(w.load_game("user://phase3_completed_test.json"),"completed two-day investigation restores")
+ check(w.followups[0].status=="completed" and w.unlocked_content.has("day2_door_video"),"completed goal and second-night video persist")
+ check(w.active_followup().is_empty() and not w.complete_followup(),"completed task cannot repeat")
+ print("NIGHT RELOAD FAILURES: ",failures)
+ quit(1 if failures else 0)

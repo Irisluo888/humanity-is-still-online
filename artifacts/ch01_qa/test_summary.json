@@ -1,0 +1,47 @@
+{
+  "ch01_qa_test": {
+    "pass": 220,
+    "script_errors": 0,
+    "fail_lines": 0
+  },
+  "ch01_alternate_qa": {
+    "pass": 204,
+    "script_errors": 0,
+    "fail_lines": 0
+  },
+  "ch01_edge_test": {
+    "pass": 36,
+    "script_errors": 0,
+    "fail_lines": 0
+  },
+  "ch01_reload_qa": {
+    "pass": 1,
+    "script_errors": 0,
+    "fail_lines": 0
+  },
+  "ch01_visual_qa": {
+    "pass": 13,
+    "script_errors": 0,
+    "fail_lines": 0
+  },
+  "night_system_test": {
+    "pass": 50,
+    "script_errors": 0,
+    "fail_lines": 0
+  },
+  "round2_smoke": {
+    "pass": 29,
+    "script_errors": 0,
+    "fail_lines": 0
+  },
+  "cruise_boundary_test": {
+    "pass": 19,
+    "script_errors": 0,
+    "fail_lines": 0
+  },
+  "walk": {
+    "pass": 216,
+    "script_errors": 0,
+    "fail_lines": 0
+  }
+}

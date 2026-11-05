@@ -1,0 +1,173 @@
+{
+  "posts": [
+    {
+      "id": "door",
+      "author": 0,
+      "category": "附近",
+      "kind": "单图",
+      "time": "08:15",
+      "text": "门铃没电，请敲两下。门口的便笺已经贴好，麻烦送东西的朋友留意。",
+      "images": [
+        2
+      ],
+      "likes": 12,
+      "comments": [
+        "知道啦，我把提醒写进配送备注。",
+        "刚经过，便笺还在。"
+      ]
+    },
+    {
+      "id": "umbrella",
+      "author": 2,
+      "category": "闲聊",
+      "kind": "纯文字",
+      "time": "08:32",
+      "text": "楼道左侧的伞还在晾，请留出通行的位置。\n今天最大的愿望：回家时袜子还是干的。",
+      "images": [],
+      "likes": 7,
+      "comments": [
+        "我把自己的伞往里挪了一点。"
+      ]
+    },
+    {
+      "id": "shop",
+      "author": 4,
+      "category": "附近",
+      "kind": "多图",
+      "time": "09:05",
+      "text": "晚班店门前有积水，请从侧边走。保温袋可以放在收银台旁的架子上。",
+      "images": [
+        0,
+        1
+      ],
+      "likes": 23,
+      "comments": [
+        "侧门今天能开，谢谢提醒。",
+        "收到了，晚些时候来取袋子。"
+      ]
+    },
+    {
+      "id": "bag",
+      "author": 1,
+      "category": "配送",
+      "kind": "引用",
+      "time": "09:24",
+      "text": "转给今晚收班的同事：核对保温袋数量。\n引用：晚班店员 / 保温袋放在收银台旁的架子上。",
+      "images": [
+        3
+      ],
+      "likes": 5,
+      "comments": [
+        "清单已经补好了。"
+      ]
+    },
+    {
+      "id": "help",
+      "author": 3,
+      "category": "求助",
+      "kind": "求助",
+      "time": "10:10",
+      "text": "修好的伞放在门边。谁有多余的细绳？\n我想把伞套绑好，下雨天又弄丢了两个。",
+      "images": [],
+      "likes": 3,
+      "comments": [
+        "楼下旧书摊有，可以借你一段。"
+      ]
+    },
+    {
+      "id": "plants",
+      "author": 6,
+      "category": "关注",
+      "kind": "带评论",
+      "time": "10:42",
+      "text": "薄荷长了新叶，今天先不挪盆。雨停了再开窗。",
+      "images": [],
+      "likes": 18,
+      "comments": [
+        "比我的作息稳定。",
+        "少浇一点水，窗边已经很潮了。"
+      ]
+    }
+  ],
+  "contacts": [
+    {
+      "id": "resident_07",
+      "name": "七号住户",
+      "time": "08:15",
+      "preview": "门口便笺已经贴好",
+      "online": true
+    },
+    {
+      "id": "local_1",
+      "name": "站点值班员",
+      "time": "08:19",
+      "preview": "收班时核对保温袋",
+      "online": false
+    },
+    {
+      "id": "local_2",
+      "name": "楼道邻居",
+      "time": "08:23",
+      "preview": "伞还在楼道左侧",
+      "online": true
+    },
+    {
+      "id": "local_3",
+      "name": "修伞的人",
+      "time": "08:27",
+      "preview": "修好的伞别拿错",
+      "online": true
+    },
+    {
+      "id": "local_4",
+      "name": "晚班店员",
+      "time": "08:31",
+      "preview": "店门前有积水",
+      "online": false
+    },
+    {
+      "id": "local_5",
+      "name": "旧书摊主",
+      "time": "08:35",
+      "preview": "旧书已收进棚里",
+      "online": true
+    },
+    {
+      "id": "local_6",
+      "name": "窗台园丁",
+      "time": "08:39",
+      "preview": "薄荷今天不挪盆",
+      "online": true
+    },
+    {
+      "id": "local_7",
+      "name": "系统通知",
+      "time": "08:43",
+      "preview": "本地缓存已就绪",
+      "online": false
+    }
+  ],
+  "clips": [
+    {
+      "title": "雨停之前的榆灯巷",
+      "author": 2,
+      "image": 0,
+      "description": "街坊留存的巷口片段，路面仍有积水。",
+      "comment": "侧门这边可以走。"
+    },
+    {
+      "title": "晚班店门口",
+      "author": 4,
+      "image": 1,
+      "description": "配送备注：保温袋放在收银台旁。",
+      "comment": "取袋子时记得核对数量。"
+    },
+    {
+      "title": "七号楼门口便笺",
+      "author": 0,
+      "image": 2,
+      "description": "门铃没电，请敲两下。",
+      "comment": "已加入订单备注。"
+    }
+  ]
+}

@@ -1,0 +1,227 @@
+{
+  "schema": "development_spec_not_engine_runtime",
+  "version": "1.0",
+  "notes": [
+    "This is a content and trigger seed; adapt to real Godot project APIs and file structure.",
+    "Trigger IDs are logical categories, not established code API.",
+    "Optional 1404 precedes elevator when chosen; otherwise elevator directly.",
+    "No timed autoplay without required scene and flags."
+  ],
+  "events": [
+    {
+      "id": "ch01_open_delivery",
+      "location": "street",
+      "trigger": "new_game",
+      "requires_flags": [],
+      "sets_flags": [
+        "ch01_open_delivery_done"
+      ],
+      "event_type": "delivery/tutorial",
+      "repeatable": false
+    },
+    {
+      "id": "ch01_zhou_repair",
+      "location": "street",
+      "trigger": "delivery_finished",
+      "requires_flags": [
+        "ch01_open_delivery_done"
+      ],
+      "sets_flags": [
+        "ch01_zhou_repair_done"
+      ],
+      "event_type": "cutscene",
+      "repeatable": false
+    },
+    {
+      "id": "ch01_rider_group",
+      "location": "home/computer",
+      "trigger": "pc_open",
+      "requires_flags": [
+        "ch01_zhou_repair_done"
+      ],
+      "sets_flags": [
+        "ch01_rider_group_done"
+      ],
+      "event_type": "chat_sequence",
+      "repeatable": false
+    },
+    {
+      "id": "ch01_lunch_private",
+      "location": "home/computer",
+      "trigger": "group_finished",
+      "requires_flags": [
+        "ch01_rider_group_done"
+      ],
+      "sets_flags": [
+        "ch01_lunch_private_done"
+      ],
+      "event_type": "chat_choice",
+      "repeatable": false
+    },
+    {
+      "id": "ch01_day1_orders",
+      "location": "street",
+      "trigger": "next_day",
+      "requires_flags": [
+        "ch01_lunch_private_done"
+      ],
+      "sets_flags": [
+        "ch01_day1_orders_open"
+      ],
+      "event_type": "delivery",
+      "repeatable": false
+    },
+    {
+      "id": "ch01_1203_delivery",
+      "location": "garden/building3",
+      "trigger": "deliver_order_ch01_003",
+      "requires_flags": [
+        "ch01_day1_orders_open"
+      ],
+      "sets_flags": [
+        "ch01_1203_done"
+      ],
+      "event_type": "delivery_cutscene",
+      "repeatable": false
+    },
+    {
+      "id": "ch01_1404_optional",
+      "location": "hallway14",
+      "trigger": "choose_visit_1404",
+      "requires_flags": [
+        "ch01_1203_done"
+      ],
+      "sets_flags": [
+        "ch01_1404_seen"
+      ],
+      "event_type": "optional_dialogue",
+      "repeatable": false
+    },
+    {
+      "id": "ch01_elevator",
+      "location": "elevator",
+      "trigger": "leave_building3",
+      "requires_flags": [
+        "ch01_1203_done"
+      ],
+      "sets_flags": [
+        "ch01_elevator_done"
+      ],
+      "event_type": "cutscene",
+      "repeatable": false
+    },
+    {
+      "id": "ch01_store_attack",
+      "location": "garden/store",
+      "trigger": "reach_store_story_gate",
+      "requires_flags": [
+        "ch01_elevator_done"
+      ],
+      "sets_flags": [
+        "ch01_store_attack_done"
+      ],
+      "event_type": "danger_choice",
+      "repeatable": false
+    },
+    {
+      "id": "ch01_night_messages",
+      "location": "home",
+      "trigger": "home_after_attack",
+      "requires_flags": [
+        "ch01_store_attack_done"
+      ],
+      "sets_flags": [
+        "ch01_night_messages_done"
+      ],
+      "event_type": "chat_news",
+      "repeatable": false
+    },
+    {
+      "id": "ch01_zhou_warning",
+      "location": "home/phone",
+      "trigger": "read_night_messages",
+      "requires_flags": [
+        "ch01_night_messages_done"
+      ],
+      "sets_flags": [
+        "ch01_zhou_warning_done"
+      ],
+      "event_type": "private_message",
+      "repeatable": false
+    },
+    {
+      "id": "ch01_knock_part1",
+      "location": "home/door",
+      "trigger": "night_story_gate",
+      "requires_flags": [
+        "ch01_zhou_warning_done"
+      ],
+      "sets_flags": [
+        "ch01_knock_started"
+      ],
+      "event_type": "cutscene_interactive",
+      "repeatable": false
+    },
+    {
+      "id": "ch01_knock_reveal",
+      "location": "home/door",
+      "trigger": "phone_call_finished",
+      "requires_flags": [
+        "ch01_knock_started"
+      ],
+      "sets_flags": [
+        "ch01_zhou_revealed"
+      ],
+      "event_type": "cutscene",
+      "repeatable": false
+    },
+    {
+      "id": "ch01_zhou_final",
+      "location": "home/door",
+      "trigger": "after_reveal",
+      "requires_flags": [
+        "ch01_zhou_revealed"
+      ],
+      "sets_flags": [
+        "ch01_zhou_final_done"
+      ],
+      "event_type": "danger_choice",
+      "repeatable": false
+    },
+    {
+      "id": "ch01_end",
+      "location": "home/computer",
+      "trigger": "zhou_final_resolved",
+      "requires_flags": [
+        "ch01_zhou_final_done"
+      ],
+      "sets_flags": [
+        "ch01_complete"
+      ],
+      "event_type": "chapter_end",
+      "repeatable": false
+    }
+  ],
+  "outcome_flags": {
+    "ch01_store_owner_saved": "bool",
+    "ch01_lunch_yes": "bool",
+    "ch01_zhou_outcome": [
+      "quarantine",
+      "colleague_help",
+      "aid_pending",
+      "missing",
+      "opened_door"
+    ],
+    "ch01_told_group": "bool",
+    "ch01_high_risk_exposure": "bool"
+  },
+  "conditional_invariants": [
+    "ch01_store_attack requires ch01_elevator_done",
+    "ch01_elevator requires ch01_1203_done, not ch01_1404_seen",
+    "ch01_knock_reveal only after the phone sound cue",
+    "ch01_zhou_final only after reveal",
+    "normal_encounters never set ch01_high_risk_exposure",
+    "fast_home unavailable while danger event active",
+    "no repeat event effect after reload"
+  ]
+}

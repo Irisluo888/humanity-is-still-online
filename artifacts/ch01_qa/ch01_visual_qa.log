@@ -1,0 +1,17 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 616.56 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4060 Ti
+
+PASS: P opens actual phone
+PASS: capture 20_phone_chat
+PASS: phone tab 新闻
+PASS: capture 21_phone_news
+PASS: phone tab 接单
+PASS: capture 22_phone_orders
+PASS: phone tab 地图
+PASS: capture 23_phone_map
+PASS: phone tab 背包
+PASS: capture 24_phone_inventory
+PASS: capture 25_home_1080p
+PASS: capture 26_menu
+PASS: normal menu has no prototype entries
+VISUAL UI FAILURES: 0

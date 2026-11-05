@@ -15,7 +15,7 @@ Detailed Retro Pixel Art + Early Internet Desktop UI：中等颗粒 16/32-bit、
 - 窗口：独立内部窗口，标题栏拖动、关闭、最小化、任务栏恢复与置前；内容滚动。
 - 动态：左分类、中间帖子、右侧推荐。
 - 消息：联系人列表与选中联系人的聊天记录。
-- 视频：本地目击片段占位区与评论；此阶段不提供真实视频播放。
+- 视频：三张本地原创封面、作者/描述/评论、播放暂停与模拟进度；不接在线服务，不提供真实视频解码。
 - 热榜：城市事件排序列表。
 - AI助手：本地规则对话与共享事件线索整理，不接在线模型。
 - 接单：订单列表与配送记录。
@@ -30,3 +30,6 @@ WorldData 为唯一共享内存数据源，实体使用稳定 ID（人物、地�
 
 ## 视觉整合包执行补充
 正式逐图分析、UI规范与素材清单分别见 references/visual/REFERENCE_ANALYSIS.md、UI_STYLE_GUIDE.md、ASSET_PLAN.md。原始场景图优先于四张UI概念；参考不参与运行打包。本轮使用23张原创PNG，实际渲染截图见 artifacts/ui_preview/。
+
+## 第二轮执行规范
+当前规范见 references/visual_round2/UI_STYLE_GUIDE.md，逐图与录屏关键帧诊断见 REFERENCE_ANALYSIS.md。新增18张PNG位于assets/pixel_round2/，复用已有6应用图标和控制图形。夜间住所为静态可交互入口原型，女骑手为单帧居家服Sprite，不视为已完成正式角色动画。
