@@ -1,0 +1,82 @@
+{
+  "date": "2026-11-05",
+  "author": "Kenney",
+  "source": "User supplied downloaded packs; original licenses copied unchanged",
+  "license": "CC0",
+  "commercial_use": "Allowed per bundled license",
+  "modifications": "Geometry assembled/scaled/rotated at runtime; nearest texture sampling; original binaries unchanged",
+  "files": [
+    {
+      "path": "assets/third_party/kenney/retro_urban/detail-awning-wide.glb",
+      "sha256": "77ea699e4d3c668d909e549e236766feaa8c4d3438ef66234a5d81b46fef5821"
+    },
+    {
+      "path": "assets/third_party/kenney/retro_urban/LICENSE.txt",
+      "sha256": "83d0de4f34000323da12cf54bc542dbc24ba48cfad101510dccddaa69483ebeb"
+    },
+    {
+      "path": "assets/third_party/kenney/retro_urban/wall-a-door.glb",
+      "sha256": "554f1c0cedac9b31b73ee8c623395059a4bca05290ecf8f6a8920363d6f487bf"
+    },
+    {
+      "path": "assets/third_party/kenney/retro_urban/wall-a-roof.glb",
+      "sha256": "74b8263e1a28ecfca6b59e84709dd9dae1df9c9aa9b81ec0d3f83906c934545c"
+    },
+    {
+      "path": "assets/third_party/kenney/retro_urban/wall-a-window.glb",
+      "sha256": "4a5ecc11c1c8820f555375ccabb426c6420ebd2bc9c7bcb5f2c472f655c3b03b"
+    },
+    {
+      "path": "assets/third_party/kenney/retro_urban/Textures/concrete.png",
+      "sha256": "3431cb462e8f8c120d29c23fa06e730ae488fceeb3e8d86945724675ff2be294"
+    },
+    {
+      "path": "assets/third_party/kenney/retro_urban/Textures/doors.png",
+      "sha256": "8c5b729739cde0c9eae9f62ffe4acd194bbdba99cdd83e628bc638f0a45acf8d"
+    },
+    {
+      "path": "assets/third_party/kenney/retro_urban/Textures/metal.png",
+      "sha256": "3893724d52a5788341345e16319fb8f5f7182d588b5d5b2babf577176ca3d701"
+    },
+    {
+      "path": "assets/third_party/kenney/retro_urban/Textures/roof.png",
+      "sha256": "50a09bac9a57a1732af6b6e4de0192efaba3627a997e0b1dc5fc1c1c6369acd6"
+    },
+    {
+      "path": "assets/third_party/kenney/retro_urban/Textures/wall_lines.png",
+      "sha256": "322d198d1ff4ce006c7029eee416ba96a981ba080756f829110ac8c34faa00f2"
+    },
+    {
+      "path": "assets/third_party/kenney/retro_urban/Textures/windows.png",
+      "sha256": "9a99b16d1caa9b08dfd72eb74ac624b546df89ed6fcfefabe2e4a0933f632a42"
+    },
+    {
+      "path": "assets/third_party/kenney/rpg_sounds/doorClose_1.ogg",
+      "sha256": "834d29c60a8a8bfb50b158cdb6b7dfa8f02812a408a1ee9703d038dfab0b1aeb"
+    },
+    {
+      "path": "assets/third_party/kenney/rpg_sounds/doorOpen_1.ogg",
+      "sha256": "4ab93bab96522d8eb109ff96dc57cb6765deb02448fe14c10472084be5bb2a0b"
+    },
+    {
+      "path": "assets/third_party/kenney/rpg_sounds/footstep00.ogg",
+      "sha256": "6fe61ef1fc3bcf0e253bf2eb64759db6cb69e2fe452f4d88cc597ecf78a3d601"
+    },
+    {
+      "path": "assets/third_party/kenney/rpg_sounds/footstep01.ogg",
+      "sha256": "313472dba31fd0c855376069fa368bb5a198c27251cc8398ef464578b7047a4c"
+    },
+    {
+      "path": "assets/third_party/kenney/rpg_sounds/footstep02.ogg",
+      "sha256": "2d9575b7dead6e1217ca113991fc5229e9b6d998ea0726ebbb277e7398ab888f"
+    },
+    {
+      "path": "assets/third_party/kenney/rpg_sounds/LICENSE.txt",
+      "sha256": "6f12f89bf8d1cc417b25afd1f8e6d9560b2b1d1ac2b175cf4ee9c377e180783d"
+    },
+    {
+      "path": "assets/third_party/kenney/rpg_sounds/metalLatch.ogg",
+      "sha256": "ba9ba60b172b3ebc131a940f25793cd2e207aca7af73dc80d637277f060f1708"
+    }
+  ]
+}

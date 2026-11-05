@@ -66,3 +66,13 @@ artifacts/ch01_qa/01至26命名PNG均已进入模型视觉上下文查看（其�
 - 回归更新artifacts/ch01_qa/01_street.png、05_store_before.png、06_attack.png；保留上轮自动生成scripts/ch01_transition_test.gd.uid。无删除。
 - F5打开手机“消息”查看列表，点联系人进入、返回列表；便利店先与陈姨对话，继续到门铃页观察男人进店。
 - 限制：仍使用既有人物Sprite位移，没有完整行走帧；第一章仅现有群聊与联系人。手机入口变化后的老专项脚本可能需按列表交互更新，本次专项与主线已实际通过；macOS未验证。
+
+## 2026-11-05 首批本地音效与城市建筑接入
+- 开始时目录在旧main(2a1e8d5)，确认无已跟踪未提交修改后安全切回最新codex/digital-life(806420c)，保留素材解包副本。
+- assets/third_party/kenney/：从用户包复制6个OGG、4个GLB及其依赖纹理，保留两份原始CC0许可证与ASSET_RECORD.json逐文件哈希。实际使用三种脚步、开门/关门，metalLatch及屋顶GLB备用未触发。未接入授权未明音乐或付费依赖。
+- 新增scripts/local_audio.gd，project.godot注册LocalAudio：4播放器复用，移动距离触发交替脚步，静止/剧情锁定不触发；scripts/ch01_director.gd成功出入口切换触发门声。未替换剧情敲门/电话原音效。
+- scripts/ch01_map.gd：街道/花园建筑改用像素纹理墙窗、门模块和店铺雨棚，保持原碰撞外框与交互点。截图后修正正面朝向和屋顶拼接，连续平顶仍用现有本地纹理。属于首批素材适配，不宣称最终城市美术完成。
+- 新增scripts/asset_integration_test.gd：最终8PASS，实际音频播放器启动、移动/静止条件、场景门声及两地图截图；ch01_walk_qa实际229PASS，验证第一章路径/碰撞/交互。最终专项日志无错误；一次过早退出产生资源释放警告，测试等待异步资源释放后重跑消除。未主观试听，不宣称听感、音量混音验收通过。
+- 截图artifacts/digital_systems/27_urban_street.png、28_urban_garden.png均实际作为图像读取；门窗朝向、中文与交互标记、像素采样可见。日志asset_integration_test.log、ch01_walk_qa.log。
+- F5新游戏，在街道WASD移动听脚步，停止或打开手机无新增脚步；经入口切换听门声；依第一章流程到幸福花园查看三栋/便利店外部。
+- 限制：音量尚为固定值，未增加音乐/音量设置、雨声；街道与花园的建筑仍需更丰富布局/照明。macOS和人工听感待验证。下一步建议只做音效听感与音量设置验收。

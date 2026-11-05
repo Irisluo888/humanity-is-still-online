@@ -77,7 +77,7 @@ func travel_reason(place: String) -> String:
  return ""
 func enter(place: String) -> bool:
  if not travel_reason(place).is_empty():return false
- state.place=place;sync();return true
+ state.place=place;LocalAudio.play("doorOpen_1" if place in ["home","store","hallway","hallway12"] else "doorClose_1");sync();return true
 func start_event() -> bool:
  if state.encounter or state.event_active or state.place!=beat().place:return false
  state.event_active=true;state.page=0;sync();return true
