@@ -35,3 +35,7 @@
 - 修改scripts/ch01_director.gd、ch01_play.gd、ch01_map.gd；新增ch01_opening_test.gd及Godot UID。未覆盖原整合包和用户存档。
 - 实测opening.log 13 PASS/0失败；连续物理步行主线walk.log 216 PASS/0失败。实际查看opening_fixed.png：目标、送餐处、修车与入口文字可见，无明显遮挡。
 - 限制：未读取或诊断用户实际卡住的存档；未宣称所有旧异常存档自动修复。当前修复覆盖复现到的开场状态/提示与越级入口问题。
+
+## 2026-11-05 / Phase 1–2 内部关卡
+已实现MessageManager单一数据源、稳定ID、条件送达、独立演出秒、预设回复、新闻/通知/电话记录与JSON队列快照；新增共用message_panel与scenes/messaging_test.tscn。
+实际Godot核心测试21 PASS；图形测试7 PASS（含3截图）；已实际查看气泡、输入中、回复选项截图，修复布局完成前滚动定位失效及通知剧透问题。独立场景不是第一章已集成，不将后续阶段标完成；继续接入。

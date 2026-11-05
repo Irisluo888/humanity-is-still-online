@@ -16,6 +16,8 @@ config/features=PackedStringArray("4.7")
 
 [autoload]
 
+MessageManager="*res://scripts/message_manager.gd"
+
 Chapter="*res://scripts/ch01_director.gd"
 WorldData="*res://scripts/world_night.gd"
 

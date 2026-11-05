@@ -51,3 +51,8 @@ git -c safe.directory=D:/IRISgame/Humanity_Is_Still_Online_V1.0/Humanity_Is_Stil
 ## Claude Code载入检查
 CLAUDE.md首行实际为`@AGENTS.md`，不放代码块、不加引号。启动Claude Code后用`/memory`或`/context all`检查加载的规则；本轮没有启动Claude Code，因此不声称验证过客户端实际载入。
 官方依据：https://code.claude.com/docs/en/memory （Import additional files / AGENTS.md）。不要依赖各版本的隐式回退行为；显式导入共享主文件。
+
+## 2026-11-05 / Codex接管数字生活系统（实施前声明）
+用户已将原Claude职责整体授权给Codex，覆盖message service、聊天UI、手机、desktop_night、Chapter及存档桥接、project.godot。当前只有Codex写入，不启动并行Agent。
+审计纠正：第一章两端已共用Chapter；WorldNight已有发送/持久化，desktop.gd是旧基类而非当前唯一实现。四份原文中的完成勾选不作为测试证据。
+实施采用一个MessageManager（含news/notification/call记录），稳定数据ID、JSON字典、业务送达分钟与UI演出秒分离；不新建TimeManager，不删历史，不重构继承链。共用聊天控件，旧字段仅作迁移/兼容投影。八阶段连续实施，以Godot实测为内部关卡。

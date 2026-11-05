@@ -1,0 +1,37 @@
+extends SceneTree
+var fails=0
+func _initialize():call_deferred("run")
+func check(value: bool,text: String):
+ print("PASS: " if value else "FAIL: ",text)
+ if not value:fails+=1
+func run():
+ var m=root.get_node("MessageManager");m.set_process(false);m.reset();m.set_context(1427,{},"home")
+ m.queue_script("rider_group",1427);var count=m.records.size();m.queue_script("rider_group",1427)
+ check(m.records.size()==count,"stable sequence IDs deduplicate")
+ check(m.get_thread_messages("rider_group").is_empty(),"no transcript dump on arrival")
+ m.begin_thread("rider_group");m.tick_presentation(.5)
+ check(m.get_thread_messages("rider_group").size()==1,"first message independently reveals")
+ check(m.current_minute==1427,"presentation cannot advance game time")
+ for i in range(6):m.tick_presentation(3)
+ check(m.get_thread_messages("rider_group").size()==7,"sequence stops for player reply")
+ check(not m.waiting_reply("rider_group").is_empty(),"preset reply available")
+ check(m.choose_reply("rider_group_007","safe"),"player preset reply sends")
+ check(not m.choose_reply("rider_group_007","ask"),"reply cannot repeat")
+ m.tick_presentation(3);check(m.get_thread_messages("rider_group").size()==9,"NPC continues after reply")
+ var now=m.current_minute
+ m.queue_message({"id":"future","thread_id":"xiaoyu","sender_id":"xiaoyu","text":"未来消息","arrive_at":3000,"sent_at":3000})
+ m.begin_thread("xiaoyu");m.tick_presentation(10);check(m.get_thread_messages("xiaoyu").is_empty(),"future message never leaks")
+ var saved=m.save_data();check(m.load_data(saved),"queue and presentation state restore")
+ check(m.current_minute==now and not m.records.future.delivered,"reload preserves pending future")
+ m.set_context(3000,{},"home");m.tick_presentation(2);check(m.get_thread_messages("xiaoyu").size()==1,"due message delivers and presents")
+ m.mark_read("xiaoyu");check(m.get_unread_count("xiaoyu")==0,"shared read flag")
+ var bad=saved.duplicate(true);bad.records.future.ordinal="bad";var before=m.save_data()
+ check(not m.load_data(bad) and m.save_data()==before,"bad save rejected atomically")
+ m.queue_message({"id":"condition","thread_id":"xiaoyu","sender_id":"xiaoyu","text":"条件消息","requires":{"flags":{"ok":true},"scene":"store","read_ids":["future"],"replies":{"rider_group_007":"safe"}}})
+ check(not m.records.condition.delivered,"scene flags read reply conditions gate delivery")
+ m.set_context(3000,{"ok":true},"store");check(m.records.condition.delivered,"all conditions release message")
+ m.queue_news({"id":"n1","text":"稍后新闻","published_at":3001});check(m.get_news().is_empty(),"future news hidden")
+ m.set_context(3001,{},"home");check(m.get_news().size()==1,"news publishes on time")
+ m.queue_call("test_call","zhou",3002);check(not m.answer_call("test_call"),"cannot answer future call")
+ m.set_context(3002);check(m.answer_call("test_call") and not m.answer_call("test_call"),"call rings and answers once")
+ print("MESSAGE CORE FAILURES: ",fails);quit(1 if fails else 0)
