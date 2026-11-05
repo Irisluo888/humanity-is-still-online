@@ -17,9 +17,7 @@ config/features=PackedStringArray("4.7")
 [autoload]
 
 LocalAudio="*res://scripts/local_audio.gd"
-
 MessageManager="*res://scripts/message_manager.gd"
-
 Chapter="*res://scripts/ch01_director.gd"
 WorldData="*res://scripts/world_night.gd"
 
