@@ -1,0 +1,12 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 616.56 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4060 Ti
+
+PASS: phone newest contact first
+PASS: new arrival moves contact to top with badge
+PASS: 25_phone_latest_first
+PASS: desktop uses same latest-first rows
+PASS: 26_desktop_contacts
+PASS: desktop contact opens nonfolded conversation
+PASS: desktop read shared with phone
+PASS: reading does not reorder latest contact
+CONTACT ORDER FAILURES: 0

@@ -73,3 +73,10 @@ CLAUDE.local.md
 /artifacts/digital_systems/chapter.log
 /artifacts/digital_systems/integration.log
 /artifacts/digital_systems/reload.log
+
+# Local extracted review assets; retain inventory, review and offline preview only.
+/assets/review_library/**
+!/assets/review_library/.gdignore
+!/assets/review_library/inventory.json
+!/assets/review_library/README.md
+!/assets/review_library/preview.html

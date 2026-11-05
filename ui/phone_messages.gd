@@ -19,14 +19,21 @@ func show_list():
 func refresh_list():
  if not is_instance_valid(list):return
  for node in list.get_children():list.remove_child(node);node.queue_free()
+ var entries=[]
  for group in GROUPS:
   var selected=group[0];var last={};var unread=0
   for id in group:
    unread+=MessageManager.get_unread_count(id)
    var messages=MessageManager.get_thread_messages(id)
-   if not messages.is_empty() and (last.is_empty() or messages.back().ordinal>last.ordinal):last=messages.back();selected=id
-  var meta=MessageManager.catalog.threads[group[0]]
-  var button=Button.new();button.custom_minimum_size=Vector2(450,85);button.alignment=HORIZONTAL_ALIGNMENT_LEFT;list.add_child(button)
+   if not messages.is_empty() and (last.is_empty() or messages.back().get("display_order",0)>last.get("display_order",0)):last=messages.back();selected=id
+  entries.append({"group":group,"selected":selected,"last":last,"unread":unread,"rank":last.get("display_order",0)})
+ entries.sort_custom(func(a,b):return a.rank>b.rank)
+ for entry in entries:
+  var selected=entry.selected;var last=entry.last;var unread=entry.unread
+  var meta=MessageManager.catalog.threads[entry.group[0]]
+  var button=Button.new();button.custom_minimum_size=Vector2(450,85);button.alignment=HORIZONTAL_ALIGNMENT_LEFT;list.add_child(button);button.set_meta("thread_id",selected);button.set_meta("unread",unread)
+  for state in ["normal","hover","pressed","focus"]:
+   var row_style=StyleBoxFlat.new();row_style.bg_color=Color("30495a" if state in ["hover","focus"] else "202c38");row_style.border_color=Color("6f8998");row_style.set_border_width_all(1);button.add_theme_stylebox_override(state,row_style)
   button.pressed.connect(open_thread.bind(selected))
   var row=HBoxContainer.new();row.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT);row.offset_left=10;row.offset_top=8;row.offset_right=-10;row.offset_bottom=-8;row.mouse_filter=Control.MOUSE_FILTER_IGNORE;button.add_child(row)
   var avatar=TextureRect.new();avatar.texture=load(meta.icon);avatar.custom_minimum_size=Vector2(48,58);avatar.expand_mode=TextureRect.EXPAND_IGNORE_SIZE;avatar.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED;avatar.texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST;avatar.mouse_filter=Control.MOUSE_FILTER_IGNORE;row.add_child(avatar)

@@ -13,7 +13,7 @@ func _ready() -> void:
     chapter_thread=target;open_app("消息")
     if windows.has("消息"):
      var pane=windows["消息"].body.get_child(0)
-     pane.thread_id=target;MessageManager.begin_thread(target);pane.refresh())
+     pane.open_thread(target))
  if Chapter.session_active and get_child_count()>2:get_child(2).text="第一章 / 住所电脑\n消息与手机同步，关闭窗口后返回房间。"
  if not WorldData.campaign:return
  public_content=content.duplicate(true)
@@ -131,8 +131,7 @@ func return_chapter() -> void:
  Chapter.review_digital()
  get_tree().change_scene_to_file("res://scenes/ch01.tscn")
 func chapter_messages(body: HBoxContainer) -> void:
- var pane=preload("res://ui/message_panel.gd").new();pane.thread_id=chapter_thread;pane.custom_minimum_size=Vector2(730,420);body.add_child(pane)
- pane.selector.item_selected.connect(func(_i):chapter_thread=pane.thread_id)
+ var pane=preload("res://ui/phone_messages.gd").new();pane.custom_minimum_size=Vector2(730,420);body.add_child(pane)
 func build_news(body: HBoxContainer) -> void:
  if not Chapter.session_active:super.build_news(body);return
  var browser=preload("res://ui/news_panel.gd").new();browser.custom_minimum_size=Vector2(730,420);body.add_child(browser)

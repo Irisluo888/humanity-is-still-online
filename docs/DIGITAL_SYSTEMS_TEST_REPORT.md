@@ -144,3 +144,12 @@ F6运行scenes/messaging_test.tscn：等待逐条聊天、选择回复、滚动�
 - 实际Godot4.7.2 Windows图形运行：message_floor_fix_test 20、messaging_core_test 24、messaging_ui_test 8、ch01_qa_test 228、ch01_alternate_qa 210 PASS；最终日志均无FAIL/ERROR/WARNING。合计490次断言含截图，不等于490个功能。首次受限运行缓存目录报错，后续允许写入测试目录后重新运行通过。
 - 真实截图artifacts/digital_systems/10_private_push.png、11_floor12.png、12_floor14.png已输入模型视觉检查：手机旁横幅可见，中文正常，两层门牌独立，目标指引匹配。楼梯仍为交互入口，未制作可逐级行走的楼梯美术；楼道沿用现有简化美术。macOS未验证。
 - F5主场景；群聊到达后等待推送，手机内也可点击其他联系人横幅；三栋入楼后到1203按E，选择调查后到楼梯标记按E，再到1404按E。用户体验验收待确认。
+
+## 2026-11-05 下载素材整理与双端最新消息置顶
+- 素材：保留assets根目录10个ZIP、4个散文件；分类解包到assets/review_library/audio、environment、characters、unverified_loose，共1578文件（含多格式/说明，不等于独立资产数）。新增.gdignore、README.md、inventory.json、preview.html；原件不覆盖、不混入提交；解包大文件本地保留并由.gitignore排除。
+- 校验：10ZIP CRC通过、14原文件SHA256未变、解包文件哈希通过。实际查看四包图片预览。Kenney五包自带CC0证据；其他音乐/音效部分找到对应发布页，但未完成二进制来源比对。未知来源不接入。音频未试听；GLB未导入游戏验证；preview.html为本地试听入口，未声称完成网页浏览器测试。详细适配/署名/来源见assets/review_library/README.md。
+- 消息：ui/phone_messages.gd按实际显示消息的display_order降序排联系人，新消息自动置顶；阅读不会改变排序。scripts/desktop_night.gd复用同一头像行/摘要/红色未读数字与聊天入口，移除第一章电脑下拉联系人；通知点击同样进入对应会话。修复桌面主题造成浅底白字的问题。
+- 新增scripts/contact_order_test.gd、artifacts/digital_systems/contact_order_test.log、25_phone_latest_first.png、26_desktop_contacts.png；专项8 PASS，第一章主线228 PASS，最终运行日志无错误。两张截图均实际送入视觉上下文；修正对比度后重拍复看。既有主线截图由测试更新。
+- 保留新增Godot UID：scripts/phone_store_test.gd.uid、ui/phone_messages.gd.uid（上轮组件生成标识）。无删除。未接入第三方素材，不扩展剧情。
+- F5进入第一章，手机/电脑打开消息：联系人按最近消息置顶，点击查看并同步已读；聊天内部仍由旧到新。旧配送自由模式沿用原聊天实现，本次改动范围为第一章双端。
+- 限制：素材可用性不是最终美术/音效验收；作者来源或授权待补的素材暂存评估，macOS未测；部分旧专项按原下拉组件操作需同步升级。

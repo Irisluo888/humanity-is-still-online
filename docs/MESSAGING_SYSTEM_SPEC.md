@@ -38,3 +38,5 @@ Phase1—8已完成本轮技术集成验收，详见DIGITAL_SYSTEMS_TEST_REPORT.
 2026-11-05：process_due自动启动已送达线程，begin_thread幂等；UI只选择展示对象，不控制是否送达。通知可保存presented标记，新控件补显未展示通知。
 
 2026-11-05：opening_delivery脚本使用xiaoyu线程，开场送餐即入队，含原剧本预设回复。手机通知UI显示7秒、轻摆0.65秒；桌面使用相同控件且z_index=100，点击可更新已打开会话。
+
+2026-11-05：第一章手机和电脑复用phone_messages.gd联系人行；按已展示消息display_order降序排序，不使用queued ordinal。电脑通知调用open_thread(target)，列表保持统一未读状态；聊天内部不逆序。
