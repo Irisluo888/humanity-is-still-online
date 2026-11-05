@@ -1,0 +1,33 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 616.56 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4060 Ti
+
+PASS: six existing apps retained
+PASS: window fits desktop work area
+PASS: window fits desktop work area
+PASS: window fits desktop work area
+PASS: window fits desktop work area
+PASS: window fits desktop work area
+PASS: window fits desktop work area
+PASS: focus switches to feed
+PASS: mouse wheel scrolls forum content
+PASS: forum category filter
+PASS: post detail and comments open
+PASS: contact selection clears unread count
+PASS: local text submission preserved
+PASS: local attachment links shared order
+PASS: mouse click minimizes window
+PASS: mouse click restores and focuses taskbar window
+PASS: taskbar active window toggles minimized
+PASS: titlebar receives mouse drag start
+PASS: real drag clamps at top-left boundary
+PASS: video selection switches local cover and text
+PASS: static video simulation advances progress
+PASS: video pause
+PASS: day/night shared event refresh retained
+PASS: close removes window and task
+PASS: 1080p layout preserves windows
+PASS: bedroom has interactive terminal entrance
+PASS: bedroom terminal changes to desktop scene
+PASS: desktop returns to bedroom
+PASS: bedroom returns to original menu
+ROUND2 TEST FAILURES: 0

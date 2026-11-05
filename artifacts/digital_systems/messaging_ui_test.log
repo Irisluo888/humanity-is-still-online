@@ -1,0 +1,12 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 616.56 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4060 Ti
+
+PASS: real seconds reveal a few messages only
+PASS: capture 01_live_group
+PASS: capture 02_reply
+PASS: actual shared conversation component
+PASS: actual preset reply button sends selected reply
+PASS: capture 03_bubbles
+PASS: hidden window continues presentation
+PASS: UI open close does not move game clock
+MESSAGE UI FAILURES: 0

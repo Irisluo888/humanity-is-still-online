@@ -57,6 +57,16 @@ func find_button(node: Node,text: String) -> Button:
   var b=find_button(child,text)
   if b:return b
  return null
+func drain_chat(thread: String) -> void:
+ var manager=root.get_node("MessageManager");manager.set_process(false);manager.begin_thread(thread)
+ for i in range(150):
+  var reply=manager.waiting_reply(thread)
+  if not reply.is_empty():manager.choose_reply(reply.id,reply.choices[0].id)
+  manager.tick_presentation(3)
+  if manager.thread_finished(thread):break
+ manager.mark_read(thread)
+ await frames()
+ check(manager.thread_finished(thread),"dynamic conversation completes "+thread)
 func run() -> void:
  root.size=Vector2i(1280,720);c=root.get_node("Chapter");c.save_path="user://ch01_qa.json";c.fresh()
  change_scene_to_file("res://scenes/ch01.tscn");await frames(20)
@@ -72,10 +82,10 @@ func run() -> void:
  await at("repair");await finish_event();check(c.beat().id=="group","repair ends")
  await at("home");await at("pc")
  check(current_scene.has_method("chapter_messages"),"original desktop shared chapter messages")
- current_scene.open_app("消息");await frames()
+ current_scene.open_app("消息");await frames();await drain_chat("rider_group")
  await capture("12_desktop_chat")
  current_scene.return_chapter();await frames();await finish_event()
- current_scene.show_phone();current_scene.close_phone();await frames();await finish_event("yes")
+ current_scene.selected_thread="xiaoyu";current_scene.show_phone();await drain_chat("xiaoyu");current_scene.close_phone();await frames()
  check(c.beat().id=="orders","group and lunch advance through device")
  await at("door");await at("pickup");check(c.beat().id=="1203" and World(c).current_order().status=="配送中","main meal picked through original order logic")
  await at("garden");check(current_scene.map_world.kind=="garden" and current_scene.map_world.scene_file_path.ends_with("garden.tscn"),"garden actual resource loaded")
@@ -96,7 +106,12 @@ func run() -> void:
  await capture("07_store_after")
  check(c.fast_home(),"resolved attack restores fast home")
  await frames();await capture("08_home")
- await at("pc");current_scene.open_app("热榜");await frames();await capture("13_desktop_news");current_scene.return_chapter();await frames();await at("bed");await finish_event()
+ for thread in ["night_group","zhou_warning","xiaoyu_late"]:
+  await at("pc");current_scene.chapter_thread=thread;current_scene.open_app("消息");await frames();await drain_chat(thread)
+  current_scene.open_app("热榜");await frames()
+  if thread=="xiaoyu_late":await capture("13_desktop_news")
+  current_scene.return_chapter();await frames()
+ await at("bed");await finish_event()
  check(c.beat().id=="knock1" and c.state.event_active,"knock begins after nighttime review")
  await capture("09_knock")
  await finish_event();check(c.beat().id=="call","call after anonymous knocks")
@@ -126,5 +141,6 @@ func run() -> void:
  check(c.state.positions.garden[0]==3,"per-map position retained")
  var bad={"state":c.state.duplicate(true),"health":85,"stamina":75,"inventory":w.inventory};bad.state.positions.garden=["bad",0,0]
  check(not c.valid(bad),"malformed position rejected before mutation")
+ current_scene.queue_free();await frames(10)
  print("QA CHECKS: ",checks," FAILURES: ",failures);quit(1 if failures else 0)
 func World(_chapter: Node) -> Node:return root.get_node("WorldData")

@@ -1,0 +1,21 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 616.56 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4060 Ti
+
+PASS: new process restores first-night system save
+PASS: outgoing chat persists across process
+PASS: read and unread contacts persist independently
+PASS: notes clues and assistant history persist
+PASS: scheduled goal persists
+PASS: unlocks preserve date gate
+PASS: reopening does not generate new message IDs or mark others read
+PASS: capture 05_restored_chat
+PASS: selecting unread contact marks only its messages read
+PASS: read flag remains after saving and reloading
+PASS: invalid chat person rejected without partial mutation
+PASS: duplicate incoming message IDs rejected
+PASS: older schema without optional night extension loads
+PASS: legacy import uses safe defaults and derives known unlocks
+PASS: completed two-day investigation restores
+PASS: completed goal and second-night video persist
+PASS: completed task cannot repeat
+NIGHT RELOAD FAILURES: 0

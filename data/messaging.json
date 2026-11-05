@@ -24,6 +24,54 @@
     "system": {
       "name": "系统",
       "avatar": "res://assets/art/icons/app_3.png"
+    },
+    "resident_07": {
+      "name": "七号住户",
+      "avatar": "res://assets/art/avatars/avatar_0.png"
+    },
+    "local_1": {
+      "name": "站点值班员",
+      "avatar": "res://assets/art/avatars/avatar_1.png"
+    },
+    "local_2": {
+      "name": "楼道邻居",
+      "avatar": "res://assets/art/avatars/avatar_2.png"
+    },
+    "local_3": {
+      "name": "修伞的人",
+      "avatar": "res://assets/art/avatars/avatar_3.png"
+    },
+    "local_4": {
+      "name": "晚班店员",
+      "avatar": "res://assets/art/avatars/avatar_4.png"
+    },
+    "local_5": {
+      "name": "旧书摊主",
+      "avatar": "res://assets/art/avatars/avatar_5.png"
+    },
+    "local_6": {
+      "name": "窗台园丁",
+      "avatar": "res://assets/art/avatars/avatar_6.png"
+    },
+    "local_7": {
+      "name": "系统通知",
+      "avatar": "res://assets/art/avatars/avatar_7.png"
+    },
+    "local_8": {
+      "name": "早市摊主",
+      "avatar": "res://assets/art/avatars/avatar_8.png"
+    },
+    "local_9": {
+      "name": "修表师傅",
+      "avatar": "res://assets/art/avatars/avatar_9.png"
+    },
+    "local_10": {
+      "name": "借书邻居",
+      "avatar": "res://assets/art/avatars/avatar_10.png"
+    },
+    "local_11": {
+      "name": "夜班骑手",
+      "avatar": "res://assets/art/avatars/avatar_11.png"
     }
   },
   "threads": {
@@ -51,6 +99,71 @@
       "name": "小鱼 · 晚间",
       "type": "private",
       "icon": "res://assets/art/ch01/xiaoyu.png"
+    },
+    "legacy_resident_07": {
+      "name": "七号住户",
+      "type": "private",
+      "icon": "res://assets/art/avatars/avatar_0.png"
+    },
+    "legacy_local_1": {
+      "name": "站点值班员",
+      "type": "private",
+      "icon": "res://assets/art/avatars/avatar_1.png"
+    },
+    "legacy_local_2": {
+      "name": "楼道邻居",
+      "type": "private",
+      "icon": "res://assets/art/avatars/avatar_2.png"
+    },
+    "legacy_local_3": {
+      "name": "修伞的人",
+      "type": "private",
+      "icon": "res://assets/art/avatars/avatar_3.png"
+    },
+    "legacy_local_4": {
+      "name": "晚班店员",
+      "type": "private",
+      "icon": "res://assets/art/avatars/avatar_4.png"
+    },
+    "legacy_local_5": {
+      "name": "旧书摊主",
+      "type": "private",
+      "icon": "res://assets/art/avatars/avatar_5.png"
+    },
+    "legacy_local_6": {
+      "name": "窗台园丁",
+      "type": "private",
+      "icon": "res://assets/art/avatars/avatar_6.png"
+    },
+    "legacy_local_7": {
+      "name": "系统通知",
+      "type": "private",
+      "icon": "res://assets/art/avatars/avatar_7.png"
+    },
+    "legacy_local_8": {
+      "name": "早市摊主",
+      "type": "private",
+      "icon": "res://assets/art/avatars/avatar_8.png"
+    },
+    "legacy_local_9": {
+      "name": "修表师傅",
+      "type": "private",
+      "icon": "res://assets/art/avatars/avatar_9.png"
+    },
+    "legacy_local_10": {
+      "name": "借书邻居",
+      "type": "private",
+      "icon": "res://assets/art/avatars/avatar_10.png"
+    },
+    "legacy_local_11": {
+      "name": "夜班骑手",
+      "type": "private",
+      "icon": "res://assets/art/avatars/avatar_11.png"
+    },
+    "recovered": {
+      "name": "旧档记录",
+      "type": "system",
+      "icon": "res://assets/art/icons/app_3.png"
     }
   },
   "scripts": {
@@ -339,7 +452,17 @@
         "sender_id": "player",
         "text": "你请？ / 明天再说",
         "delay_seconds": 1.45,
-        "attachments": []
+        "attachments": [],
+        "choices": [
+          {
+            "id": "yes",
+            "text": "你请？"
+          },
+          {
+            "id": "no",
+            "text": "明天再说"
+          }
+        ]
       },
       {
         "id": "xiaoyu_002",

@@ -12,6 +12,7 @@ var last_count=-1
 var muted=false
 var layout_generation=0
 var layout_busy=false
+var notification_audio: AudioStreamPlayer
 const Kit=preload("res://ui/kit.gd")
 func _ready() -> void:
  size_flags_horizontal=SIZE_EXPAND_FILL;size_flags_vertical=SIZE_EXPAND_FILL
@@ -22,11 +23,15 @@ func _ready() -> void:
  transcript=VBoxContainer.new();transcript.size_flags_horizontal=SIZE_EXPAND_FILL;transcript.add_theme_constant_override("separation",12);scroll.add_child(transcript)
  scroll.get_v_scroll_bar().value_changed.connect(func(_v):
   if layout_busy:return
-  follow_bottom=scroll.scroll_vertical>=scroll.get_v_scroll_bar().max_value-scroll.size.y-35)
+  follow_bottom=scroll.scroll_vertical>=scroll.get_v_scroll_bar().max_value-scroll.size.y-35
+  if follow_bottom and is_visible_in_tree():MessageManager.mark_read(thread_id))
  typing_label=Kit.label("",16);typing_label.add_theme_color_override("font_color",Color("9ab6bb"));add_child(typing_label)
  reply_row=VBoxContainer.new();add_child(reply_row)
+ visibility_changed.connect(func():
+  if is_visible_in_tree():request_refresh())
  MessageManager.changed.connect(request_refresh)
  MessageManager.message_revealed.connect(on_reveal)
+ notification_audio=AudioStreamPlayer.new();notification_audio.stream=preload("res://assets/audio/ch01/vibrate.wav");notification_audio.volume_db=-22;add_child(notification_audio)
  MessageManager.begin_thread(thread_id);refresh()
 func request_refresh() -> void:
  if pending_refresh:return
@@ -43,6 +48,7 @@ func refresh() -> void:
  selector.clear()
  var index=0
  for id in MessageManager.catalog.threads:
+  if id.begins_with("legacy_")!=(MessageManager.profile=="legacy"):continue
   var count=MessageManager.get_unread_count(id)
   selector.add_item(MessageManager.catalog.threads[id].name+("  · 未读%d"%count if count else ""));selector.set_item_metadata(index,id)
   if id==thread_id:selector.select(index)
@@ -58,7 +64,8 @@ func refresh() -> void:
    var key: String=choice.id;var id: String=reply.id
    reply_row.add_child(Kit.button(choice.text,func():MessageManager.choose_reply(id,key)))
  if should_follow:
-  for message in messages:MessageManager.mark_read(thread_id,[message.id])
+  for message in messages:
+   if is_visible_in_tree():MessageManager.mark_read(thread_id,[message.id])
   settle_scroll(generation,0,true)
  else:settle_scroll(generation,old_scroll,false)
  last_count=messages.size()
@@ -90,4 +97,4 @@ func add_bubble(message: Dictionary) -> void:
  else:row.add_child(spacer)
 func on_reveal(message: Dictionary) -> void:
  if message.thread_id!=thread_id or muted or not is_visible_in_tree():return
- var player=AudioStreamPlayer.new();player.stream=load("res://assets/audio/ch01/vibrate.wav");player.volume_db=-22;add_child(player);player.finished.connect(player.queue_free);player.play()
+ notification_audio.play()

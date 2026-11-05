@@ -1,0 +1,25 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 616.56 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4060 Ti
+
+PASS: accepted base order enables cruise
+CRUISE STOP: 已接订单全部完成，已原地停止。可接新单或自行回家。 / position (5.587896, -0.04914, -3.489944) / target (6.0, 0.0, -4.0) / index 37
+PASS: only accepted order delivered
+PASS: completion stays on street in daytime
+PASS: finished queue disables cruise button
+PASS: optional orders are never auto-accepted
+PASS: F cannot start idle cruise without accepted orders
+PASS: idle cruise does not move toward home
+PASS: completion does not reveal night content or close day
+PASS: capture 01_stopped_after_delivery
+PASS: player may explicitly accept another order
+PASS: new accepted order re-enables cruise
+PASS: capture 02_new_order_available
+CRUISE STOP: 已接订单全部完成，已原地停止。可接新单或自行回家。 / position (-5.508891, -0.009169, -1.090149) / target (-5.0, 0.0, -1.5) / index 8
+PASS: second explicit order can cruise normally
+PASS: second completion again stops without closing day
+PASS: remaining unaccepted order remains available
+PASS: walk reaches (-0.8, -1.0)
+PASS: walk reaches (-0.8, 2.0)
+PASS: walk reaches (0.0, 8.0)
+PASS: manual home interaction still closes day
+CRUISE BOUNDARY FAILURES: 0

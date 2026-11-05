@@ -6,6 +6,10 @@ func _ready() -> void:
  if Chapter.session_active and not Chapter.state.is_empty():
   tasks.add_child(small_button("返回第一章",return_chapter,110))
   tasks.add_child(small_button("章节消息",chapter_inbox,90))
+  var toast=preload("res://ui/notification_toast.gd").new();toast.position=Vector2(925,32);add_child(toast)
+  toast.requested.connect(func(target):
+   if target=="news":open_app("热榜")
+   elif MessageManager.catalog.threads.has(target):chapter_thread=target;open_app("消息"))
  if Chapter.session_active and get_child_count()>2:get_child(2).text="第一章 / 住所电脑\n消息与手机同步，关闭窗口后返回房间。"
  if not WorldData.campaign:return
  public_content=content.duplicate(true)
@@ -80,10 +84,13 @@ func build_messages(body: HBoxContainer) -> void:
  var heading=box(chat,"d2d8d5",10);copy(heading,chosen.name+" / 本地记录",440)
  var transcript=scroll_box(chat,470,"e0e0d9")
  copy(transcript,"往期记录",430,true)
- for message in chosen.history:timed_bubble(transcript,message.text,message.own,message.time)
- for message in WorldData.night_messages:
-  if message.person_id==chosen.id:timed_bubble(transcript,message.text,false,"第%d晚 / 本地收件" % int(message.get("received_day",0)) if int(message.get("received_day",0))>0 else "既有存档记录")
- for message in WorldData.desktop_state.chat.get(chosen.id,[]):timed_bubble(transcript,message.text,true,message.time)
+ for i in range(chosen.history.size()):
+  var seed: Dictionary=chosen.history[i];var stable_id="cache_%s_%03d"%[chosen.id,i]
+  if not MessageManager.records.has(stable_id):
+   MessageManager.queue_message({"id":stable_id,"thread_id":"legacy_"+chosen.id,"sender_id":"player" if seed.own else chosen.id,"text":seed.text,"sent_at":0,"cached":true,"display_time":seed.time})
+   MessageManager.records[stable_id].display_order=MessageManager.next_display_order();MessageManager.records[stable_id].revealed=true;MessageManager.records[stable_id].read=true
+ for message in MessageManager.get_thread_messages("legacy_"+chosen.id):
+  timed_bubble(transcript,message.text,message.sender_id=="player",message.get("display_time",MessageManager.format_time(int(message.sent_at))))
  var composer=box(chat,"becad0",8);var row=HBoxContainer.new();composer.add_child(row)
  row.add_child(small_button("附件",func():WorldData.send_chat(chosen.id,"[本地附件] 配送备注 / "+WorldData.active_order_id),50))
  var input=LineEdit.new();input.placeholder_text="本地留言，保存后可跨重启恢复";input.size_flags_horizontal=Control.SIZE_EXPAND_FILL;row.add_child(input)
@@ -115,41 +122,16 @@ func render_news(article: VBoxContainer) -> void:
  for child in article.get_children():
   if child is TextureRect:child.texture=load("res://assets/art/social/thumb_%d.png" % int(content.news[selected_news].cover))
 
-func chapter_inbox() -> void:
- var dialog=AcceptDialog.new();dialog.title="第一章 / 共享收件箱与新闻"
- var scroll=ScrollContainer.new();scroll.custom_minimum_size=Vector2(650,460);dialog.add_child(scroll)
- var box=VBoxContainer.new();box.custom_minimum_size.x=620;scroll.add_child(box)
- for message in Chapter.state.messages:
-  var l=Label.new();l.text=message.text;l.custom_minimum_size.x=600;l.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART;box.add_child(l);Chapter.mark_read(message.id)
- for article in Chapter.state.news:
-  var l=Label.new();l.text=article.text;l.custom_minimum_size.x=600;l.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART;box.add_child(l);Chapter.mark_read(article.id)
- add_child(dialog);dialog.popup_centered(Vector2i(690,520))
-
+func chapter_inbox() -> void:open_app("消息")
 func return_chapter() -> void:
- var id: String=Chapter.beat().id
- if id=="group" and Chapter.state.read.has("rider_group_%03d"%(Chapter.catalog.chat.rider_group.size()-1)):Chapter.start_event()
- elif id=="lunch":Chapter.start_event()
- elif id=="night":Chapter.state.flags.night_read=true
+ Chapter.review_digital()
  get_tree().change_scene_to_file("res://scenes/ch01.tscn")
 func chapter_messages(body: HBoxContainer) -> void:
- var contacts=scroll_box(body,215,"bcc8cd")
- var chat=scroll_box(body,490,"dce0d9")
- for pair in [["骑手群","rider_group"],["小鱼","xiaoyu"],["晚间骑手群","night_group"],["老周私信","zhou_warning"],["小鱼晚间私信","xiaoyu_late"]]:
-  var key: String=pair[1]
-  contacts.add_child(small_button(pair[0],func():chapter_thread=key;rebuild("消息"),190))
- copy(chat,{"rider_group":"骑手群","xiaoyu":"小鱼","night_group":"晚间骑手群","zhou_warning":"老周","xiaoyu_late":"小鱼"}.get(chapter_thread,"消息"),450)
- for message in Chapter.state.messages:
-  if message.thread==chapter_thread:copy(chat,message.text,450);Chapter.mark_read(message.id)
+ var pane=preload("res://ui/message_panel.gd").new();pane.thread_id=chapter_thread;pane.custom_minimum_size=Vector2(730,420);body.add_child(pane)
+ pane.selector.item_selected.connect(func(_i):chapter_thread=pane.thread_id)
 func build_news(body: HBoxContainer) -> void:
  if not Chapter.session_active:super.build_news(body);return
- var list=scroll_box(body,260,"bcc8cd");var article=scroll_box(body,450,"dce0d9")
- copy(list,"城市新闻 / 历史",230)
- for item in Chapter.state.news:
-  var news: Dictionary=item
-  list.add_child(small_button(news.text.split("\n")[0].replace("标题：",""),func():
-   clear_children(article);copy(article,news.text,420);Chapter.mark_read(news.id),235))
- if Chapter.state.news.is_empty():copy(article,"暂无新新闻。",420)
- else:copy(article,Chapter.state.news.back().text,420)
+ var browser=preload("res://ui/news_panel.gd").new();browser.custom_minimum_size=Vector2(730,420);body.add_child(browser)
 
 func _process(delta: float) -> void:
  super._process(delta)

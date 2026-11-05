@@ -1,3 +1,5 @@
+> 状态说明（2026-11-05）：原审计设计保留用于追溯，不表示原文勾选已实现。当前代码与验收以本文末尾接管记录、MESSAGING_SYSTEM_SPEC.md、DIGITAL_SYSTEMS_TEST_REPORT.md为准。
+
 # 数字生活系统架构设计
 
 **项目**: 《人类暂未下线》  
@@ -919,3 +921,14 @@ func test_delayed_message_delivery() -> void:
 用户已将原Claude职责整体授权给Codex，覆盖message service、聊天UI、手机、desktop_night、Chapter及存档桥接、project.godot。当前只有Codex写入，不启动并行Agent。
 审计纠正：第一章两端已共用Chapter；WorldNight已有发送/持久化，desktop.gd是旧基类而非当前唯一实现。四份原文中的完成勾选不作为测试证据。
 实施采用一个MessageManager（含news/notification/call记录），稳定数据ID、JSON字典、业务送达分钟与UI演出秒分离；不新建TimeManager，不删历史，不重构继承链。共用聊天控件，旧字段仅作迁移/兼容投影。八阶段连续实施，以Godot实测为内部关卡。
+
+## 2026-11-05 数字生活系统接管：Phase 1—8 技术交付
+
+- MessageManager 统一消息、演出队列、已读、新闻、通知、电话与存档；手机/电脑共用 MessagePanel、NewsPanel。保留 Chapter 原剧情、地图、配送与继承链。
+- 骑手群逐条消息、固定人物素材/昵称/时间、左右气泡、输入中、自动滚动、预设回复；关闭窗口继续演出，隐藏窗口不自动已读。
+- WorldData 游戏分钟与 UI 秒级演出分离；稳定 ID 去重，时间/剧情/场景/阅读/回复条件控制发布。夜间 20:30、22:17、23:35 分阶段解锁，不提前发布结尾新闻。
+- Chapter/旧夜间存档均保存统一快照，保留旧字段作兼容投影；旧档历史迁移、不重播已读，未知旧联系人历史保留在恢复线程。恢复演出剩余时间与回复顺序。
+- 修复消息 HUD 未即时刷新、滚动布局时序、新闻已读递归、通知节点未挂载造成资源泄漏、电话接听状态与提前身份暗示。未新增网络服务、依赖、TimeManager 或美术资产。
+- Windows Godot 4.7.2 实际运行 15 个测试脚本：898 PASS、0 FAIL/ERROR/WARNING（计数包含重复断言与截图保存，不是898项独立功能）。详细日志见 artifacts/digital_systems/test_summary.json。
+- 新的9张专用运行截图已作为图像实际检查；既有回归截图同步重新生成，未将其全部视为本轮逐张美术验收。
+- 限制：macOS、真人完整盲玩、主观音效试听与长时性能未验收；本次不宣称第一章正式美术或完整游戏完成。等待用户试玩确认，不进入新阶段。

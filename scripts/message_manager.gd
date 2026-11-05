@@ -25,6 +25,7 @@ var presentation_speed=1.0
 func reset(scope="chapter") -> void:
  profile=scope;records={};articles={};notifications={};calls={};started={};remaining={};choices={};serial=0;current_minute=0;context_flags={};context_scene="";changed.emit()
 func set_context(minute: int,flags: Dictionary={},scene="") -> void:
+ if minute<0:return
  current_minute=minute;context_flags=flags.duplicate(true);context_scene=scene;process_due()
 func eligible(requirements: Dictionary) -> bool:
  for key in requirements.get("flags",{}):
@@ -38,12 +39,14 @@ func eligible(requirements: Dictionary) -> bool:
 func queue_message(spec: Dictionary) -> bool:
  if not spec.get("id") is String or spec.id.is_empty() or records.has(spec.id):return false
  if not catalog.threads.has(spec.get("thread_id","")) or not catalog.contacts.has(spec.get("sender_id","")) or not spec.get("text") is String:return false
- serial+=1
  var message=spec.duplicate(true)
  message.merge({"sent_at":current_minute,"arrive_at":current_minute,"delay_seconds":1.5,"requires":{},"attachments":[],"choices":[]},false)
- if not numeric(message.sent_at) or not numeric(message.arrive_at) or not numeric(message.delay_seconds) or message.delay_seconds<0:return false
- if not message.requires is Dictionary:return false
- message.merge({"delivered":false,"revealed":false,"read":false,"ordinal":serial},true)
+ if not whole(message.sent_at) or not whole(message.arrive_at) or not numeric(message.delay_seconds) or message.delay_seconds<0:return false
+ if not valid_requirements(message.requires) or not message.choices is Array or not message.attachments is Array:return false
+ for option in message.choices:
+  if not option is Dictionary or not option.get("id") is String or not option.get("text") is String:return false
+ serial+=1
+ message.merge({"delivered":false,"revealed":false,"read":false,"ordinal":serial,"display_order":0},true)
  records[message.id]=message;process_due();return true
 func queue_script(id: String,at_minute: int,requirements: Dictionary={}) -> void:
  if not catalog.scripts.has(id):return
@@ -55,7 +58,7 @@ func process_due() -> void:
  for message in records.values():
   if not message.delivered and message.arrive_at<=current_minute and eligible(message.requires):
    message.delivered=true;modified=true
-   if not started.has(message.thread_id):post_notification("pending_"+message.thread_id,"message",catalog.threads[message.thread_id].name,"收到新消息，打开会话查看。",message.thread_id)
+   if message.sender_id!="player" and not started.has(message.thread_id):post_notification("pending_"+message.thread_id,"message",catalog.threads[message.thread_id].name,"收到新消息，打开会话查看。",message.thread_id)
    message_arrived.emit(message.duplicate(true))
  for article in articles.values():
   if not article.published and article.published_at<=current_minute and eligible(article.requires):
@@ -94,11 +97,11 @@ func tick_presentation(delta: float) -> void:
   if message.is_empty() or not message.delivered or not message.choices.is_empty():continue
   remaining[thread_id]=float(remaining.get(thread_id,0))-delta*presentation_speed
   if remaining[thread_id]>0:continue
-  message.revealed=true
+  message.display_order=next_display_order();message.revealed=true
   if message.sender_id=="player":message.read=true
   var next=pending(thread_id)
   remaining[thread_id]=float(next.get("delay_seconds",1.5))
-  post_notification("message_"+message.id,"message",catalog.threads[message.thread_id].name,message.text,message.thread_id)
+  if message.sender_id!="player":post_notification("message_"+message.id,"message",catalog.threads[message.thread_id].name,message.text,message.thread_id)
   message_revealed.emit(message.duplicate(true));unread_count_changed.emit(thread_id,get_unread_count(thread_id));changed.emit()
 func choose_reply(message_id: String,choice_id: String) -> bool:
  if not records.has(message_id):return false
@@ -106,7 +109,7 @@ func choose_reply(message_id: String,choice_id: String) -> bool:
  if not message.delivered or message.revealed or pending(message.thread_id).id!=message_id:return false
  for option in message.choices:
   if option.id!=choice_id:continue
-  choices[message_id]=choice_id;message.text=option.text;message.revealed=true;message.read=true;remaining[message.thread_id]=1.2
+  choices[message_id]=choice_id;message.text=option.text;message.display_order=next_display_order();message.revealed=true;message.read=true;remaining[message.thread_id]=1.2
   player_sent_message.emit(message.duplicate(true));message_revealed.emit(message.duplicate(true));process_due();changed.emit();return true
  return false
 func send_message(thread_id: String,text: String,stable_id="") -> bool:
@@ -114,11 +117,18 @@ func send_message(thread_id: String,text: String,stable_id="") -> bool:
  if value.is_empty() or value.length()>1000:return false
  var id=stable_id if not stable_id.is_empty() else "player_%06d"%(serial+1)
  if not queue_message({"id":id,"thread_id":thread_id,"sender_id":"player","text":value}):return false
- records[id].revealed=true;records[id].read=true;player_sent_message.emit(records[id].duplicate(true));changed.emit();return true
+ records[id].display_order=next_display_order();records[id].revealed=true;records[id].read=true;player_sent_message.emit(records[id].duplicate(true));changed.emit();return true
+func next_display_order() -> int:
+ var latest=0
+ for message in records.values():latest=maxi(latest,int(message.get("display_order",0)))
+ return latest+1
 func get_thread_messages(thread_id: String) -> Array:
  var result=[]
  for m in ordered(thread_id):
   if m.delivered and m.revealed:result.append(m.duplicate(true))
+ result.sort_custom(func(a,b):
+  if a.get("cached",false)!=b.get("cached",false):return a.get("cached",false)
+  return a.get("display_order",a.ordinal)<b.get("display_order",b.ordinal))
  return result
 func get_unread_count(thread_id: String) -> int:
  var count=0
@@ -142,6 +152,7 @@ func thread_finished(thread_id: String) -> bool:
 func queue_news(spec: Dictionary) -> bool:
  if not spec.get("id") is String or articles.has(spec.id) or not spec.get("text") is String:return false
  var article=spec.duplicate(true);article.merge({"title":spec.text.split("\n")[0].replace("标题：",""),"published_at":current_minute,"requires":{},"read":false,"published":false},false)
+ if not whole(article.published_at) or not valid_requirements(article.requires) or not article.title is String:return false
  articles[article.id]=article;process_due();return true
 func get_news() -> Array:
  var result=[]
@@ -150,23 +161,39 @@ func get_news() -> Array:
  result.sort_custom(func(a,b):return a.published_at<b.published_at if a.published_at!=b.published_at else a.id<b.id)
  return result
 func read_news(id: String) -> void:
- if articles.has(id) and articles[id].published:articles[id].read=true;changed.emit()
+ if articles.has(id) and articles[id].published and not articles[id].read:
+  articles[id].read=true
+  if notifications.has("news_"+id):notifications["news_"+id].read=true
+  changed.emit()
 func post_notification(id: String,kind: String,title: String,text: String,target: String) -> void:
  if notifications.has(id):return
  var n={"id":id,"kind":kind,"title":title,"text":text,"target":target,"read":false,"at":current_minute};notifications[id]=n;notification_posted.emit(n.duplicate(true))
+func get_notifications() -> Array:return notifications.values().duplicate(true)
+func read_notification(id: String) -> void:
+ if notifications.has(id) and not notifications[id].read:notifications[id].read=true;changed.emit()
 func queue_call(id: String,sender_id: String,at: int,requires: Dictionary={}) -> bool:
- if calls.has(id) or not catalog.contacts.has(sender_id):return false
+ if id.is_empty() or calls.has(id) or not catalog.contacts.has(sender_id) or at<0 or not valid_requirements(requires):return false
  calls[id]={"id":id,"sender_id":sender_id,"arrive_at":at,"requires":requires.duplicate(true),"status":"queued"};process_due();return true
 func answer_call(id: String) -> bool:
  if not calls.has(id) or calls[id].status!="ringing":return false
  calls[id].status="answered";changed.emit();return true
 func format_time(minute: int) -> String:return "第%d天 %02d:%02d"%[minute/1440,(minute%1440)/60,minute%60]
 func numeric(value: Variant) -> bool:return (value is int or value is float) and is_finite(float(value))
+func whole(value: Variant) -> bool:return numeric(value) and value>=0 and value==floor(value)
+func valid_requirements(value: Variant) -> bool:
+ if not value is Dictionary:return false
+ if not value.get("flags",{}) is Dictionary or not value.get("read_ids",[]) is Array or not value.get("replies",{}) is Dictionary:return false
+ if value.has("scene") and not value.scene is String:return false
+ for id in value.get("read_ids",[]):
+  if not id is String:return false
+ for id in value.get("replies",{}):
+  if not id is String or not value.replies[id] is String:return false
+ return true
 func save_data() -> Dictionary:
  return {"schema":1,"profile":profile,"minute":current_minute,"serial":serial,"records":records.duplicate(true),"articles":articles.duplicate(true),"notifications":notifications.duplicate(true),"calls":calls.duplicate(true),"started":started.duplicate(true),"remaining":remaining.duplicate(true),"choices":choices.duplicate(true)}
 func valid_data(data: Variant) -> bool:
  if not data is Dictionary or data.get("schema")!=1 or not data.get("profile") is String:return false
- if not numeric(data.get("minute")) or data.minute<0 or not numeric(data.get("serial")):return false
+ if not whole(data.get("minute")) or not whole(data.get("serial")):return false
  for key in ["records","articles","notifications","calls","started","remaining","choices"]:
   if not data.get(key) is Dictionary or data[key].size()>20000:return false
  var ordinals=[]
@@ -176,17 +203,28 @@ func valid_data(data: Variant) -> bool:
   if not catalog.threads.has(m.get("thread_id","")) or not catalog.contacts.has(m.get("sender_id","")) or not m.get("text") is String:return false
   for key in ["sent_at","arrive_at","ordinal","delay_seconds"]:
    if not numeric(m.get(key)) or m[key]<0:return false
-  if m.ordinal in ordinals:return false
-  ordinals.append(m.ordinal)
+  if not whole(m.sent_at) or not whole(m.arrive_at) or not whole(m.ordinal):return false
+  var ordinal_key=str(int(m.ordinal))
+  if ordinal_key in ordinals:return false
+  ordinals.append(ordinal_key)
   for key in ["delivered","revealed","read"]:
    if not m.get(key) is bool:return false
   if m.revealed and not m.delivered:return false
-  if not m.get("requires") is Dictionary or not m.get("choices") is Array or not m.get("attachments") is Array:return false
+  if m.has("display_order") and not whole(m.display_order):return false
+  if not valid_requirements(m.get("requires")) or not m.get("choices") is Array or not m.get("attachments") is Array:return false
   for option in m.choices:
    if not option is Dictionary or not option.get("id") is String or not option.get("text") is String:return false
+ for message in data.records.values():
+  if data.serial<message.ordinal:return false
+ for id in data.choices:
+  if not data.records.has(id) or not data.choices[id] is String:return false
+  var found=false
+  for option in data.records[id].choices:
+   if option.id==data.choices[id]:found=true
+  if not found:return false
  for id in data.articles:
   var n=data.articles[id]
-  if not n is Dictionary or n.get("id")!=id or not n.get("text") is String or not n.get("title") is String or not numeric(n.get("published_at")) or not n.get("requires") is Dictionary or not n.get("read") is bool or not n.get("published") is bool:return false
+  if not n is Dictionary or n.get("id")!=id or not n.get("text") is String or not n.get("title") is String or not whole(n.get("published_at")) or not valid_requirements(n.get("requires")) or not n.get("read") is bool or not n.get("published") is bool:return false
  for id in data.started:
   if not catalog.threads.has(id) or not data.started[id] is bool:return false
  for id in data.remaining:
@@ -204,7 +242,10 @@ func valid_data(data: Variant) -> bool:
 func load_data(data: Variant) -> bool:
  if not valid_data(data):return false
  profile=data.profile;current_minute=int(data.minute);serial=int(data.serial)
- records=data.records.duplicate(true);articles=data.articles.duplicate(true);notifications=data.notifications.duplicate(true);calls=data.calls.duplicate(true);started=data.started.duplicate(true);remaining=data.remaining.duplicate(true);choices=data.choices.duplicate(true)
+ records=data.records.duplicate(true)
+ for message in records.values():
+  if not message.has("display_order"):message.display_order=message.ordinal if message.revealed else 0
+ articles=data.articles.duplicate(true);notifications=data.notifications.duplicate(true);calls=data.calls.duplicate(true);started=data.started.duplicate(true);remaining=data.remaining.duplicate(true);choices=data.choices.duplicate(true)
  changed.emit();return true
 func migrate_legacy(messages: Array,read_ids: Array,news: Array,minute: int) -> void:
  reset();current_minute=minute
@@ -213,9 +254,14 @@ func migrate_legacy(messages: Array,read_ids: Array,news: Array,minute: int) -> 
   for items in catalog.scripts.values():
    for item in items:
     if item.id==old.id:spec=item.duplicate(true)
-  if spec.is_empty():continue
+  if spec.is_empty():
+   var actor="system"
+   for person in catalog.contacts:
+    if str(old.text).begins_with(catalog.contacts[person].name+"："):actor=person;break
+   spec={"id":old.id,"thread_id":old.thread if catalog.threads.has(old.thread) else "recovered","sender_id":actor,"text":old.text}
   spec.text=str(old.text).split("：",true,1)[-1];spec.sent_at=minute;spec.arrive_at=minute
   if queue_message(spec):
-   records[old.id].revealed=true;records[old.id].read=old.id in read_ids
- for article in news:queue_news(article)
+   records[old.id].display_order=next_display_order();records[old.id].revealed=true;records[old.id].read=old.id in read_ids
+ for article in news:
+  if queue_news(article):articles[article.id].read=article.id in read_ids
  changed.emit()

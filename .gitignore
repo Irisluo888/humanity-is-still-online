@@ -68,3 +68,8 @@ CLAUDE.local.md
 !/artifacts/digital_systems/*.png
 !/artifacts/digital_systems/*.log
 !/artifacts/digital_systems/test_summary.json
+
+/artifacts/digital_systems/leak_diagnosis.log
+/artifacts/digital_systems/chapter.log
+/artifacts/digital_systems/integration.log
+/artifacts/digital_systems/reload.log

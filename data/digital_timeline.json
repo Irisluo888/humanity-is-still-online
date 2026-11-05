@@ -1,0 +1,24 @@
+{
+  "beats": {
+    "delivery": 1296,
+    "repair": 1296,
+    "group": 1427,
+    "lunch": 1428,
+    "orders": 1980,
+    "1203": 2360,
+    "1404": 2368,
+    "elevator": 2370,
+    "store": 2410,
+    "night": 2670,
+    "knock1": 2866,
+    "call": 2873,
+    "reveal": 2873,
+    "final": 2873,
+    "end": 2897
+  },
+  "night_stages": [
+    2670,
+    2777,
+    2855
+  ]
+}

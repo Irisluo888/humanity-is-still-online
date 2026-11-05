@@ -34,4 +34,16 @@ func run():
  m.set_context(3001,{},"home");check(m.get_news().size()==1,"news publishes on time")
  m.queue_call("test_call","zhou",3002);check(not m.answer_call("test_call"),"cannot answer future call")
  m.set_context(3002);check(m.answer_call("test_call") and not m.answer_call("test_call"),"call rings and answers once")
+ m.queue_message({"id":"future_order","thread_id":"xiaoyu","sender_id":"xiaoyu","text":"晚到回复","sent_at":3100,"arrive_at":3100})
+ m.send_message("xiaoyu","先发一条消息","free_order")
+ m.set_context(3100);m.tick_presentation(3);m.tick_presentation(3)
+ var timeline=m.get_thread_messages("xiaoyu");var player_index=-1;var future_index=-1
+ for i in range(timeline.size()):
+  if timeline[i].id=="free_order":player_index=i
+  if timeline[i].id=="future_order":future_index=i
+ check(player_index>=0 and future_index>player_index,"delayed NPC reply stays after the player's earlier send")
+ var complete=m.save_data();m.reset()
+ check(m.load_data(complete) and m.calls.test_call.status=="answered","answered phone state persists")
+ var notification=m.get_notifications()[0];m.read_notification(notification.id)
+ check(m.notifications[notification.id].read,"notification read state shared")
  print("MESSAGE CORE FAILURES: ",fails);quit(1 if fails else 0)

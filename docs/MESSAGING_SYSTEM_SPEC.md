@@ -24,4 +24,13 @@
 信号：changed、message_arrived、message_revealed、player_sent_message、unread_count_changed、news_published、notification_posted。changed不等同剧情推进，UI不得据此重建整张地图。
 
 ## 开发边界
-Phase1–2独立模块已通过实际测试；第一章和旧配送适配需另跑集成验收。旧字段只能作兼容投影，不另维护可写历史。不能将Claude建议中的成功标准/勾选当作已实现。
+Phase1—8已完成本轮技术集成验收，详见DIGITAL_SYSTEMS_TEST_REPORT.md；用户试玩验收待进行。旧字段只能作兼容投影，不另维护可写历史。不能将Claude建议中的成功标准/勾选当作已实现。
+
+## 集成与兼容约定
+- Chapter.game_minute 适配 WorldData 的 day/minute 与剧情里程碑（data/digital_timeline.json）；Chapter 第0天对应 WorldData 第1天。打开窗口不推进分钟。
+- MessageManager是唯一可写消息源；Chapter.state.messages/read/news与旧desktop_state仅为兼容投影。UI禁止直接维护第二份聊天记录。
+- ordinal用于待演出排序，display_order用于已显示消息排序，避免玩家回复后新NPC台词插回其上方。旧桌面静态历史cached优先，不重播。
+- get_notifications/read_notification提供共享通知读写；来电只能由answer_call接听一次。隐藏、最小化窗口不读取新消息。
+- save_data含schema、profile、current_minute、serial、记录、新闻、通知、电话、started、remaining、choices；valid_data先验证全部字段，失败不污染现场。Chapter快照限chapter，旧夜间限legacy。
+- 旧私人聊天存档未记录预设回复时，保留原午餐选择对话，不擅自推断玩家拒绝。未知旧历史进入recovered线程。
+- 公共接口所有权：本轮Codex单一写入；后续Agent先阅读本规格与接口合同，禁止同时改共享文件。

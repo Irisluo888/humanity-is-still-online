@@ -1,0 +1,84 @@
+{
+  "date": "2026-11-05",
+  "engine": "Godot 4.7.2 Windows OpenGL",
+  "tests": [
+    {
+      "test": "messaging_core_test",
+      "pass": 24,
+      "errors": 0
+    },
+    {
+      "test": "messaging_ui_test",
+      "pass": 8,
+      "errors": 0
+    },
+    {
+      "test": "messaging_integration_test",
+      "pass": 30,
+      "errors": 0
+    },
+    {
+      "test": "messaging_reload_test",
+      "pass": 1,
+      "errors": 0
+    },
+    {
+      "test": "ch01_qa_test",
+      "pass": 225,
+      "errors": 0
+    },
+    {
+      "test": "ch01_alternate_qa",
+      "pass": 209,
+      "errors": 0
+    },
+    {
+      "test": "ch01_edge_test",
+      "pass": 36,
+      "errors": 0
+    },
+    {
+      "test": "ch01_reload_qa",
+      "pass": 1,
+      "errors": 0
+    },
+    {
+      "test": "night_system_test",
+      "pass": 50,
+      "errors": 0
+    },
+    {
+      "test": "night_reload_test",
+      "pass": 17,
+      "errors": 0
+    },
+    {
+      "test": "round2_smoke",
+      "pass": 29,
+      "errors": 0
+    },
+    {
+      "test": "cruise_boundary_test",
+      "pass": 19,
+      "errors": 0
+    },
+    {
+      "test": "ch01_opening_test",
+      "pass": 13,
+      "errors": 0
+    },
+    {
+      "test": "ch01_walk_qa",
+      "pass": 223,
+      "errors": 0
+    },
+    {
+      "test": "ch01_visual_qa",
+      "pass": 13,
+      "errors": 0
+    }
+  ],
+  "total_pass": 898,
+  "total_errors": 0,
+  "note": "PASS counts include screenshot saves and repeated scenario assertions; not distinct feature coverage."
+}

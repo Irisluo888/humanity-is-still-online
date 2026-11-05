@@ -1,0 +1,213 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 616.56 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4060 Ti
+
+PASS: developer tools default off
+PASS: no state edit controls
+PASS: WASD actually moves CharacterBody3D
+PASS: actual map point delivery
+PASS: real delivery API enters repair
+PASS: actual map point repair
+PASS: dialogue active repair
+PASS: repair ends
+PASS: actual map point home
+PASS: actual map point pc
+PASS: original desktop shared chapter messages
+PASS: dynamic conversation completes rider_group
+PASS: dialogue active group
+PASS: dynamic conversation completes xiaoyu
+PASS: group and lunch advance through device
+PASS: actual map point door
+PASS: actual map point pickup
+PASS: main meal picked through original order logic
+PASS: actual map point garden
+PASS: garden actual resource loaded
+PASS: actual map point building
+PASS: building enters independent hallway
+PASS: dialogue active 1203
+PASS: choice UI skip
+PASS: optional1404 precedes elevator
+PASS: dialogue active elevator
+PASS: actual map point store
+PASS: store actual interior
+PASS: actual map point extinguisher
+PASS: actual map point attack
+PASS: attack cannot fast home
+PASS: dialogue active store
+PASS: choice UI leave
+PASS: chosen store outcome saved
+PASS: resolved attack restores fast home
+PASS: actual map point pc
+PASS: dynamic conversation completes night_group
+PASS: actual map point pc
+PASS: dynamic conversation completes zhou_warning
+PASS: actual map point pc
+PASS: dynamic conversation completes xiaoyu_late
+PASS: actual map point bed
+PASS: dialogue active night
+PASS: knock begins after nighttime review
+PASS: dialogue active knock1
+PASS: call after anonymous knocks
+PASS: dialogue active call
+PASS: identity revealed only after phone
+PASS: dialogue active reveal
+PASS: dialogue active final
+PASS: high risk choice visible
+PASS: opening door requires second confirmation
+PASS: final choice does not prematurely end chapter
+PASS: dialogue active end
+PASS: choice UI public
+PASS: capture 19_alternate_ending
+PASS: complete chapter through UI route
+PASS: new schema save restore
+PASS: branch delivery
+PASS: branch repair
+PASS: branch group
+PASS: branch lunch
+PASS: branch orders
+PASS: branch 1203
+PASS: branch 1404
+PASS: branch elevator
+PASS: branch store
+PASS: branch night
+PASS: branch knock1
+PASS: branch call
+PASS: branch reveal
+PASS: branch final
+PASS: ending outcome quarantine
+PASS: branch delivery
+PASS: branch repair
+PASS: branch group
+PASS: branch lunch
+PASS: branch orders
+PASS: branch 1203
+PASS: branch 1404
+PASS: branch elevator
+PASS: branch store
+PASS: branch night
+PASS: branch knock1
+PASS: branch call
+PASS: branch reveal
+PASS: branch final
+PASS: ending outcome colleague_help
+PASS: branch delivery
+PASS: branch repair
+PASS: branch group
+PASS: branch lunch
+PASS: branch orders
+PASS: branch 1203
+PASS: branch 1404
+PASS: branch elevator
+PASS: branch store
+PASS: branch night
+PASS: branch knock1
+PASS: branch call
+PASS: branch reveal
+PASS: branch final
+PASS: ending outcome aid_pending
+PASS: branch delivery
+PASS: branch repair
+PASS: branch group
+PASS: branch lunch
+PASS: branch orders
+PASS: branch 1203
+PASS: branch 1404
+PASS: branch elevator
+PASS: branch store
+PASS: branch night
+PASS: branch knock1
+PASS: branch call
+PASS: branch reveal
+PASS: branch final
+PASS: ending outcome missing
+PASS: branch delivery
+PASS: branch repair
+PASS: branch group
+PASS: branch lunch
+PASS: branch orders
+PASS: branch 1203
+PASS: branch 1404
+PASS: branch elevator
+PASS: branch store
+PASS: branch night
+PASS: branch knock1
+PASS: branch call
+PASS: branch reveal
+PASS: branch final
+PASS: ending outcome opened_door
+PASS: branch delivery
+PASS: branch repair
+PASS: branch group
+PASS: branch lunch
+PASS: branch orders
+PASS: branch 1203
+PASS: branch elevator
+PASS: branch store
+PASS: branch night
+PASS: branch knock1
+PASS: branch call
+PASS: branch reveal
+PASS: branch final
+PASS: ending outcome quarantine
+PASS: branch delivery
+PASS: branch repair
+PASS: branch group
+PASS: branch lunch
+PASS: branch orders
+PASS: branch 1203
+PASS: branch elevator
+PASS: branch store
+PASS: branch night
+PASS: branch knock1
+PASS: branch call
+PASS: branch reveal
+PASS: branch final
+PASS: ending outcome colleague_help
+PASS: branch delivery
+PASS: branch repair
+PASS: branch group
+PASS: branch lunch
+PASS: branch orders
+PASS: branch 1203
+PASS: branch elevator
+PASS: branch store
+PASS: branch night
+PASS: branch knock1
+PASS: branch call
+PASS: branch reveal
+PASS: branch final
+PASS: ending outcome aid_pending
+PASS: branch delivery
+PASS: branch repair
+PASS: branch group
+PASS: branch lunch
+PASS: branch orders
+PASS: branch 1203
+PASS: branch elevator
+PASS: branch store
+PASS: branch night
+PASS: branch knock1
+PASS: branch call
+PASS: branch reveal
+PASS: branch final
+PASS: ending outcome missing
+PASS: branch delivery
+PASS: branch repair
+PASS: branch group
+PASS: branch lunch
+PASS: branch orders
+PASS: branch 1203
+PASS: branch elevator
+PASS: branch store
+PASS: branch night
+PASS: branch knock1
+PASS: branch call
+PASS: branch reveal
+PASS: branch final
+PASS: ending outcome opened_door
+PASS: normal encounter blocks home
+PASS: failed escape no infection
+PASS: insufficient durability rejected
+PASS: overweight pickup rejected
+PASS: per-map position retained
+PASS: malformed position rejected before mutation
+QA CHECKS: 209 FAILURES: 0

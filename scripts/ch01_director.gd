@@ -2,13 +2,15 @@ extends Node
 signal updated
 var catalog: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://data/ch01_story.json"))
 var state: Dictionary={}
+var digital_timeline: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://data/digital_timeline.json"))
 var session_active=false
 var developer_mode=false
 const SAVE="user://ch01_campaign.json"
 var save_path=SAVE
 const MAPS={"home":"res://scenes/ch01_maps/home.tscn","street":"res://scenes/ch01_maps/street.tscn","garden":"res://scenes/ch01_maps/garden.tscn","store":"res://scenes/ch01_maps/store.tscn","hallway":"res://scenes/ch01_maps/hallway.tscn","elevator":"res://scenes/ch01_maps/elevator.tscn"}
 func fresh() -> void:
- WorldData.new_campaign();session_active=true
+ session_active=false;WorldData.new_campaign();session_active=true
+ MessageManager.reset("chapter")
  state={"schema":2,"beat":0,"place":"street","flags":{},"completed":[],"messages":[],"news":[],"read":[],"danger":false,"durability":10,"capacity":8.0,"exposure":false,"positions":{},"scene_states":{},"encounter":false,"event_active":false,"page":0,"stock":{"water":4,"food":3,"medicine":1},"money":186.5}
  WorldData.inventory={"food":2,"water":2,"medicine":1}
  WorldData.forced_story_roll=0.99
@@ -18,7 +20,27 @@ func fresh() -> void:
  sync()
 func beat() -> Dictionary:return catalog.beats[int(state.beat)]
 func modal() -> bool:return state.event_active or state.encounter
+func _ready() -> void:
+ MessageManager.changed.connect(update_digital_projection)
+ bind_world_clock.call_deferred()
+func bind_world_clock() -> void:
+ WorldData.changed.connect(update_world_context)
+func update_world_context() -> void:
+ if session_active and not state.is_empty() and MessageManager.profile=="chapter":MessageManager.set_context((WorldData.day-1)*1440+WorldData.minute,state.flags,state.place)
+func game_minute() -> int:
+ var milestone=int(digital_timeline.beats.get(beat().id,0))
+ if beat().id=="night":milestone=int(digital_timeline.night_stages[clampi(int(state.get("night_stage",0)),0,2)])
+ return maxi((WorldData.day-1)*1440+WorldData.minute,milestone)
+func update_digital_projection() -> void:
+ if state.is_empty() or MessageManager.profile!="chapter":return
+ state.messages=[];state.read=[];state.news=MessageManager.get_news()
+ for id in MessageManager.catalog.threads:
+  for m in MessageManager.get_thread_messages(id):
+   state.messages.append({"id":m.id,"thread":m.thread_id,"text":MessageManager.catalog.contacts[m.sender_id].name+"："+m.text})
+   if m.read:state.read.append(m.id)
 func sync() -> void:
+ var stamp=game_minute();WorldData.day=stamp/1440+1;WorldData.minute=stamp%1440
+ MessageManager.set_context(stamp,state.flags,state.place)
  state.danger=state.encounter or (state.event_active and beat().danger)
  var id: String=beat().id
  if id=="orders" and not state.flags.get("chapter_orders_created",false):
@@ -31,9 +53,16 @@ func sync() -> void:
  if id=="group":publish_chat("rider_group")
  if id=="lunch":publish_chat("xiaoyu")
  if id=="night":
-  publish_chat("night_group");publish_chat("zhou_warning");publish_chat("xiaoyu_late")
-  for i in range(3):publish_news(i)
+  publish_chat("night_group")
+  if int(state.get("night_stage",0))>=1:publish_chat("zhou_warning");publish_news(2)
+  if int(state.get("night_stage",0))>=2:publish_chat("xiaoyu_late")
+ if state.completed.has("1203"):publish_news(0)
+ if state.completed.has("store"):publish_news(1)
+ if id=="call":
+  MessageManager.queue_call("zhou_door_call","zhou",2873,{"flags":{"ch01_knock1_done":true},"scene":"home"})
+  if state.page>0:MessageManager.answer_call("zhou_door_call")
  if state.flags.get("ch01_complete",false):publish_news(3);publish_news(4)
+ update_digital_projection()
  updated.emit()
 func travel_reason(place: String) -> String:
  if modal():return "请先完成当前对话或事件。"
@@ -57,14 +86,30 @@ func step_page() -> bool:
   state.page+=1;sync();return true
  return false
 func publish_chat(thread: String) -> void:
- for i in range(catalog.chat[thread].size()):
-  var id=thread+"_%03d"%i
-  if not state.messages.any(func(m):return m.id==id):state.messages.append({"id":id,"thread":thread,"text":catalog.chat[thread][i]})
+ MessageManager.queue_script(thread,game_minute(),{"scene":"home"})
 func publish_news(index: int) -> void:
- var item=catalog.news[index]
- if not state.news.any(func(n):return n.id==item.id):state.news.append(item.duplicate(true))
+ var spec: Dictionary=catalog.news[index].duplicate(true)
+ spec.published_at=[2360,2410,2777,2897,2897][index]
+ spec.requires={"flags":{"ch01_1203_done":true}} if index==0 else ({"flags":{"ch01_store_done":true}} if index in [1,2] else {"flags":{"ch01_complete":true}})
+ MessageManager.queue_news(spec)
 func mark_read(id: String) -> void:
- if id not in state.read:state.read.append(id)
+ if MessageManager.records.has(id):MessageManager.mark_read(MessageManager.records[id].thread_id,[id])
+ else:MessageManager.read_news(id)
+ update_digital_projection()
+func group_reviewed() -> bool:
+ var last="rider_group_%03d"%(MessageManager.catalog.scripts.rider_group.size()-1)
+ return MessageManager.thread_finished("rider_group") and MessageManager.is_read(last)
+func review_digital() -> void:
+ if beat().id=="group" and group_reviewed():start_event()
+ elif beat().id=="lunch" and MessageManager.thread_finished("xiaoyu"):
+  if MessageManager.choices.has("xiaoyu_001"):next("yes" if MessageManager.choices.xiaoyu_001=="yes" else "no")
+  else:start_event()
+ elif beat().id=="night":
+  var stage=int(state.get("night_stage",0));var thread=["night_group","zhou_warning","xiaoyu_late"][stage]
+  var items: Array=MessageManager.catalog.scripts[thread]
+  if not MessageManager.thread_finished(thread) or not MessageManager.is_read(items.back().id):return
+  if stage<2:state.night_stage=stage+1;sync()
+  else:state.flags.night_read=true;sync()
 func next(choice: String="continue") -> bool:
  var id: String=beat().id
  if id in state.completed or state.place!=beat().place:return false
@@ -83,6 +128,7 @@ func next(choice: String="continue") -> bool:
   if choice=="hands":WorldData.health=maxi(1,WorldData.health-25)
   state.flags.ch01_store_owner_saved=choice!="leave"
   state.scene_states.store={"broken":true,"chen_saved":choice!="leave","method":choice}
+ if id=="call":MessageManager.answer_call("zhou_door_call")
  if id=="lunch":state.flags.ch01_lunch_yes=choice=="yes"
  if id=="end":state.flags.ch01_told_group=choice=="public";state.flags.ch01_complete=true
  state.completed.append(id);state.flags["ch01_"+id+"_done"]=true
@@ -143,25 +189,18 @@ func complete_delivery(id: String) -> bool:
  var order=WorldData.order_by_id(id)
  if order.is_empty() or not WorldData.deliver_order(id):return false
  state.money+=float(order.fee);sync();return true
-func clock_text() -> String:
- var id: String=beat().id
- if id in ["delivery","repair"]:return "第0天 21:36"
- if id in ["group","lunch"]:return "第0天 23:47"
- if id in ["orders","1203","1404","elevator"]:return "第1天 午后"
- if id=="store":return "第1天 16:10"
- if id=="night":return "第1天 23:35"
- if id=="knock1":return "第1天 23:46"
- if id in ["call","reveal","final"]:return "第1天 23:53"
- return "第2天 00:17"
+func clock_text() -> String:return MessageManager.format_time(game_minute())
 func save() -> bool:
  var data={"orders":WorldData.orders,"active_order_id":WorldData.active_order_id,"state":state,"health":WorldData.health,"stamina":WorldData.stamina,"inventory":WorldData.inventory}
  data.world={"events":WorldData.events,"daytime_orders":WorldData.daytime_orders,"encountered_npcs":WorldData.encountered_npcs,"pending_posts":WorldData.pending_posts,"pending_messages":WorldData.pending_messages}
+ data.digital_system=MessageManager.save_data()
  var f=FileAccess.open(save_path+".tmp",FileAccess.WRITE)
  if f==null:return false
  f.store_string(JSON.stringify(data));f.close()
  if FileAccess.file_exists(save_path):DirAccess.copy_absolute(save_path,save_path+".bak")
  return DirAccess.rename_absolute(save_path+".tmp",save_path)==OK
 func valid(data: Variant) -> bool:
+ if data is Dictionary and data.has("digital_system") and (not MessageManager.valid_data(data.digital_system) or data.digital_system.profile!="chapter"):return false
  if not data is Dictionary or not data.get("state") is Dictionary:return false
  var s: Dictionary=data.state
  if (s.get("schema")!=1 and s.get("schema")!=2) or not (s.get("beat") is float or s.get("beat") is int):return false
@@ -220,17 +259,24 @@ func restore() -> bool:
  var s: Dictionary=d.state
  if int(s.schema)==1:
   s.merge({"positions":{},"scene_states":{},"stock":{"water":4,"food":3,"medicine":1},"money":186.5,"event_active":bool(s.get("danger",false)),"page":0},true);s.schema=2
- WorldData.new_campaign();WorldData.health=int(d.health);WorldData.stamina=int(d.stamina);WorldData.inventory=d.inventory
+ session_active=false;WorldData.new_campaign();WorldData.health=int(d.health);WorldData.stamina=int(d.stamina);WorldData.inventory=d.inventory
  if d.get("orders") is Array:WorldData.orders=d.orders
  if d.get("active_order_id") is String:WorldData.active_order_id=d.active_order_id
  if d.get("world") is Dictionary:
   for k in ["events","daytime_orders","encountered_npcs","pending_posts","pending_messages"]:
    if d.world.get(k) is Array:WorldData.set(k,d.world[k])
- session_active=true;state=s;sync();return true
+ session_active=true;state=s
+ if d.has("digital_system"):
+  MessageManager.load_data(d.digital_system)
+  WorldData.day=MessageManager.current_minute/1440+1;WorldData.minute=MessageManager.current_minute%1440
+ else:
+  MessageManager.migrate_legacy(s.messages,s.read,s.news,game_minute())
+ sync();return true
 func debug_jump(index: int) -> void:
  if not OS.is_debug_build():return
  fresh()
  while state.beat<index:
+  if beat().id=="night":state.night_stage=2;state.flags.night_read=true;sync()
   state.place=beat().place
   next("quarantine" if beat().id=="final" else ("extinguisher" if beat().id=="store" else "continue"))
  state.place=beat().place;state.event_active=beat().id not in ["delivery","orders","group","night"]

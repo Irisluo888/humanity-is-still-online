@@ -13,6 +13,10 @@ var opened=false
 var typing=0.0
 var saved_notice=""
 var notice_timer=0.0
+var notification_toast: PanelContainer
+var call_status_label: Label
+var call_status_detail: Label
+var call_answer: Button
 var ui_scale: Control
 var app_tab="消息"
 var selected_thread="rider_group"
@@ -21,6 +25,7 @@ var rebuild_queued=false
 func _ready() -> void:
  if Chapter.state.is_empty():Chapter.fresh()
  Chapter.updated.connect(request_rebuild)
+ MessageManager.changed.connect(update_digital_hud)
  rebuild()
 func button(parent: Node,text: String,fn: Callable) -> Button:
  var b=Kit.button(text,fn);b.add_theme_font_size_override("font_size",17);parent.add_child(b);return b
@@ -49,10 +54,7 @@ func rebuild() -> void:
  label(row,"有人在敲门  /  "+str(Chapter.catalog.places[Chapter.state.place]),0,22)
  var spacer=Control.new();spacer.size_flags_horizontal=SIZE_EXPAND_FILL;row.add_child(spacer)
  label(row,Chapter.clock_text(),0,16)
- var unseen=0
- for m in Chapter.state.messages:
-  if m.id not in Chapter.state.read:unseen+=1
- hud=label(row,"生命 %d  体力 %d  负重 %.1f/8kg  耐久 %d%s"%[WorldData.health,WorldData.stamina,Chapter.weight(),Chapter.state.durability,("  感染暴露" if Chapter.state.exposure else "")+("  新消息%d"%unseen if unseen else "")],0,17)
+ hud=label(row,digital_hud_text(),0,17)
  hint=Kit.label(objective(),18);hint.position=Vector2(24,98);ui_scale.add_child(hint)
  var bottom=HBoxContainer.new();bottom.position=Vector2(24,666);bottom.add_theme_constant_override("separation",12);ui_scale.add_child(bottom)
  button(bottom,"手机 P",func():show_phone(false)).disabled=Chapter.modal()
@@ -64,7 +66,19 @@ func rebuild() -> void:
  if Chapter.state.flags.get("ch01_complete",false):ending()
  elif Chapter.state.encounter:encounter_ui()
  elif Chapter.state.event_active:show_dialogue()
+ var toast=preload("res://ui/notification_toast.gd").new();toast.position=Vector2(925,92);toast.allow_display=func():return not opened
+ notification_toast=toast;ui_scale.add_child(toast)
+ toast.requested.connect(func(target):
+  if Chapter.modal():return
+  if MessageManager.catalog.threads.has(target):selected_thread=target;show_phone(false,"消息")
+  elif target=="news":show_phone(false,"新闻"))
  map_world.locked=Chapter.modal()
+func digital_hud_text() -> String:
+ var unseen=0
+ for id in MessageManager.catalog.threads:unseen+=MessageManager.get_unread_count(id)
+ return "生命 %d  体力 %d  负重 %.1f/8kg  耐久 %d%s"%[WorldData.health,WorldData.stamina,Chapter.weight(),Chapter.state.durability,("  感染暴露" if Chapter.state.exposure else "")+("  新消息%d"%unseen if unseen else "")]
+func update_digital_hud() -> void:
+ if is_instance_valid(hud):hud.text=digital_hud_text()
 func objective() -> String:
  var objectives={"delivery":"餐食已在箱中：前往右上方临街民居，靠近黄色送餐标记按E。","repair":"电动车故障：到驿站修车摊找老周。","group":"回家后在电脑或手机里读完骑手群。","lunch":"查看小鱼的私信。","orders":"出门，到取餐窗口领取幸福花园1203餐食；普通订单可在手机查看。","1203":"到幸福花园三栋入口，给1203交付。","1404":"1404门前，纸条另一行字是什么？","elevator":"电梯下行中。","store":"从小区进入陈姨便利店，先观察环境，再接近柜台。","night":"回家查看骑手群和新闻，之后到床边休息。","knock1":"门外有人。","call":"手机响了。","reveal":"再次确认门外的人。","final":"决定如何帮助老周。","end":"回复骑手群，再查看章末消息。"}
  return saved_notice if not saved_notice.is_empty() else objectives.get(Chapter.beat().id,"")
@@ -87,15 +101,17 @@ func show_dialogue() -> void:
  body_text=RichTextLabel.new();body_text.bbcode_enabled=false;body_text.text=page.text;body_text.custom_minimum_size=Vector2(900,82);body_text.fit_content=true;body_text.scroll_active=false;body_text.add_theme_font_size_override("normal_font_size",21);box.add_child(body_text);typing=0;body_text.visible_characters=0
  if Chapter.beat().id=="call":
   var call_card=PanelContainer.new();call_card.position=Vector2(980,130);call_card.size=Vector2(260,210);style(call_card);ui_scale.add_child(call_card)
-  var call_box=VBoxContainer.new();call_card.add_child(call_box);label(call_box,"来电 · 老周",0,24)
-  label(call_box,"手机振动与门外声音对应。",230,17)
-  if Chapter.state.page==0:button(call_box,"接听",func():Chapter.step_page())
+  var call_box=VBoxContainer.new();call_card.add_child(call_box);call_status_label=label(call_box,"来电 · 老周",0,24)
+  call_status_detail=label(call_box,"等待接听……" if Chapter.state.page==0 else "电话接通，留意门外的动静。",230,17)
+  if Chapter.state.page==0:call_answer=button(call_box,"接听",continue_dialogue)
   else:label(call_box,"通话中……",230)
  var choices=HBoxContainer.new();choices.add_theme_constant_override("separation",8);box.add_child(choices)
  if Chapter.state.page<Chapter.beat().pages.size()-1:button(choices,"继续 / 空格",continue_dialogue)
  else:build_choices(box)
 func continue_dialogue() -> void:
  if is_instance_valid(body_text) and body_text.visible_characters>=0 and body_text.visible_characters<body_text.get_total_character_count():typing=999;body_text.visible_characters=-1;return
+ if Chapter.beat().id=="call" and Chapter.state.page==0:
+  MessageManager.answer_call("zhou_door_call")
  if Chapter.step_page():return
  if Chapter.beat().id not in ["1203","lunch","store","final","end"]:finish()
 func finish(choice="continue") -> void:Chapter.next(choice)
@@ -141,6 +157,7 @@ func encounter_ui() -> void:
 func show_phone(computer=false,tab="消息") -> void:
  if Chapter.modal() or opened:return
  opened=true;app_tab=tab;map_world.locked=true
+ if is_instance_valid(notification_toast):notification_toast.hide()
  phone=PanelContainer.new();phone.position=Vector2(700,104) if not computer else Vector2(120,100);phone.size=Vector2(540,540) if not computer else Vector2(1040,540);style(phone);ui_scale.add_child(phone)
  render_phone(computer)
 func render_phone(computer: bool=false) -> void:
@@ -149,32 +166,19 @@ func render_phone(computer: bool=false) -> void:
  var row=HBoxContainer.new();col.add_child(row);label(row,"本地电脑" if computer else "本地手机 / 离线",0,22)
  button(row,"关闭",close_phone)
  var tabs=HBoxContainer.new();col.add_child(tabs)
- for name in ["消息","接单","地图","新闻","背包"]:
+ for name in ["消息","接单","地图","新闻","背包","通知"]:
   var selected: String=name;button(tabs,name,func():app_tab=selected;render_phone(computer)).custom_minimum_size.x=70
  var scroll=ScrollContainer.new();scroll.custom_minimum_size=Vector2(490 if not computer else 980,410);scroll.size_flags_vertical=SIZE_EXPAND_FILL;col.add_child(scroll)
  var box=VBoxContainer.new();box.custom_minimum_size.x=460 if not computer else 940;scroll.add_child(box)
  var width=450 if not computer else 920
  match app_tab:
   "消息":
-   for record in Chapter.state.messages:
-    if record.thread==selected_thread:Chapter.mark_read(record.id)
-   for pair in [["骑手群","rider_group"],["小鱼","xiaoyu"],["夜间骑手群","night_group"],["老周私信","zhou_warning"],["小鱼晚间私信","xiaoyu_late"]]:
-    var thread: String=pair[1];var unread=0
-    for m in Chapter.state.messages:
-     if m.thread==thread and m.id not in Chapter.state.read:unread+=1
-    button(box,pair[0]+(" / 未读%d"%unread if unread else ""),func():selected_thread=thread;render_phone(computer))
-   for m in Chapter.state.messages:
-    if m.thread==selected_thread:
-     var message_row=HBoxContainer.new();box.add_child(message_row)
-     var icon=TextureRect.new();icon.custom_minimum_size=Vector2(32,48);icon.expand_mode=TextureRect.EXPAND_IGNORE_SIZE;icon.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED;icon.texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST
-     var actor="zhou" if m.text.begins_with("老周") else ("xiaoyu" if m.text.begins_with("小鱼") else "")
-     if not actor.is_empty():icon.texture=load(ART+actor+".png")
-     message_row.add_child(icon);label(message_row,m.text,width-46,18);Chapter.mark_read(m.id)
-     if "[照片]" in m.text:
-      var photo=TextureRect.new();photo.texture=load(ART+"door.png");photo.custom_minimum_size=Vector2(144,144);photo.expand_mode=TextureRect.EXPAND_IGNORE_SIZE;photo.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED;box.add_child(photo)
+   scroll.vertical_scroll_mode=ScrollContainer.SCROLL_MODE_DISABLED
+   var pane=preload("res://ui/message_panel.gd").new();pane.thread_id=selected_thread;pane.custom_minimum_size=Vector2(width,380);box.add_child(pane)
+   pane.selector.item_selected.connect(func(_i):selected_thread=pane.thread_id)
   "新闻":
-   for n in Chapter.state.news:label(box,n.text,width);box.add_child(HSeparator.new());Chapter.mark_read(n.id)
-   if Chapter.state.news.is_empty():label(box,"暂无新新闻。",width)
+   scroll.vertical_scroll_mode=ScrollContainer.SCROLL_MODE_DISABLED
+   var browser=preload("res://ui/news_panel.gd").new();browser.custom_minimum_size=Vector2(width,375);box.add_child(browser)
   "接单":
    label(box,"本段配送收入 ¥%.2f · 可用金额 ¥%.2f"%[WorldData.income(),Chapter.state.money],width)
    for order in WorldData.orders:
@@ -188,6 +192,10 @@ func render_phone(computer: bool=false) -> void:
    label(box,"住处 ↔ 老城区街道 ↔ 幸福花园 ↔ 便利店
 三栋入口：1203交付 / 可选1404 / 电梯下楼
 靠近场景标记按E交互。",width)
+  "通知":
+   for n in MessageManager.get_notifications():
+    label(box,n.title+" · "+MessageManager.format_time(int(n.at))+"\n"+n.text,width,17)
+    MessageManager.read_notification(n.id);box.add_child(HSeparator.new())
   "背包":
    label(box,"携带 %.1f / 8kg · 装备耐久 %d"%[Chapter.weight(),Chapter.state.durability],width)
    for pair in [["饭团","food"],["饮水","water"],["医疗物资","medicine"]]:
@@ -195,10 +203,7 @@ func render_phone(computer: bool=false) -> void:
 func close_phone() -> void:
  if is_instance_valid(phone):phone.queue_free()
  opened=false;map_world.locked=false
- if Chapter.beat().id=="group" and Chapter.state.read.has("rider_group_%03d"%(Chapter.catalog.chat.rider_group.size()-1)):
-  Chapter.start_event()
- elif Chapter.beat().id=="lunch":Chapter.start_event()
- elif Chapter.beat().id=="night":Chapter.state.flags.night_read=true
+ Chapter.review_digital()
  request_rebuild()
 func notice(text: String) -> void:
  saved_notice=text;notice_timer=4;hint.text=text
@@ -223,7 +228,7 @@ func interact_point(id: String) -> void:
   "bed":
    if beat=="night" and Chapter.state.flags.get("night_read",false):
     Chapter.start_event()
-   else:notice("先查看今天的消息，再休息。")
+   else:notice("先查看晚间骑手群、老周和小鱼的新消息，再休息。")
   "repair":
    if beat=="repair":Chapter.start_event()
    else:notice("老周修过的接线还牢固。")
@@ -286,6 +291,11 @@ func interact_point(id: String) -> void:
    else:notice("装备完好，或缺少维修物资。")
   _:notice("这里留下了熟悉的生活痕迹。")
 func _process(delta: float) -> void:
+ if is_instance_valid(call_status_label):
+  var answered=MessageManager.calls.get("zhou_door_call",{}).get("status","")=="answered"
+  call_status_label.text="通话中 · 老周" if answered else "来电 · 老周"
+  if is_instance_valid(call_status_detail):call_status_detail.text="电话接通，留意门外的动静。" if answered else "等待接听……"
+  if is_instance_valid(call_answer):call_answer.visible=not answered
  if notice_timer>0:
   notice_timer-=delta
   if notice_timer<=0:saved_notice=""

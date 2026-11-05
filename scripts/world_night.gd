@@ -6,6 +6,7 @@ var followups: Array=[]
 func new_campaign() -> void:
  desktop_state={"chat":{},"read":[]};unlocked_content={};followups=[]
  super.new_campaign()
+ MessageManager.reset("legacy")
 func card_by_id(id: String) -> Dictionary:
  for card in night_catalog:
   if card.id==id:return card
@@ -29,25 +30,42 @@ func ensure_message_ids() -> void:
  for i in range(night_messages.size()):
   if not night_messages[i].has("message_id"):night_messages[i].message_id="night_%05d" % i
   if not night_messages[i].has("received_day"):night_messages[i].received_day=day
+ bridge_legacy_messages()
+func bridge_legacy_messages() -> void:
+ if MessageManager.profile!="legacy":return
+ MessageManager.set_context(day*1440+minute,{},location)
+ for message in night_messages:
+  var thread="legacy_"+message.person_id
+  if not MessageManager.catalog.threads.has(thread):continue
+  var id="legacy_"+message.message_id
+  MessageManager.begin_thread(thread)
+  if not MessageManager.records.has(id):
+   MessageManager.queue_message({"id":id,"thread_id":thread,"sender_id":message.person_id,"text":message.text,"sent_at":int(message.get("received_day",day))*1440+minute})
+   MessageManager.records[id].display_order=MessageManager.next_display_order();MessageManager.records[id].revealed=true;MessageManager.records[id].read=message.message_id in desktop_state.read
+ for person in desktop_state.chat:
+  for message in desktop_state.chat[person]:
+   var id="legacy_"+message.id
+   if not MessageManager.records.has(id):
+    MessageManager.send_message("legacy_"+person,message.text,id)
 func return_home() -> bool:
  if not super.return_home():return false
  sync_unlocks();return true
 func unread_for(person_id: String) -> int:
  ensure_message_ids()
- var count=0
- for message in night_messages:
-  if message.person_id==person_id and message.message_id not in desktop_state.read:count+=1
- return count
+ return MessageManager.get_unread_count("legacy_"+person_id)
 func read_contact(person_id: String) -> void:
- ensure_message_ids()
+ ensure_message_ids();MessageManager.mark_read("legacy_"+person_id)
  for message in night_messages:
   if message.person_id==person_id and message.message_id not in desktop_state.read:desktop_state.read.append(message.message_id)
 func send_chat(person_id: String,value: String) -> bool:
  var text=value.strip_edges()
  if not campaign or not people.has(person_id) or text.is_empty() or text.length()>1000:return false
+ ensure_message_ids()
  if not desktop_state.chat.has(person_id):desktop_state.chat[person_id]=[]
  var records: Array=desktop_state.chat[person_id]
- records.append({"id":"local_%s_%d" % [person_id,records.size()],"text":text,"time":time_text()})
+ var id="local_%s_%d"%[person_id,records.size()]
+ if not MessageManager.send_message("legacy_"+person_id,text,"legacy_"+id):return false
+ records.append({"id":id,"text":text,"time":time_text()})
  changed.emit();return true
 func queue_followup(content_id: String) -> bool:
  if not campaign or period!="night" or not unlocked_content.has(content_id):return false
@@ -77,7 +95,7 @@ func complete_followup() -> bool:
  tell("回访完成，记录会在收工后的夜间信息中出现。")
  return true
 func extra_save_data() -> Dictionary:
- return {"night_system":{"schema":1,"desktop":desktop_state,"unlocks":unlocked_content,"followups":followups}}
+ return {"night_system":{"schema":1,"desktop":desktop_state,"unlocks":unlocked_content,"followups":followups},"digital_system":MessageManager.save_data()}
 func apply_extra_save(data: Dictionary) -> void:
  var state: Dictionary=data.get("night_system",{})
  desktop_state=state.get("desktop",{"chat":{},"read":[]}).duplicate(true)
@@ -85,9 +103,12 @@ func apply_extra_save(data: Dictionary) -> void:
  followups=state.get("followups",[]).duplicate(true)
  for message in night_messages:
   if not message.has("received_day"):message.received_day=0
+ if data.has("digital_system"):MessageManager.load_data(data.digital_system)
+ else:MessageManager.reset("legacy")
  ensure_message_ids();sync_unlocks()
 func valid_save(data: Variant) -> bool:
  if not super.valid_save(data):return false
+ if data.has("digital_system") and (not MessageManager.valid_data(data.digital_system) or data.digital_system.profile!="legacy"):return false
  var message_ids: Array=[]
  for message in data.night_messages:
   if message.has("message_id"):
