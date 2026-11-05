@@ -56,3 +56,13 @@ artifacts/ch01_qa/01至26命名PNG均已进入模型视觉上下文查看（其�
 - 更新既有artifacts/ch01_qa/01_street.png、12_desktop_chat.png、13_desktop_news.png为回归运行输出；新增artifacts/digital_systems/ch01_transition_test.log及上述3张PNG。无删除。
 - F5新游戏：回复小鱼后等待连续消息；手机关闭后恢复通知；完成首夜聊天后查看清晨过场；电脑通知“查看”打开聊天。
 - 限制：过场为文字/色调渐变，不是完整日出场景动画；macOS及真人盲玩未验收。旧message_floor_fix_test中的“手机打开仍显示横幅”是已被本次需求取代的历史断言，本次以transition专项为准。
+
+## 2026-11-05 手机联系人列表与便利店入场顺序
+- 新增ui/phone_messages.gd：骑手群、小鱼、老周独立头像行、最近消息、红色未读数字；列表不标记已读，点击进入聊天并返回列表。晚间同联系人归为一行，旧时段可用历史入口查看。保留原创配色/素材，不使用真实平台标识。
+- 修改ui/message_panel.gd增加明确选择联系人时禁用自动跳转；scripts/ch01_play.gd接入手机列表，通知点击仍直接进入指定聊天。
+- 修改scripts/ch01_map.gd：入店及陈姨第一段对白时不生成男人；门铃对应第二段才从入口用2秒移动到柜台，后续仍使用同一人物和原袭击结果。
+- 新增scripts/phone_store_test.gd：最终11 PASS；原ch01_qa_test实际运行228 PASS，最终日志无错误。首次专项因调试跳转尚在清晨过场而未能触发对话，调整测试等待/隔离后通过；未伪报首次通过。
+- 新增artifacts/digital_systems/21_contact_list.png、22_contact_chat.png、23_store_before_arrival.png、24_store_entrance.png及phone_store_test.log。4图均实际送入视觉上下文；联系人、徽标、聊天布局及陈姨单独在店确认可见。
+- 回归更新artifacts/ch01_qa/01_street.png、05_store_before.png、06_attack.png；保留上轮自动生成scripts/ch01_transition_test.gd.uid。无删除。
+- F5打开手机“消息”查看列表，点联系人进入、返回列表；便利店先与陈姨对话，继续到门铃页观察男人进店。
+- 限制：仍使用既有人物Sprite位移，没有完整行走帧；第一章仅现有群聊与联系人。手机入口变化后的老专项脚本可能需按列表交互更新，本次专项与主线已实际通过；macOS未验证。

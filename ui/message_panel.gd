@@ -1,5 +1,6 @@
 extends VBoxContainer
 # One component used by test, phone and desktop. No private copy of history/read flags.
+var auto_select=true
 var thread_id="rider_group"
 var selector: OptionButton
 var transcript: VBoxContainer
@@ -15,7 +16,7 @@ var layout_busy=false
 var notification_audio: AudioStreamPlayer
 const Kit=preload("res://ui/kit.gd")
 func _ready() -> void:
- if MessageManager.get_unread_count(thread_id)==0 and MessageManager.pending(thread_id).is_empty():
+ if auto_select and MessageManager.get_unread_count(thread_id)==0 and MessageManager.pending(thread_id).is_empty():
   for id in MessageManager.catalog.threads:
    if MessageManager.get_unread_count(id)>0 or (not MessageManager.pending(id).is_empty() and MessageManager.pending(id).get("delivered",false)):
     thread_id=id;break

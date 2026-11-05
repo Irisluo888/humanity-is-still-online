@@ -106,11 +106,14 @@ func store() -> void:
  block(Vector3(-5,1.3,-4),Vector3(3,2.6,1),"fridge")
  block(Vector3(5,0.7,-1),Vector3(3,1.4,1.3),"counter")
  var chen=prop("chen",Vector3(5,0,-2.4),1.85)
- if not Chapter.state.scene_states.get("store",{}).get("broken",false):
-  var man=prop("man",Vector3(5,0,1.2),1.95)
+ if not Chapter.state.scene_states.get("store",{}).get("broken",false) and Chapter.state.event_active and Chapter.beat().id=="store" and Chapter.state.page>=1:
+  var man=prop("man",Vector3(5,0,1.2),1.95);man.name="StoreMan"
+  if Chapter.state.page==1:
+   man.position=Vector3(0,0.975,4.8)
+   create_tween().tween_property(man,"position",Vector3(5,0.975,1.2),2.0)
   if Chapter.state.event_active and Chapter.beat().id=="store" and Chapter.state.page>=Chapter.beat().pages.size()-2:
    man.texture=load(ART+"man_attack.png");man.position=Vector3(5,1,-2);chen.position.y=0.45;chen.modulate=Color("b79894");prop("briefcase",Vector3(4,0,0.8),1);prop("glass",Vector3(5,0,0.5),1)
- elif not Chapter.state.flags.get("ch01_store_owner_saved",false):chen.hide()
+ elif Chapter.state.scene_states.get("store",{}).get("broken",false) and not Chapter.state.flags.get("ch01_store_owner_saved",false):chen.hide()
  marker("shop","陈姨 / 购物",Vector3(6,0,-0.1));marker("attack","柜台前",Vector3(4,0,1.5))
  if not Chapter.state.flags.get("extinguisher_used",false):prop("extinguisher",Vector3(7,0,2.3),1.2)
  marker("extinguisher","灭火器",Vector3(7,0,2.3))

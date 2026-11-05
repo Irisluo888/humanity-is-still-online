@@ -20,6 +20,7 @@ var call_answer: Button
 var ui_scale: Control
 var app_tab="消息"
 var selected_thread="rider_group"
+var phone_notification_target=""
 var last_cue=""
 var rebuild_queued=false
 var guidance: Control
@@ -80,7 +81,7 @@ func rebuild() -> void:
   if opened:
    if is_instance_valid(phone):phone.queue_free()
    opened=false
-  if MessageManager.catalog.threads.has(target):selected_thread=target;show_phone(false,"消息")
+  if MessageManager.catalog.threads.has(target):selected_thread=target;phone_notification_target=target;show_phone(false,"消息")
   elif target=="news":show_phone(false,"新闻"))
  map_world.locked=Chapter.modal()
  build_guidance()
@@ -227,8 +228,7 @@ func render_phone(computer: bool=false) -> void:
  match app_tab:
   "消息":
    scroll.vertical_scroll_mode=ScrollContainer.SCROLL_MODE_DISABLED
-   var pane=preload("res://ui/message_panel.gd").new();pane.thread_id=selected_thread;pane.custom_minimum_size=Vector2(width,380);box.add_child(pane)
-   pane.selector.item_selected.connect(func(_i):selected_thread=pane.thread_id)
+   var pane=preload("res://ui/phone_messages.gd").new();pane.initial_thread=phone_notification_target;phone_notification_target="";pane.custom_minimum_size=Vector2(width,380);box.add_child(pane)
   "新闻":
    scroll.vertical_scroll_mode=ScrollContainer.SCROLL_MODE_DISABLED
    var browser=preload("res://ui/news_panel.gd").new();browser.custom_minimum_size=Vector2(width,375);box.add_child(browser)

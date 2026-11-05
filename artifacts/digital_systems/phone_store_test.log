@@ -1,0 +1,15 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 616.56 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4060 Ti
+
+PASS: three separate contact rows
+PASS: contact list does not mark messages read
+PASS: 21_contact_list
+PASS: contact click opens chat without dropdown and clears unread
+PASS: 22_contact_chat
+PASS: empty contact stays selected instead of switching to other unread
+PASS: man absent before Chen conversation
+PASS: 23_store_before_arrival
+PASS: Chen speaks before man enters
+PASS: 24_store_entrance
+PASS: man walks from entrance to counter
+PHONE STORE FAILURES: 0
