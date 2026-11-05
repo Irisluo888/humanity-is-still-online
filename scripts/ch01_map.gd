@@ -7,6 +7,8 @@ var held: Dictionary={}
 var locked=false
 var encounter_cooldown=2.0
 var hint=""
+var step_distance=0.0
+var clear_signs: Array=[]
 const ART="res://assets/art/ch01/"
 func block(pos: Vector3,dim: Vector3,tex: String,solid=true) -> Node3D:
  var mesh=MeshInstance3D.new();var shape=BoxMesh.new();shape.size=dim;mesh.mesh=shape
@@ -29,9 +31,9 @@ func prop(id: String,pos: Vector3,height: float=2.0) -> Sprite3D:
  var s=Sprite3D.new();s.texture=load(ART+id+".png");s.pixel_size=height/96.0;s.position=pos+Vector3(0,height/2,0);s.billboard=BaseMaterial3D.BILLBOARD_ENABLED;s.texture_filter=BaseMaterial3D.TEXTURE_FILTER_NEAREST;add_child(s);return s
 func marker(id: String,text: String,pos: Vector3) -> void:
  points[id]={"pos":pos,"text":text}
- var label=Label3D.new();label.text=text if id in ["delivery","repair","pickup","garden","building","store","home","up14"] else "◆";label.position=pos+Vector3(0,1.8,0);label.billboard=BaseMaterial3D.BILLBOARD_ENABLED;label.font_size=40;label.pixel_size=0.012;label.modulate=Color("e0d4b5");add_child(label)
+ var label=Label3D.new();label.text=text if id in ["delivery","repair","pickup","garden","building","store","home","up14"] else "◆";label.position=pos+Vector3(0,1.8,0);label.billboard=BaseMaterial3D.BILLBOARD_ENABLED;label.visible=false;clear_signs.append({"text":label.text,"pos":pos+Vector3(0,.7,0)});label.font_size=40;label.pixel_size=0.012;label.modulate=Color("e0d4b5");add_child(label)
 func plaque(text: String,pos: Vector3) -> void:
- var l=Label3D.new();l.text=text;l.position=pos;l.font_size=64;l.pixel_size=0.008;l.billboard=BaseMaterial3D.BILLBOARD_ENABLED;l.modulate=Color("e4c998");add_child(l)
+ var l=Label3D.new();l.text=text;l.visible=false;clear_signs.append({"text":text,"pos":pos});l.position=pos;l.font_size=64;l.pixel_size=0.008;l.billboard=BaseMaterial3D.BILLBOARD_ENABLED;l.modulate=Color("e4c998");add_child(l)
 func _ready() -> void:
  var dimensions=Vector3(6,0.3,6) if kind=="elevator" else (Vector3(16,0.3,8) if kind in ["hallway","hallway12"] else Vector3(18,0.3,14))
  block(Vector3(0,-0.15,0),dimensions,"wood" if kind=="home" else ("tile" if kind in ["store","elevator","hallway","hallway12"] else "paving"))
@@ -61,18 +63,25 @@ func _ready() -> void:
    if body==player and not locked and encounter_cooldown<=0:
     player.position+=Vector3(-1.8,0,1.5);Chapter.remember_position(player.position);Chapter.state.encounter=true;Chapter.sync())
 func architecture(x: float,z: float,width: float,height: float,shop: bool=false) -> void:
- block(Vector3(x,height/2,z),Vector3(width,height,3),"storefront" if shop else "facade")
- block(Vector3(x,0.15,z+1.55),Vector3(width+0.2,0.3,0.25),"plaster")
- block(Vector3(x,height+0.1,z),Vector3(width+0.35,0.2,3.35),"paving")
- block(Vector3(x,height+0.3,z-0.6),Vector3(width/3,0.4,1),"plaster")
- # Recessed door, projecting shop awning and balcony give the facade actual depth.
- block(Vector3(x,0.95,z+1.53),Vector3(width/3,1.9,0.12),"door")
- block(Vector3(x,2.0,z+1.9),Vector3(width*0.9,0.18,0.9),"wood")
- if not shop:
-  block(Vector3(x,height*0.66,z+1.8),Vector3(width*0.8,0.12,0.7),"plaster")
-  for offset in [-0.35,0,0.35]:block(Vector3(x+width*offset,height*0.66+0.25,z+2),Vector3(0.045,0.5,0.045),"plaster")
-  block(Vector3(x,height*0.66+0.5,z+2),Vector3(width*0.8,0.06,0.05),"plaster")
- block(Vector3(x+width*0.35,height*0.6,z+1.65),Vector3(0.5,0.4,0.3),"fridge")
+ var building=Node3D.new();building.name="UrbanBuilding";add_child(building)
+ var collider=StaticBody3D.new();var collision=CollisionShape3D.new();var shape=BoxShape3D.new();shape.size=Vector3(width,height,3);collision.shape=shape;collider.position=Vector3(x,height/2,z);collider.add_child(collision);building.add_child(collider)
+ var rows=2 if shop else 3
+ for row in range(rows):
+  for column in range(3):
+   var id="wall-a-door" if row==0 and column==1 else "wall-a-window"
+   var module=load("res://assets/third_party/kenney/retro_urban/"+id+".glb").instantiate()
+   building.add_child(module);module.rotation.y=PI;module.position=Vector3(x+(column-1)*width/3,row*height/rows,z);module.scale=Vector3(width/3,height/rows,3)
+   pixel_materials(module)
+ block(Vector3(x,height+0.07,z),Vector3(width+.2,.14,3.2),"paving")
+ if shop:
+  var awning=load("res://assets/third_party/kenney/retro_urban/detail-awning-wide.glb").instantiate();building.add_child(awning);awning.position=Vector3(x,height*.55,z+1.65);awning.scale=Vector3(width*.95,1,2);pixel_materials(awning)
+func pixel_materials(node: Node) -> void:
+ if node is MeshInstance3D:
+  for i in range(node.mesh.get_surface_count()):
+   var material=node.get_active_material(i)
+   if material is StandardMaterial3D:
+    var copy=material.duplicate();copy.texture_filter=BaseMaterial3D.TEXTURE_FILTER_NEAREST;copy.roughness=1.0;node.set_surface_override_material(i,copy)
+ for child in node.get_children():pixel_materials(child)
 func street() -> void:
  block(Vector3(0,0.015,1),Vector3(18,0.03,3),"road",false)
  for pair in [[-6,"早餐与家常菜"],[0,"骑手驿站"],[6,"临街民居"]]:
@@ -162,11 +171,19 @@ func home() -> void:
  prop("bike",Vector3(1,0,3),1.2);marker("charger","充电器与外卖箱",Vector3(1,0,4))
 func _physics_process(delta: float) -> void:
  encounter_cooldown=maxf(0,encounter_cooldown-delta)
- if locked or not is_instance_valid(player) or Chapter.state.place!=kind:return
+ if not is_instance_valid(player):return
+ var riding=kind=="street" and Chapter.beat().id=="delivery"
+ LocalAudio.ambience(kind in ["street","garden"],riding and not locked and not LocalAudio.settings_open and not held.is_empty() and player.velocity.length()>0.2)
+ if locked or LocalAudio.settings_open or Chapter.state.place!=kind:return
  var x=float(held.get(KEY_D,false) or held.get(KEY_RIGHT,false))-float(held.get(KEY_A,false) or held.get(KEY_LEFT,false))
  var z=float(held.get(KEY_S,false) or held.get(KEY_DOWN,false))-float(held.get(KEY_W,false) or held.get(KEY_UP,false))
  var move=Vector3(x+z,0,z-x).normalized()*3
+ var previous=player.position
  player.velocity=Vector3(move.x,-2,move.z);player.move_and_slide()
+ step_distance+=Vector2(player.position.x-previous.x,player.position.z-previous.z).length()
+ if step_distance>=0.95:
+  step_distance=0
+  if not riding:LocalAudio.footstep()
  var limit=2.5 if kind=="elevator" else 8.0
  player.position.x=clampf(player.position.x,-limit,limit);player.position.z=clampf(player.position.z,-2.5 if kind=="elevator" else (-3.5 if kind in ["hallway","hallway12"] else -6),2.5 if kind=="elevator" else (3.5 if kind in ["hallway","hallway12"] else 6))
  Chapter.remember_position(player.position)
@@ -181,3 +198,6 @@ func interact() -> void:
   var distance=player.position.distance_to(points[id].pos)
   if distance<nearest:nearest=distance;selected=id
  if not selected.is_empty():hotspot.emit(selected)
+
+func _exit_tree():
+ LocalAudio.ambience(false,false)

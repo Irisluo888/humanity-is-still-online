@@ -153,3 +153,92 @@ F6运行scenes/messaging_test.tscn：等待逐条聊天、选择回复、滚动�
 - 保留新增Godot UID：scripts/phone_store_test.gd.uid、ui/phone_messages.gd.uid（上轮组件生成标识）。无删除。未接入第三方素材，不扩展剧情。
 - F5进入第一章，手机/电脑打开消息：联系人按最近消息置顶，点击查看并同步已读；聊天内部仍由旧到新。旧配送自由模式沿用原聊天实现，本次改动范围为第一章双端。
 - 限制：素材可用性不是最终美术/音效验收；作者来源或授权待补的素材暂存评估，macOS未测；部分旧专项按原下拉组件操作需同步升级。
+
+## 2026-11-05 / 手机 Y2K UI 实测
+
+### 结果与范围
+- Godot4.7.2 Windows/OpenGL实际运行，phone_y2k_test.gd：36 PASS / 0 FAIL（含13张截图保存检查）；ch01_qa_test.gd：228 PASS / 0 FAIL。最终运行日志未见解析错误或运行时错误。
+- 手机专项覆盖实际鼠标点击通讯录/会话/发送、6联系人搜索、列表滚动、预设填充后发送、逐条送达、未读共享、最新置顶、关闭会话仍送达、未来消息不投递、游戏时间不随UI推进、长文本不横向溢出、原存档schema载入、手机关闭释放移动锁、电脑宽界面保留。
+- 本地图像与音频附件扩展实测，音频只使用振动测试片段验证播放状态，不是人物语音，不声称试听质量完成。
+- 1280×720及960×540截图已实际作为图像输入检查。确认文字、头像、行列、底部按钮、渐变与左右气泡可见；滚动边缘的部分内容裁切属于ScrollContainer正常行为。
+- 初次运行发现头像上裁、默认灰输入栏；一次修正又发现自动换行使短按钮收缩，已修复并重新运行截图。非提权导入曾遇编辑器配置保存错误，随后授权Godot运行导入成功；不将其计为最终游戏运行错误。
+
+### 实际命令
+```powershell
+& 'D:\Godot_v4.7.2-stable_win64_console.exe' --headless --path . --editor --import --quit
+& 'D:\Godot_v4.7.2-stable_win64_console.exe' --path . --script res://scripts/phone_y2k_test.gd --log-file artifacts/phone_y2k/test.log
+& 'D:\Godot_v4.7.2-stable_win64_console.exe' --path . --script res://scripts/ch01_qa_test.gd --log-file artifacts/phone_y2k/chapter_regression.log
+```
+
+### 查看成果
+F5进入第一章，P打开手机消息；通讯录→联系人→资料→聊天；有剧情回复时先选择，再点发送。发现页返回既有订单/地图/新闻等应用。四个独立F6入口：scenes/phone/chat_list.tscn、contacts.tscn、group_chat.tscn、private_chat.tscn。
+截图在artifacts/phone_y2k：01列表、02通讯录、03资料、04群聊、05私聊、06缩放、07游戏内、08玩家回复、09长文本、10原电脑、11附件测试、12通讯录下半部分、13通知行。09/11含专项测试数据，仅在测试进程，不写入正式剧情。
+
+### 限制与未完成
+原有像素头像复用裁切，非全新精细肖像；电量/信号仅装饰。录音、表情/附件发送、自由输入未实现，按钮如实提示。新朋友当前为空，星标为既有小鱼/老周快捷入口。阿强/老马/陈姨/林晓未扩写私聊台词。没有macOS实机测试。视觉设计待用户验收；未声称第一章整体美术达到正式发布标准。
+
+### 文件记录
+修改（保留原有功能）：
+- `AGENTS.md`
+- `ART_DIRECTION.md`
+- `CHANGELOG.md`
+- `DEV_LOG.md`
+- `ROADMAP.md`
+- `docs/DEVELOPMENT_LOG.md`
+- `docs/DIGITAL_SYSTEMS_ARCHITECTURE.md`
+- `docs/MESSAGING_SYSTEM_SPEC.md`
+- `docs/DIGITAL_SYSTEMS_TEST_REPORT.md`
+- `data/messaging.json`
+- `scripts/ch01_play.gd`
+- `ui/message_panel.gd`
+
+新增（组件/预览/头像适配/导出工具/测试证据）：
+- `ui/phone/avatar_icon.gd`
+- `ui/phone/avatar_icon.gd.uid`
+- `ui/phone/contact_item.gd`
+- `ui/phone/contact_item.gd.uid`
+- `ui/phone/list_item.gd`
+- `ui/phone/list_item.gd.uid`
+- `ui/phone/message_bubble.gd`
+- `ui/phone/message_bubble.gd.uid`
+- `ui/phone/messenger.gd`
+- `ui/phone/messenger.gd.uid`
+- `ui/phone/ornament.gd`
+- `ui/phone/ornament.gd.uid`
+- `ui/phone/palette.gd`
+- `ui/phone/palette.gd.uid`
+- `ui/phone/preview.gd`
+- `ui/phone/preview.gd.uid`
+- `scenes/phone/chat_list.tscn`
+- `scenes/phone/contacts.tscn`
+- `scenes/phone/group_chat.tscn`
+- `scenes/phone/private_chat.tscn`
+- `assets/art/phone_portraits/aqiang.tres`
+- `assets/art/phone_portraits/ASSET_RECORD.md`
+- `assets/art/phone_portraits/chen.tres`
+- `assets/art/phone_portraits/laoma.tres`
+- `assets/art/phone_portraits/lin.tres`
+- `assets/art/phone_portraits/player.tres`
+- `assets/art/phone_portraits/xiaoyu.tres`
+- `assets/art/phone_portraits/zhou.tres`
+- `scripts/export_phone_portraits.gd`
+- `scripts/export_phone_portraits.gd.uid`
+- `scripts/phone_y2k_test.gd`
+- `scripts/phone_y2k_test.gd.uid`
+- `artifacts/phone_y2k/01_chat_list.png`
+- `artifacts/phone_y2k/02_contacts.png`
+- `artifacts/phone_y2k/03_profile.png`
+- `artifacts/phone_y2k/04_group_chat.png`
+- `artifacts/phone_y2k/05_private_chat.png`
+- `artifacts/phone_y2k/06_scaled.png`
+- `artifacts/phone_y2k/07_ingame.png`
+- `artifacts/phone_y2k/08_player_reply.png`
+- `artifacts/phone_y2k/09_long_text.png`
+- `artifacts/phone_y2k/10_desktop_unchanged.png`
+- `artifacts/phone_y2k/11_attachment_extension.png`
+- `artifacts/phone_y2k/12_contacts_lower.png`
+- `artifacts/phone_y2k/13_system_notification_row.png`
+- `artifacts/phone_y2k/chapter_regression.log`
+- `artifacts/phone_y2k/test.log`
+
+删除：无。原图与整合包：未覆盖。project.godot及5项既有.import未提交改动：原样保留，不纳入本任务提交。未推送远程。

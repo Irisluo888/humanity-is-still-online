@@ -77,7 +77,7 @@ func travel_reason(place: String) -> String:
  return ""
 func enter(place: String) -> bool:
  if not travel_reason(place).is_empty():return false
- state.place=place;sync();return true
+ state.place=place;LocalAudio.play("doorOpen_1" if place in ["home","store","hallway","hallway12"] else "doorClose_1");sync();return true
 func start_event() -> bool:
  if state.encounter or state.event_active or state.place!=beat().place:return false
  state.event_active=true;state.page=0;sync();return true
@@ -126,7 +126,7 @@ func next(choice: String="continue") -> bool:
   if choice=="weapon" and state.durability<3:return false
   if choice=="extinguisher" and state.flags.get("extinguisher_used",false):return false
   if choice=="weapon":state.durability-=3
-  if choice=="extinguisher":state.flags.extinguisher_used=true
+  if choice=="extinguisher":state.flags.extinguisher_used=true;LocalAudio.play("heavy_impact")
   if choice=="hands":WorldData.health=maxi(1,WorldData.health-25)
   state.flags.ch01_store_owner_saved=choice!="leave"
   state.scene_states.store={"broken":true,"chen_saved":choice!="leave","method":choice}

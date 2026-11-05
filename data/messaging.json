@@ -72,6 +72,14 @@
     "local_11": {
       "name": "夜班骑手",
       "avatar": "res://assets/art/avatars/avatar_11.png"
+    },
+    "chen": {
+      "name": "陈姨",
+      "avatar": "res://assets/art/ch01/chen.png"
+    },
+    "lin": {
+      "name": "林晓",
+      "avatar": "res://assets/art/ch01/lin.png"
     }
   },
   "threads": {
@@ -164,6 +172,26 @@
       "name": "旧档记录",
       "type": "system",
       "icon": "res://assets/art/icons/app_3.png"
+    },
+    "aqiang": {
+      "name": "阿强",
+      "type": "private",
+      "icon": "res://assets/art/avatars/avatar_3.png"
+    },
+    "laoma": {
+      "name": "老马",
+      "type": "private",
+      "icon": "res://assets/art/avatars/avatar_4.png"
+    },
+    "chen": {
+      "name": "陈姨",
+      "type": "private",
+      "icon": "res://assets/art/ch01/chen.png"
+    },
+    "lin": {
+      "name": "林晓",
+      "type": "private",
+      "icon": "res://assets/art/ch01/lin.png"
     }
   },
   "scripts": {

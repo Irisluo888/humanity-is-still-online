@@ -22,6 +22,7 @@ var app_tab="消息"
 var selected_thread="rider_group"
 var phone_notification_target=""
 var last_cue=""
+var clear_sign_labels: Array=[]
 var rebuild_queued=false
 var guidance: Control
 var task_card: PanelContainer
@@ -52,10 +53,14 @@ func rebuild() -> void:
  opened=false
  for child in get_children():remove_child(child);child.queue_free()
  var bg=ColorRect.new();bg.color=Color("1d2c3c");bg.set_anchors_and_offsets_preset(PRESET_FULL_RECT);add_child(bg)
+ clear_sign_labels=[]
  ui_scale=Control.new();ui_scale.size=Vector2(1280,720);add_child(ui_scale)
  viewport=SubViewport.new();viewport.size=Vector2i(640,360);viewport.own_world_3d=true;viewport.render_target_update_mode=SubViewport.UPDATE_ALWAYS;ui_scale.add_child(viewport)
  map_world=load(Chapter.MAPS[Chapter.state.place]).instantiate();viewport.add_child(map_world);map_world.hotspot.connect(interact_point)
  var view=TextureRect.new();view.texture=viewport.get_texture();view.size=Vector2(1280,720);view.texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST;view.mouse_filter=MOUSE_FILTER_IGNORE;ui_scale.add_child(view)
+ for sign in map_world.clear_signs:
+  if sign.text=="◆":continue
+  var text=Kit.label(sign.text,17);text.mouse_filter=MOUSE_FILTER_IGNORE;text.add_theme_color_override("font_outline_color",Color("142333"));text.add_theme_constant_override("outline_size",5);ui_scale.add_child(text);clear_sign_labels.append({"node":text,"pos":sign.pos})
  var top=PanelContainer.new();top.position=Vector2(20,16);top.size=Vector2(1240,68);style(top);ui_scale.add_child(top)
  var row=HBoxContainer.new();top.add_child(row)
  label(row,"有人在敲门  /  "+str(Chapter.catalog.places[Chapter.state.place]),0,22)
@@ -69,6 +74,7 @@ func rebuild() -> void:
  button(bottom,"立即回家",func():Chapter.fast_home()).disabled=Chapter.modal() or Chapter.state.place=="home"
  button(bottom,"保存",func():
   notice("已保存第一章" if Chapter.save() else "保存失败，请检查本地目录"))
+ button(bottom,"声音设置",func():LocalAudio.show_settings(self))
  button(bottom,"菜单",func():get_tree().change_scene_to_file("res://scenes/start.tscn")).disabled=Chapter.modal()
  if Chapter.state.flags.get("ch01_complete",false):ending()
  elif Chapter.state.encounter:encounter_ui()
@@ -146,7 +152,9 @@ func show_dialogue() -> void:
  var cue_id=Chapter.beat().id+str(Chapter.state.page)
  if not cue.is_empty() and last_cue!=cue_id:
   last_cue=cue_id
-  var audio=AudioStreamPlayer.new();audio.stream=load("res://assets/audio/ch01/"+cue+".wav");audio.volume_db=-10;add_child(audio);audio.finished.connect(audio.queue_free);audio.play()
+  if cue in ["glass_break","finger_clamp","door_impact"]:LocalAudio.play(cue)
+  else:
+   var audio=AudioStreamPlayer.new();audio.bus="SFX";audio.stream=load("res://assets/audio/ch01/"+cue+".wav");audio.volume_db=-20;add_child(audio);audio.finished.connect(audio.queue_free);audio.play()
  var portrait=TextureRect.new();portrait.custom_minimum_size=Vector2(76,144);portrait.expand_mode=TextureRect.EXPAND_IGNORE_SIZE;portrait.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED;portrait.texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST
  if not page.portrait.is_empty():portrait.texture=load("res://assets/art/refined/rider_uniform.png" if page.portrait=="rider" else ART+page.portrait+".png")
  row.add_child(portrait)
@@ -216,6 +224,14 @@ func show_phone(computer=false,tab="消息") -> void:
  render_phone(computer)
 func render_phone(computer: bool=false) -> void:
  for node in phone.get_children():phone.remove_child(node);node.queue_free()
+ if not computer and app_tab=="消息":
+  phone.position=Vector2(818,18);phone.size=Vector2(438,684)
+  phone.add_theme_stylebox_override("panel",StyleBoxEmpty.new())
+  var messenger=preload("res://ui/phone/messenger.gd").new();messenger.initial_thread=phone_notification_target;phone_notification_target="";phone.add_child(messenger)
+  messenger.close_requested.connect(close_phone)
+  messenger.app_requested.connect(func(tab):app_tab=tab;render_phone(false))
+  return
+ phone.position=Vector2(700,104) if not computer else Vector2(120,100);phone.size=Vector2(540,540) if not computer else Vector2(1040,540);style(phone)
  var col=VBoxContainer.new();phone.add_child(col)
  var row=HBoxContainer.new();col.add_child(row);label(row,"本地电脑" if computer else "本地手机 / 离线",0,22)
  button(row,"关闭",close_phone)
@@ -367,6 +383,8 @@ func _process(delta: float) -> void:
   if notice_timer<=0:saved_notice=""
  if is_instance_valid(ui_scale):ui_scale.scale=size/Vector2(1280,720)
  if is_instance_valid(map_world):
+  for sign in clear_sign_labels:
+   sign.node.position=map_world.get_viewport().get_camera_3d().unproject_position(sign.pos)*2-Vector2(sign.node.size.x/2,10)
   map_world.locked=opened or Chapter.modal() or fault_remaining>0
   if not Chapter.modal() and not opened and saved_notice.is_empty():hint.text=map_world.hint if not map_world.hint.is_empty() else objective()
  if is_instance_valid(body_text):

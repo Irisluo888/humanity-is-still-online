@@ -3,6 +3,7 @@ var public_content: Dictionary={}
 var chapter_thread="rider_group"
 func _ready() -> void:
  super._ready()
+ tasks.add_child(small_button("声音",func():LocalAudio.show_settings(self),65))
  if Chapter.session_active and not Chapter.state.is_empty():
   tasks.add_child(small_button("返回第一章",return_chapter,110))
   tasks.add_child(small_button("章节消息",chapter_inbox,90))

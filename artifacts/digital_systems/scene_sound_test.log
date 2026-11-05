@@ -1,0 +1,15 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 616.56 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4060 Ti
+
+PASS: riding uses bike loop without footsteps
+PASS: stop bike while outdoor rain continues
+PASS: capture clear building signs
+PASS: full resolution labels exist
+PASS: walking uses footsteps instead of motor
+PASS: footsteps reduced12dB
+PASS: play finger_clamp
+PASS: play heavy_impact
+PASS: play glass_break
+PASS: play door_impact
+PASS: indoors stops outdoor rain
+SCENE SOUND FAILURES: 0

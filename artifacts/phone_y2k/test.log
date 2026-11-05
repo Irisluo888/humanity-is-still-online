@@ -1,0 +1,40 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 616.56 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4060 Ti
+
+PASS: real timed queue reveals messages
+PASS: screenshot 01_chat_list
+PASS: six independent conversation entries
+PASS: mouse click opens contacts
+PASS: screenshot 02_contacts
+PASS: six existing character contact entries
+PASS: screenshot 12_contacts_lower
+PASS: contacts scroll to remaining people
+PASS: contact search narrows to one with category
+PASS: screenshot 03_profile
+PASS: mouse click opens chat row
+PASS: screenshot 04_group_chat
+PASS: phone bubbles use dedicated skin
+PASS: opening conversation updates shared read state
+PASS: preset fills composer without sending
+PASS: send button commits preset to existing manager
+PASS: screenshot 08_player_reply
+PASS: screenshot 05_private_chat
+PASS: long bubble expands vertically
+PASS: long text stays within phone width
+PASS: screenshot 09_long_text
+PASS: local audio attachment uses sound effects bus
+PASS: attachment player starts actual local stream
+PASS: screenshot 11_attachment_extension
+PASS: existing save schema reloads with added empty contact threads
+PASS: closed conversation continues delivery but future message stays hidden
+PASS: latest message raises conversation with unread badge
+PASS: future-dated fixture remains undelivered
+PASS: UI does not advance game time
+PASS: screenshot 13_system_notification_row
+PASS: screenshot 06_scaled
+PASS: screenshot 07_ingame
+PASS: actual chapter phone uses new UI
+PASS: closing phone unlocks game
+PASS: desktop retains wide original interface
+PASS: screenshot 10_desktop_unchanged
+PHONE Y2K FAILURES: 0

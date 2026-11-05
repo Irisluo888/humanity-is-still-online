@@ -33,3 +33,7 @@ WorldData 为唯一共享内存数据源，实体使用稳定 ID（人物、地�
 
 ## 第二轮执行规范
 当前规范见 references/visual_round2/UI_STYLE_GUIDE.md，逐图与录屏关键帧诊断见 REFERENCE_ANALYSIS.md。新增18张PNG位于assets/pixel_round2/，复用已有6应用图标和控制图形。夜间住所为静态可交互入口原型，女骑手为单帧居家服Sprite，不视为已完成正式角色动画。
+
+## 2026-11-05 / 手机通讯专属主题
+用户最新三屏参考仅作为配色、留白、玻璃卡片和轻装饰方向，不直接作为游戏图片。手机消息使用珍珠白 + 樱花粉 + 薰衣草紫，正文深紫灰；原生 PanelContainer、Container、ScrollContainer、Button、Label、LineEdit 构建。统一配置在 ui/phone/palette.gd；心形银环为 ornament.gd 原创矢量绘制，群头盔与通知铃铛在 avatar_icon.gd。窗口逻辑尺寸438×684，安全内边距16，运行窗口随项目 canvas_items 缩放。电量与信号为装饰状态，时间来自 MessageManager。
+头像通过 assets/art/phone_portraits/*.tres 无损引用项目已有原创像素图，保留角色身份，不是新绘精细插画；后续提升头像需保持人物一致。城市和电脑视觉不适用这次粉紫主题。

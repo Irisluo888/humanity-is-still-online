@@ -932,3 +932,6 @@ func test_delayed_message_delivery() -> void:
 - Windows Godot 4.7.2 实际运行 15 个测试脚本：898 PASS、0 FAIL/ERROR/WARNING（计数包含重复断言与截图保存，不是898项独立功能）。详细日志见 artifacts/digital_systems/test_summary.json。
 - 新的9张专用运行截图已作为图像实际检查；既有回归截图同步重新生成，未将其全部视为本轮逐张美术验收。
 - 限制：macOS、真人完整盲玩、主观音效试听与长时性能未验收；本次不宣称第一章正式美术或完整游戏完成。等待用户试玩确认，不进入新阶段。
+
+## 2026-11-05 / 手机展示层落地
+手机新增 ui/phone/messenger.gd，使用独立粉紫主题和公共行/气泡组件；message_panel.gd 通过可选phone_skin呈现，不重建消息管理器。第一章 render_phone(false) 的消息分支接入新应用，其他手机应用以及电脑保持现有实现。资料和搜索是展示逻辑，消息仍由MessageManager统一读写，存档schema未改变。数据目录新增的空私聊线程不表示新增剧情。接口与测试证据见MESSAGING_SYSTEM_SPEC.md和DIGITAL_SYSTEMS_TEST_REPORT.md。

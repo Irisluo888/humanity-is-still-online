@@ -1,5 +1,8 @@
 extends VBoxContainer
 # One component used by test, phone and desktop. No private copy of history/read flags.
+signal reply_selected(message_id: String,choice_id: String,text: String)
+var phone_skin=false
+var animated_ids={}
 var auto_select=true
 var thread_id="rider_group"
 var selector: OptionButton
@@ -24,19 +27,19 @@ func _ready() -> void:
  add_theme_constant_override("separation",8)
  selector=OptionButton.new();selector.custom_minimum_size.y=36;add_child(selector)
  selector.item_selected.connect(func(i):thread_id=selector.get_item_metadata(i);follow_bottom=true;MessageManager.begin_thread(thread_id);refresh())
- scroll=ScrollContainer.new();scroll.custom_minimum_size=Vector2(0,260);scroll.size_flags_vertical=SIZE_EXPAND_FILL;scroll.size_flags_horizontal=SIZE_EXPAND_FILL;add_child(scroll)
+ scroll=ScrollContainer.new();scroll.custom_minimum_size=Vector2(0,80 if phone_skin else 260);scroll.size_flags_vertical=SIZE_EXPAND_FILL;scroll.size_flags_horizontal=SIZE_EXPAND_FILL;add_child(scroll)
  transcript=VBoxContainer.new();transcript.size_flags_horizontal=SIZE_EXPAND_FILL;transcript.add_theme_constant_override("separation",12);scroll.add_child(transcript)
  scroll.get_v_scroll_bar().value_changed.connect(func(_v):
   if layout_busy:return
   follow_bottom=scroll.scroll_vertical>=scroll.get_v_scroll_bar().max_value-scroll.size.y-35
   if follow_bottom and is_visible_in_tree():MessageManager.mark_read(thread_id))
- typing_label=Kit.label("",16);typing_label.add_theme_color_override("font_color",Color("9ab6bb"));add_child(typing_label)
+ typing_label=Kit.label("",16);typing_label.add_theme_color_override("font_color",Color("8a7799" if phone_skin else "9ab6bb"));add_child(typing_label)
  reply_row=VBoxContainer.new();add_child(reply_row)
  visibility_changed.connect(func():
   if is_visible_in_tree():request_refresh())
  MessageManager.changed.connect(request_refresh)
  MessageManager.message_revealed.connect(on_reveal)
- notification_audio=AudioStreamPlayer.new();notification_audio.stream=preload("res://assets/audio/ch01/vibrate.wav");notification_audio.volume_db=-22;add_child(notification_audio)
+ notification_audio=AudioStreamPlayer.new();notification_audio.bus="SFX";notification_audio.stream=preload("res://assets/audio/ch01/vibrate.wav");notification_audio.volume_db=-22;add_child(notification_audio)
  MessageManager.begin_thread(thread_id);refresh()
 func request_refresh() -> void:
  if pending_refresh:return
@@ -64,10 +67,12 @@ func refresh() -> void:
  for child in reply_row.get_children():reply_row.remove_child(child);child.queue_free()
  var reply=MessageManager.waiting_reply(thread_id)
  if not reply.is_empty():
-  reply_row.add_child(Kit.label("选择回复",16))
+  reply_row.add_child(preload("res://ui/phone/palette.gd").label("选择一条回复",13) if phone_skin else Kit.label("选择回复",16))
   for choice in reply.choices:
    var key: String=choice.id;var id: String=reply.id
-   reply_row.add_child(Kit.button(choice.text,func():MessageManager.choose_reply(id,key)))
+   if phone_skin:
+    reply_row.add_child(preload("res://ui/phone/palette.gd").button(choice.text,func():reply_selected.emit(id,key,choice.text)))
+   else:reply_row.add_child(Kit.button(choice.text,func():MessageManager.choose_reply(id,key)))
  if should_follow:
   for message in messages:
    if is_visible_in_tree():MessageManager.mark_read(thread_id,[message.id])
@@ -81,6 +86,11 @@ func settle_scroll(generation: int,value: int,follow: bool) -> void:
  scroll.scroll_vertical=int(scroll.get_v_scroll_bar().max_value) if follow else value
  follow_bottom=follow;layout_busy=false
 func add_bubble(message: Dictionary) -> void:
+ if phone_skin:
+  var bubble=preload("res://ui/phone/message_bubble.gd").new();bubble.setup(message,MessageManager.catalog.contacts[message.sender_id]);transcript.add_child(bubble)
+  if last_count>=0 and not animated_ids.has(message.id):bubble.arrival()
+  animated_ids[message.id]=true
+  return
  var own=message.sender_id=="player"
  var row=HBoxContainer.new();row.size_flags_horizontal=SIZE_EXPAND_FILL;transcript.add_child(row)
  var spacer=Control.new();spacer.size_flags_horizontal=SIZE_EXPAND_FILL

@@ -17,9 +17,4 @@ func _ready() -> void:
  box.add_child(Kit.button("退出游戏", func(): get_tree().quit()))
  box.add_child(Kit.label("● 临川市：照常运转（据系统自述）     /     网络：离线本地模式", 18))
 func show_settings() -> void:
- var dialog = AcceptDialog.new()
- dialog.title = "基础设置"
- dialog.dialog_text = "当前采用窗口模式；可拖动窗口边缘调整大小。\n原型暂无音频。所有内容在本地运行。"
- add_child(dialog)
- dialog.confirmed.connect(dialog.queue_free)
- dialog.popup_centered(Vector2i(480, 180))
+ LocalAudio.show_settings(self)
