@@ -20,3 +20,10 @@
 - 详见docs/CH01_IMPLEMENTATION_STATUS.md、CH01_BUGFIX_REPORT.md、CH01_TEST_REPORT.md、CH01_ART_ASSET_GAP.md。保留artifacts/ch01_qa/before.zip及SHA256清单。
 
 当前协作交接：用户要求优先建立Git检查点与Claude Code统一规则；停止继续修改游戏逻辑，交接后不得两工具同时写同目录。
+
+## 2026-11-05 — Git检查点与双工具统一规则
+- 沿用既有Git历史，基线提交e1c5c0f收录当前工程与实际CH01验收记录；没有重新初始化或推送。
+- 新增CLAUDE.md首行@AGENTS.md；AGENTS.md新增交替写入/提交/交接规则；新增docs/AI_COLLABORATION.md和.gitattributes。
+- .gitignore在基线中补齐缓存、备份、生成翻译、本地配置忽略，并保留本轮26张PNG和最终日志。Godot .uid仍跟踪。
+- 检查原整合包哈希不变、暂存文本无凭据模式命中、无大于10MB的新文件、Git diff检查。Claude Code未启动，不声称客户端导入测试通过。
+- 游戏逻辑在本次协作配置任务中未继续修改；本地checkpoint后准备交给用户选择的下一工具。

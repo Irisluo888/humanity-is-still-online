@@ -161,3 +161,10 @@
 - 已实际运行完整交互路线、另一结局UI路线、连续物理步行、边界与跨进程、旧夜间/窗口/巡航回归；逐项结果见artifacts/ch01_qa/test_summary.json，最终无FAIL/SCRIPT ERROR。26张实际PNG已逐图读取。
 - 初期解析/输入/对白/版本校验/物理回调/位置竞争等错误已修复并复跑。美术仍简化，全面整改保持IN_PROGRESS，非正式发行验收。
 - 详见docs/CH01_IMPLEMENTATION_STATUS.md、CH01_BUGFIX_REPORT.md、CH01_TEST_REPORT.md、CH01_ART_ASSET_GAP.md。保留artifacts/ch01_qa/before.zip及SHA256清单。
+
+## 2026-11-05 — Git检查点与双工具统一规则
+- 沿用既有Git历史，基线提交e1c5c0f收录当前工程与实际CH01验收记录；没有重新初始化或推送。
+- 新增CLAUDE.md首行@AGENTS.md；AGENTS.md新增交替写入/提交/交接规则；新增docs/AI_COLLABORATION.md和.gitattributes。
+- .gitignore在基线中补齐缓存、备份、生成翻译、本地配置忽略，并保留本轮26张PNG和最终日志。Godot .uid仍跟踪。
+- 检查原整合包哈希不变、暂存文本无凭据模式命中、无大于10MB的新文件、Git diff检查。Claude Code未启动，不声称客户端导入测试通过。
+- 游戏逻辑在本次协作配置任务中未继续修改；本地checkpoint后准备交给用户选择的下一工具。
