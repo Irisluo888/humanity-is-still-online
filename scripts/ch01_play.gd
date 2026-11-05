@@ -66,7 +66,7 @@ func rebuild() -> void:
  elif Chapter.state.event_active:show_dialogue()
  map_world.locked=Chapter.modal()
 func objective() -> String:
- var objectives={"delivery":"最后一单：到临街民居送餐处，按E交付。","repair":"电动车故障：到驿站修车摊找老周。","group":"回家后在电脑或手机里读完骑手群。","lunch":"查看小鱼的私信。","orders":"出门，到取餐窗口领取幸福花园1203餐食；普通订单可在手机查看。","1203":"到幸福花园三栋入口，给1203交付。","1404":"1404门前，纸条另一行字是什么？","elevator":"电梯下行中。","store":"从小区进入陈姨便利店，先观察环境，再接近柜台。","night":"回家查看骑手群和新闻，之后到床边休息。","knock1":"门外有人。","call":"手机响了。","reveal":"再次确认门外的人。","final":"决定如何帮助老周。","end":"回复骑手群，再查看章末消息。"}
+ var objectives={"delivery":"餐食已在箱中：前往右上方临街民居，靠近黄色送餐标记按E。","repair":"电动车故障：到驿站修车摊找老周。","group":"回家后在电脑或手机里读完骑手群。","lunch":"查看小鱼的私信。","orders":"出门，到取餐窗口领取幸福花园1203餐食；普通订单可在手机查看。","1203":"到幸福花园三栋入口，给1203交付。","1404":"1404门前，纸条另一行字是什么？","elevator":"电梯下行中。","store":"从小区进入陈姨便利店，先观察环境，再接近柜台。","night":"回家查看骑手群和新闻，之后到床边休息。","knock1":"门外有人。","call":"手机响了。","reveal":"再次确认门外的人。","final":"决定如何帮助老周。","end":"回复骑手群，再查看章末消息。"}
  return saved_notice if not saved_notice.is_empty() else objectives.get(Chapter.beat().id,"")
 func show_dialogue() -> void:
  if Chapter.beat().id in ["call","reveal","final"] or (Chapter.beat().id=="knock1" and Chapter.state.page>=1):
@@ -202,19 +202,23 @@ func close_phone() -> void:
  request_rebuild()
 func notice(text: String) -> void:
  saved_notice=text;notice_timer=4;hint.text=text
+func travel(place: String) -> void:
+ var reason=Chapter.travel_reason(place)
+ if not reason.is_empty():notice(reason);return
+ Chapter.enter(place)
 func interact_point(id: String) -> void:
  if Chapter.modal() or opened:return
  saved_notice=""
  var beat: String=Chapter.beat().id
  match id:
-  "home":Chapter.enter("home")
-  "street":Chapter.enter("street")
-  "garden":Chapter.enter("garden")
-  "store":Chapter.enter("store")
-  "exit":Chapter.enter("garden" if Chapter.state.place=="store" else "street")
+  "home":travel("home")
+  "street":travel("street")
+  "garden":travel("garden")
+  "store":travel("store")
+  "exit":travel("garden" if Chapter.state.place=="store" else "street")
   "pc":get_tree().change_scene_to_file("res://scenes/desktop.tscn")
   "door":
-   if Chapter.state.place=="home":Chapter.enter("street")
+   if Chapter.state.place=="home":travel("street")
    elif Chapter.state.place=="hallway":Chapter.start_event()
   "bed":
    if beat=="night" and Chapter.state.flags.get("night_read",false):
@@ -236,9 +240,14 @@ func interact_point(id: String) -> void:
     else:notice("餐食已领取，请前往收餐处。")
   "delivery":
    if beat=="delivery":
-    WorldData.location="city";WorldData.period="day";WorldData.city_position=WorldData.SHOP;WorldData.pickup_order()
-    WorldData.city_position=WorldData.delivery_target()
-    if Chapter.complete_delivery(WorldData.active_order_id):Chapter.next()
+    var order: Dictionary=WorldData.current_order()
+    if order.is_empty():notice("订单不存在，请读取存档或重新开始。");return
+    if order.status=="待取餐":order.status="配送中"
+    WorldData.location="city";WorldData.period="day";WorldData.city_position=WorldData.delivery_target()
+    if Chapter.complete_delivery(order.id):
+     Chapter.next();notice("已送达，收入已到账。电动车接线故障：到中间驿站找老周修车（E）。")
+    elif order.status=="已送达":Chapter.next()
+    else:notice("交付未成功，请检查手机中的订单状态。")
    elif beat in ["orders","1203"]:
     var selected: Dictionary=WorldData.current_order()
     if selected.id!="order_ch01_003" and selected.status=="配送中":
@@ -291,7 +300,7 @@ func _notification(what: int) -> void:
 func _input(event: InputEvent) -> void:
  if event is InputEventKey and is_instance_valid(map_world):
   map_world.held[event.physical_keycode]=event.pressed
-  if event.pressed and not event.echo and event.physical_keycode in [KEY_SPACE,KEY_ENTER] and Chapter.state.event_active:
+  if event.pressed and not event.echo and event.physical_keycode in [KEY_SPACE,KEY_ENTER,KEY_E] and Chapter.state.event_active:
    continue_dialogue();get_viewport().set_input_as_handled()
 func _unhandled_key_input(event: InputEvent) -> void:
  if not event is InputEventKey or not event.pressed or event.echo:return

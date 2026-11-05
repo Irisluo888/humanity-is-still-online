@@ -13,6 +13,8 @@ func fresh() -> void:
  WorldData.inventory={"food":2,"water":2,"medicine":1}
  WorldData.forced_story_roll=0.99
  WorldData.orders[0].fee=13.5
+ WorldData.orders[0].status="配送中"
+ WorldData.orders[0].address="临街民居"
  sync()
 func beat() -> Dictionary:return catalog.beats[int(state.beat)]
 func modal() -> bool:return state.event_active or state.encounter
@@ -33,8 +35,17 @@ func sync() -> void:
   for i in range(3):publish_news(i)
  if state.flags.get("ch01_complete",false):publish_news(3);publish_news(4)
  updated.emit()
+func travel_reason(place: String) -> String:
+ if modal():return "请先完成当前对话或事件。"
+ if not MAPS.has(place):return "这里暂时无法进入。"
+ if place=="garden" and int(state.beat)<5:return "先完成今晚送餐、修车和回家群聊；次日领取1203餐食后再前往幸福花园。"
+ if place=="store" and not state.completed.has("elevator"):return "先完成三栋配送并乘电梯下楼，再前往便利店。"
+ if place=="street" and beat().id in ["group","lunch"]:return "先在家查看骑手群和小鱼私信，明天再出门。"
+ var links={"home":["street"],"street":["home","garden"],"garden":["street","store","hallway"],"store":["garden"],"hallway":["elevator"],"elevator":["garden"]}
+ if place not in links.get(state.place,[]):return "请从对应的出入口前往这里。"
+ return ""
 func enter(place: String) -> bool:
- if modal() or not MAPS.has(place):return false
+ if not travel_reason(place).is_empty():return false
  state.place=place;sync();return true
 func start_event() -> bool:
  if state.encounter or state.event_active or state.place!=beat().place:return false

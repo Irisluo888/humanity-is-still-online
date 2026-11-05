@@ -29,7 +29,7 @@ func prop(id: String,pos: Vector3,height: float=2.0) -> Sprite3D:
  var s=Sprite3D.new();s.texture=load(ART+id+".png");s.pixel_size=height/96.0;s.position=pos+Vector3(0,height/2,0);s.billboard=BaseMaterial3D.BILLBOARD_ENABLED;s.texture_filter=BaseMaterial3D.TEXTURE_FILTER_NEAREST;add_child(s);return s
 func marker(id: String,text: String,pos: Vector3) -> void:
  points[id]={"pos":pos,"text":text}
- var label=Label3D.new();label.text="◆";label.position=pos+Vector3(0,1.8,0);label.billboard=BaseMaterial3D.BILLBOARD_ENABLED;label.font_size=24;label.pixel_size=0.009;label.modulate=Color("e0d4b5");add_child(label)
+ var label=Label3D.new();label.text=text if id in ["delivery","repair","pickup","garden","building","store","home"] else "◆";label.position=pos+Vector3(0,1.8,0);label.billboard=BaseMaterial3D.BILLBOARD_ENABLED;label.font_size=40;label.pixel_size=0.012;label.modulate=Color("e0d4b5");add_child(label)
 func plaque(text: String,pos: Vector3) -> void:
  var l=Label3D.new();l.text=text;l.position=pos;l.font_size=64;l.pixel_size=0.008;l.billboard=BaseMaterial3D.BILLBOARD_ENABLED;l.modulate=Color("e4c998");add_child(l)
 func _ready() -> void:

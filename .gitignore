@@ -60,3 +60,5 @@ CLAUDE.local.md
 !/artifacts/ch01_qa/cruise_boundary_test.log
 !/artifacts/ch01_qa/walk.log
 !/artifacts/ch01_qa/import.log
+
+!/artifacts/ch01_qa/opening.log
