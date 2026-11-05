@@ -1,0 +1,713 @@
+{
+  "schema": 1,
+  "contacts": {
+    "player": {
+      "name": "我",
+      "avatar": "res://assets/art/refined/rider_uniform.png"
+    },
+    "xiaoyu": {
+      "name": "小鱼",
+      "avatar": "res://assets/art/ch01/xiaoyu.png"
+    },
+    "zhou": {
+      "name": "老周",
+      "avatar": "res://assets/art/ch01/zhou.png"
+    },
+    "aqiang": {
+      "name": "阿强",
+      "avatar": "res://assets/art/avatars/avatar_3.png"
+    },
+    "laoma": {
+      "name": "老马",
+      "avatar": "res://assets/art/avatars/avatar_4.png"
+    },
+    "system": {
+      "name": "系统",
+      "avatar": "res://assets/art/icons/app_3.png"
+    },
+    "resident_07": {
+      "name": "七号住户",
+      "avatar": "res://assets/art/avatars/avatar_0.png"
+    },
+    "local_1": {
+      "name": "站点值班员",
+      "avatar": "res://assets/art/avatars/avatar_1.png"
+    },
+    "local_2": {
+      "name": "楼道邻居",
+      "avatar": "res://assets/art/avatars/avatar_2.png"
+    },
+    "local_3": {
+      "name": "修伞的人",
+      "avatar": "res://assets/art/avatars/avatar_3.png"
+    },
+    "local_4": {
+      "name": "晚班店员",
+      "avatar": "res://assets/art/avatars/avatar_4.png"
+    },
+    "local_5": {
+      "name": "旧书摊主",
+      "avatar": "res://assets/art/avatars/avatar_5.png"
+    },
+    "local_6": {
+      "name": "窗台园丁",
+      "avatar": "res://assets/art/avatars/avatar_6.png"
+    },
+    "local_7": {
+      "name": "系统通知",
+      "avatar": "res://assets/art/avatars/avatar_7.png"
+    },
+    "local_8": {
+      "name": "早市摊主",
+      "avatar": "res://assets/art/avatars/avatar_8.png"
+    },
+    "local_9": {
+      "name": "修表师傅",
+      "avatar": "res://assets/art/avatars/avatar_9.png"
+    },
+    "local_10": {
+      "name": "借书邻居",
+      "avatar": "res://assets/art/avatars/avatar_10.png"
+    },
+    "local_11": {
+      "name": "夜班骑手",
+      "avatar": "res://assets/art/avatars/avatar_11.png"
+    }
+  },
+  "threads": {
+    "rider_group": {
+      "name": "骑手群",
+      "type": "group",
+      "icon": "res://assets/art/ch01/xiaoyu.png"
+    },
+    "xiaoyu": {
+      "name": "小鱼",
+      "type": "private",
+      "icon": "res://assets/art/ch01/xiaoyu.png"
+    },
+    "night_group": {
+      "name": "骑手群 · 晚间",
+      "type": "group",
+      "icon": "res://assets/art/ch01/xiaoyu.png"
+    },
+    "zhou_warning": {
+      "name": "老周",
+      "type": "private",
+      "icon": "res://assets/art/ch01/zhou.png"
+    },
+    "xiaoyu_late": {
+      "name": "小鱼 · 晚间",
+      "type": "private",
+      "icon": "res://assets/art/ch01/xiaoyu.png"
+    },
+    "legacy_resident_07": {
+      "name": "七号住户",
+      "type": "private",
+      "icon": "res://assets/art/avatars/avatar_0.png"
+    },
+    "legacy_local_1": {
+      "name": "站点值班员",
+      "type": "private",
+      "icon": "res://assets/art/avatars/avatar_1.png"
+    },
+    "legacy_local_2": {
+      "name": "楼道邻居",
+      "type": "private",
+      "icon": "res://assets/art/avatars/avatar_2.png"
+    },
+    "legacy_local_3": {
+      "name": "修伞的人",
+      "type": "private",
+      "icon": "res://assets/art/avatars/avatar_3.png"
+    },
+    "legacy_local_4": {
+      "name": "晚班店员",
+      "type": "private",
+      "icon": "res://assets/art/avatars/avatar_4.png"
+    },
+    "legacy_local_5": {
+      "name": "旧书摊主",
+      "type": "private",
+      "icon": "res://assets/art/avatars/avatar_5.png"
+    },
+    "legacy_local_6": {
+      "name": "窗台园丁",
+      "type": "private",
+      "icon": "res://assets/art/avatars/avatar_6.png"
+    },
+    "legacy_local_7": {
+      "name": "系统通知",
+      "type": "private",
+      "icon": "res://assets/art/avatars/avatar_7.png"
+    },
+    "legacy_local_8": {
+      "name": "早市摊主",
+      "type": "private",
+      "icon": "res://assets/art/avatars/avatar_8.png"
+    },
+    "legacy_local_9": {
+      "name": "修表师傅",
+      "type": "private",
+      "icon": "res://assets/art/avatars/avatar_9.png"
+    },
+    "legacy_local_10": {
+      "name": "借书邻居",
+      "type": "private",
+      "icon": "res://assets/art/avatars/avatar_10.png"
+    },
+    "legacy_local_11": {
+      "name": "夜班骑手",
+      "type": "private",
+      "icon": "res://assets/art/avatars/avatar_11.png"
+    },
+    "recovered": {
+      "name": "旧档记录",
+      "type": "system",
+      "icon": "res://assets/art/icons/app_3.png"
+    }
+  },
+  "scripts": {
+    "rider_group": [
+      {
+        "id": "rider_group_000",
+        "thread_id": "rider_group",
+        "sender_id": "xiaoyu",
+        "text": "今天谁还活着",
+        "delay_seconds": 1.0,
+        "attachments": []
+      },
+      {
+        "id": "rider_group_001",
+        "thread_id": "rider_group",
+        "sender_id": "aqiang",
+        "text": "我",
+        "delay_seconds": 1.45,
+        "attachments": []
+      },
+      {
+        "id": "rider_group_002",
+        "thread_id": "rider_group",
+        "sender_id": "xiaoyu",
+        "text": "没问你",
+        "delay_seconds": 1.9,
+        "attachments": []
+      },
+      {
+        "id": "rider_group_003",
+        "thread_id": "rider_group",
+        "sender_id": "aqiang",
+        "text": "？",
+        "delay_seconds": 2.35,
+        "attachments": []
+      },
+      {
+        "id": "rider_group_004",
+        "thread_id": "rider_group",
+        "sender_id": "laoma",
+        "text": "大半夜的你们能不能聊点正常的",
+        "delay_seconds": 1.0,
+        "attachments": []
+      },
+      {
+        "id": "rider_group_005",
+        "thread_id": "rider_group",
+        "sender_id": "xiaoyu",
+        "text": "正常啊，关心同事生命安全",
+        "delay_seconds": 1.45,
+        "attachments": []
+      },
+      {
+        "id": "rider_group_006",
+        "thread_id": "rider_group",
+        "sender_id": "aqiang",
+        "text": "我今天差点死在32楼",
+        "delay_seconds": 1.9,
+        "attachments": []
+      },
+      {
+        "id": "rider_group_007",
+        "thread_id": "rider_group",
+        "sender_id": "player",
+        "text": "怎么了？ / 先报个平安",
+        "delay_seconds": 2.35,
+        "attachments": [],
+        "choices": [
+          {
+            "id": "ask",
+            "text": "怎么了？"
+          },
+          {
+            "id": "safe",
+            "text": "先报个平安"
+          }
+        ]
+      },
+      {
+        "id": "rider_group_008",
+        "thread_id": "rider_group",
+        "sender_id": "aqiang",
+        "text": "电梯坏了，爬楼送了三杯奶茶",
+        "delay_seconds": 1.0,
+        "attachments": []
+      },
+      {
+        "id": "rider_group_009",
+        "thread_id": "rider_group",
+        "sender_id": "xiaoyu",
+        "text": "这不是工伤，这是有氧运动",
+        "delay_seconds": 1.45,
+        "attachments": []
+      },
+      {
+        "id": "rider_group_010",
+        "thread_id": "rider_group",
+        "sender_id": "zhou",
+        "text": "都到家没有？",
+        "delay_seconds": 1.9,
+        "attachments": []
+      },
+      {
+        "id": "rider_group_011",
+        "thread_id": "rider_group",
+        "sender_id": "player",
+        "text": "到了",
+        "delay_seconds": 2.35,
+        "attachments": []
+      },
+      {
+        "id": "rider_group_012",
+        "thread_id": "rider_group",
+        "sender_id": "zhou",
+        "text": "车明天记得修",
+        "delay_seconds": 1.0,
+        "attachments": []
+      },
+      {
+        "id": "rider_group_013",
+        "thread_id": "rider_group",
+        "sender_id": "xiaoyu",
+        "text": "周叔你真的比她爸还操心",
+        "delay_seconds": 1.45,
+        "attachments": []
+      },
+      {
+        "id": "rider_group_014",
+        "thread_id": "rider_group",
+        "sender_id": "zhou",
+        "text": "你也一样，上次车胎没气还跑三公里",
+        "delay_seconds": 1.9,
+        "attachments": []
+      },
+      {
+        "id": "rider_group_015",
+        "thread_id": "rider_group",
+        "sender_id": "xiaoyu",
+        "text": "好好好，又开始了",
+        "delay_seconds": 2.35,
+        "attachments": []
+      },
+      {
+        "id": "rider_group_016",
+        "thread_id": "rider_group",
+        "sender_id": "zhou",
+        "text": "对了，你们谁最近送过幸福花园三栋？",
+        "delay_seconds": 1.0,
+        "attachments": []
+      },
+      {
+        "id": "rider_group_017",
+        "thread_id": "rider_group",
+        "sender_id": "aqiang",
+        "text": "我昨天去过",
+        "delay_seconds": 1.45,
+        "attachments": []
+      },
+      {
+        "id": "rider_group_018",
+        "thread_id": "rider_group",
+        "sender_id": "zhou",
+        "text": "1404？",
+        "delay_seconds": 1.9,
+        "attachments": []
+      },
+      {
+        "id": "rider_group_019",
+        "thread_id": "rider_group",
+        "sender_id": "aqiang",
+        "text": "对，最近天天点东西",
+        "delay_seconds": 2.35,
+        "attachments": []
+      },
+      {
+        "id": "rider_group_020",
+        "thread_id": "rider_group",
+        "sender_id": "xiaoyu",
+        "text": "有钱人的生活我不懂",
+        "delay_seconds": 1.0,
+        "attachments": []
+      },
+      {
+        "id": "rider_group_021",
+        "thread_id": "rider_group",
+        "sender_id": "zhou",
+        "text": "我今天去了两回，门口外卖都堆起来了",
+        "delay_seconds": 1.45,
+        "attachments": []
+      },
+      {
+        "id": "rider_group_022",
+        "thread_id": "rider_group",
+        "sender_id": "aqiang",
+        "text": "她不拿？",
+        "delay_seconds": 1.9,
+        "attachments": []
+      },
+      {
+        "id": "rider_group_023",
+        "thread_id": "rider_group",
+        "sender_id": "zhou",
+        "text": "没拿，我听见里面有人哭",
+        "delay_seconds": 2.35,
+        "attachments": []
+      },
+      {
+        "id": "rider_group_024",
+        "thread_id": "rider_group",
+        "sender_id": "xiaoyu",
+        "text": "你问了吗？",
+        "delay_seconds": 1.0,
+        "attachments": []
+      },
+      {
+        "id": "rider_group_025",
+        "thread_id": "rider_group",
+        "sender_id": "zhou",
+        "text": "问了，她说不用管，还让我千万别敲门",
+        "delay_seconds": 1.45,
+        "attachments": []
+      },
+      {
+        "id": "rider_group_026",
+        "thread_id": "rider_group",
+        "sender_id": "zhou",
+        "text": "[照片]1404门口：请放门口，不要敲门。",
+        "delay_seconds": 1.9,
+        "attachments": [
+          "res://assets/art/ch01/door.png"
+        ]
+      },
+      {
+        "id": "rider_group_027",
+        "thread_id": "rider_group",
+        "sender_id": "system",
+        "text": "【图片】1404防盗门、纸条“请放门口，不要敲门”、积压外卖",
+        "delay_seconds": 2.35,
+        "attachments": []
+      },
+      {
+        "id": "rider_group_028",
+        "thread_id": "rider_group",
+        "sender_id": "aqiang",
+        "text": "可能不想见人吧",
+        "delay_seconds": 1.0,
+        "attachments": []
+      },
+      {
+        "id": "rider_group_029",
+        "thread_id": "rider_group",
+        "sender_id": "zhou",
+        "text": "总感觉不太对",
+        "delay_seconds": 1.45,
+        "attachments": []
+      },
+      {
+        "id": "rider_group_030",
+        "thread_id": "rider_group",
+        "sender_id": "laoma",
+        "text": "别自己上去折腾，有事找物业",
+        "delay_seconds": 1.9,
+        "attachments": []
+      },
+      {
+        "id": "rider_group_031",
+        "thread_id": "rider_group",
+        "sender_id": "zhou",
+        "text": "嗯，我明天问问",
+        "delay_seconds": 2.35,
+        "attachments": []
+      }
+    ],
+    "xiaoyu": [
+      {
+        "id": "xiaoyu_000",
+        "thread_id": "xiaoyu",
+        "sender_id": "xiaoyu",
+        "text": "明天中午要不要吃砂锅？",
+        "delay_seconds": 1.0,
+        "attachments": []
+      },
+      {
+        "id": "xiaoyu_001",
+        "thread_id": "xiaoyu",
+        "sender_id": "player",
+        "text": "你请？ / 明天再说",
+        "delay_seconds": 1.45,
+        "attachments": [],
+        "choices": [
+          {
+            "id": "yes",
+            "text": "你请？"
+          },
+          {
+            "id": "no",
+            "text": "明天再说"
+          }
+        ]
+      },
+      {
+        "id": "xiaoyu_002",
+        "thread_id": "xiaoyu",
+        "sender_id": "xiaoyu",
+        "text": "我负责陪吃，你负责付款",
+        "delay_seconds": 1.9,
+        "attachments": []
+      },
+      {
+        "id": "xiaoyu_003",
+        "thread_id": "xiaoyu",
+        "sender_id": "player",
+        "text": "你是真不客气",
+        "delay_seconds": 2.35,
+        "attachments": []
+      },
+      {
+        "id": "xiaoyu_004",
+        "thread_id": "xiaoyu",
+        "sender_id": "xiaoyu",
+        "text": "谁让你今天赚了186块5",
+        "delay_seconds": 1.0,
+        "attachments": []
+      },
+      {
+        "id": "xiaoyu_005",
+        "thread_id": "xiaoyu",
+        "sender_id": "player",
+        "text": "你怎么连这个都记得",
+        "delay_seconds": 1.45,
+        "attachments": []
+      },
+      {
+        "id": "xiaoyu_006",
+        "thread_id": "xiaoyu",
+        "sender_id": "xiaoyu",
+        "text": "关心富婆的财务状况",
+        "delay_seconds": 1.9,
+        "attachments": []
+      }
+    ],
+    "night_group": [
+      {
+        "id": "night_group_000",
+        "thread_id": "night_group",
+        "sender_id": "aqiang",
+        "text": "幸福花园今天有人打人的视频你们看了没？",
+        "delay_seconds": 1.0,
+        "attachments": []
+      },
+      {
+        "id": "night_group_001",
+        "thread_id": "night_group",
+        "sender_id": "xiaoyu",
+        "text": "看了，太吓人了。",
+        "delay_seconds": 1.45,
+        "attachments": []
+      },
+      {
+        "id": "night_group_002",
+        "thread_id": "night_group",
+        "sender_id": "laoma",
+        "text": "最近晚上都早点回去。",
+        "delay_seconds": 1.9,
+        "attachments": []
+      },
+      {
+        "id": "night_group_003",
+        "thread_id": "night_group",
+        "sender_id": "aqiang",
+        "text": "那老周呢？",
+        "delay_seconds": 2.35,
+        "attachments": []
+      },
+      {
+        "id": "night_group_004",
+        "thread_id": "night_group",
+        "sender_id": "xiaoyu",
+        "text": "周叔今天一直没回我。",
+        "delay_seconds": 1.0,
+        "attachments": []
+      },
+      {
+        "id": "night_group_005",
+        "thread_id": "night_group",
+        "sender_id": "laoma",
+        "text": "我下午见过他，他问我幸福花园物业电话。",
+        "delay_seconds": 1.45,
+        "attachments": []
+      },
+      {
+        "id": "night_group_006",
+        "thread_id": "night_group",
+        "sender_id": "xiaoyu",
+        "text": "他不会真过去了吧？",
+        "delay_seconds": 1.9,
+        "attachments": []
+      }
+    ],
+    "zhou_warning": [
+      {
+        "id": "zhou_warning_000",
+        "thread_id": "zhou_warning",
+        "sender_id": "zhou",
+        "text": "丫头。",
+        "delay_seconds": 1.0,
+        "attachments": []
+      },
+      {
+        "id": "zhou_warning_001",
+        "thread_id": "zhou_warning",
+        "sender_id": "player",
+        "text": "周叔，你在哪？",
+        "delay_seconds": 1.45,
+        "attachments": []
+      },
+      {
+        "id": "zhou_warning_002",
+        "thread_id": "zhou_warning",
+        "sender_id": "zhou",
+        "text": "到家了吗？",
+        "delay_seconds": 1.9,
+        "attachments": []
+      },
+      {
+        "id": "zhou_warning_003",
+        "thread_id": "zhou_warning",
+        "sender_id": "player",
+        "text": "早到了，你怎么了？大家都在找你。",
+        "delay_seconds": 2.35,
+        "attachments": []
+      },
+      {
+        "id": "zhou_warning_004",
+        "thread_id": "zhou_warning",
+        "sender_id": "zhou",
+        "text": "最近不要给陌生人开门。",
+        "delay_seconds": 1.0,
+        "attachments": []
+      },
+      {
+        "id": "zhou_warning_005",
+        "thread_id": "zhou_warning",
+        "sender_id": "player",
+        "text": "为什么？",
+        "delay_seconds": 1.45,
+        "attachments": []
+      },
+      {
+        "id": "zhou_warning_006",
+        "thread_id": "zhou_warning",
+        "sender_id": "system",
+        "text": "【已送达未回复】",
+        "delay_seconds": 1.9,
+        "attachments": []
+      }
+    ],
+    "xiaoyu_late": [
+      {
+        "id": "xiaoyu_late_000",
+        "thread_id": "xiaoyu_late",
+        "sender_id": "xiaoyu",
+        "text": "明天我们去找一下周叔吧。",
+        "delay_seconds": 1.0,
+        "attachments": []
+      },
+      {
+        "id": "xiaoyu_late_001",
+        "thread_id": "xiaoyu_late",
+        "sender_id": "player",
+        "text": "好。",
+        "delay_seconds": 1.45,
+        "attachments": []
+      },
+      {
+        "id": "xiaoyu_late_002",
+        "thread_id": "xiaoyu_late",
+        "sender_id": "xiaoyu",
+        "text": "他从来不会这么久不回消息。我有点担心。",
+        "delay_seconds": 1.9,
+        "attachments": []
+      },
+      {
+        "id": "xiaoyu_late_003",
+        "thread_id": "xiaoyu_late",
+        "sender_id": "player",
+        "text": "我也是。",
+        "delay_seconds": 2.35,
+        "attachments": []
+      },
+      {
+        "id": "xiaoyu_late_004",
+        "thread_id": "xiaoyu_late",
+        "sender_id": "xiaoyu",
+        "text": "那你早点睡，记得锁门。",
+        "delay_seconds": 1.0,
+        "attachments": []
+      }
+    ],
+    "opening_delivery": [
+      {
+        "id": "opening_xiaoyu_000",
+        "thread_id": "xiaoyu",
+        "sender_id": "xiaoyu",
+        "text": "姐，别跑了吧。",
+        "delay_seconds": 1.5
+      },
+      {
+        "id": "opening_xiaoyu_001",
+        "thread_id": "xiaoyu",
+        "sender_id": "player",
+        "text": "还差十几块",
+        "choices": [
+          {
+            "id": "last_order",
+            "text": "还差十几块"
+          },
+          {
+            "id": "finished",
+            "text": "已经收工"
+          }
+        ]
+      },
+      {
+        "id": "opening_xiaoyu_002",
+        "thread_id": "xiaoyu",
+        "sender_id": "xiaoyu",
+        "text": "好，路上慢点。钱明天还能赚。",
+        "delay_seconds": 1.6
+      },
+      {
+        "id": "opening_xiaoyu_003",
+        "thread_id": "xiaoyu",
+        "sender_id": "xiaoyu",
+        "text": "到家在群里说一声，别又忘了。",
+        "delay_seconds": 2.0
+      },
+      {
+        "id": "opening_xiaoyu_004",
+        "thread_id": "xiaoyu",
+        "sender_id": "player",
+        "text": "知道啦，到家报平安。",
+        "delay_seconds": 1.6
+      }
+    ]
+  }
+}

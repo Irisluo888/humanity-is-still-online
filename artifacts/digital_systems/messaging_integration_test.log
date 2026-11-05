@@ -1,0 +1,34 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 616.56 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4060 Ti
+
+PASS: chapter owns active store
+PASS: chapter does not preload visible transcript
+PASS: capture 04_phone_live
+PASS: phone presentation leaves WorldData game time unchanged
+PASS: closed phone continues new unread deliveries
+PASS: world HUD unread badge updates without rebuilding map
+PASS: world notification actually appears
+PASS: capture 09_world_notification
+PASS: desktop reads same phone messages
+PASS: hidden desktop does not auto-read new messages
+PASS: reopened desktop marks visible messages read
+PASS: capture 05_desktop_live
+PASS: save pending digital sequence
+PASS: restore digital sequence
+PASS: presentation cursor countdown retained
+PASS: reply choice recorded
+PASS: chapter gate requires fully presented read group
+PASS: legacy chapter history and read IDs migrate without loss
+PASS: 20:30 has no 22:17 hospital or Zhou warning
+PASS: read milestone releases 22:17 private and hospital news
+PASS: 23:35 private still hidden
+PASS: 23:35 next segment after warning read
+PASS: capture 06_private_message
+PASS: all night messages unlock rest
+PASS: capture 07_phone_news
+PASS: story call uses queued call record
+PASS: phone answers exactly once
+PASS: capture 08_phone_call
+PASS: chapter ending news not prematurely published
+PASS: save partial queue for separate process
+DIGITAL INTEGRATION FAILURES: 0

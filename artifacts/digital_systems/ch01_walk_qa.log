@@ -1,0 +1,233 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 616.56 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4060 Ti
+
+PASS: developer tools default off
+PASS: no state edit controls
+PASS: WASD actually moves CharacterBody3D
+PASS: walkable path to delivery
+PASS: walk reaches E range delivery
+PASS: real delivery API enters repair
+PASS: walkable path to repair
+PASS: walk reaches E range repair
+PASS: dialogue active repair
+PASS: repair ends
+PASS: walkable path to home
+PASS: walk reaches E range home
+PASS: walkable path to pc
+PASS: walk reaches E range pc
+PASS: original desktop shared chapter messages
+PASS: dynamic conversation completes rider_group
+PASS: dialogue active group
+PASS: dynamic conversation completes xiaoyu
+PASS: group and lunch advance through device
+PASS: walkable path to door
+PASS: walk reaches E range door
+PASS: walkable path to pickup
+PASS: walk reaches E range pickup
+PASS: main meal picked through original order logic
+PASS: walkable path to garden
+PASS: walk reaches E range garden
+PASS: garden actual resource loaded
+PASS: walkable path to building
+PASS: walk reaches E range building
+PASS: building enters independent floor12
+PASS: walkable path to resident
+PASS: walk reaches E range resident
+PASS: dialogue active 1203
+PASS: walkable path to up14
+PASS: walk reaches E range up14
+PASS: walkable path to door
+PASS: walk reaches E range door
+PASS: dialogue active 1404
+PASS: optional1404 precedes elevator
+PASS: dialogue active elevator
+PASS: walkable path to store
+PASS: walk reaches E range store
+PASS: store actual interior
+PASS: walkable path to extinguisher
+PASS: walk reaches E range extinguisher
+PASS: walkable path to attack
+PASS: walk reaches E range attack
+PASS: attack cannot fast home
+PASS: dialogue active store
+PASS: choice UI extinguisher
+PASS: chosen store outcome saved
+PASS: extinguisher consumed
+PASS: resolved attack restores fast home
+PASS: walkable path to pc
+PASS: walk reaches E range pc
+PASS: dynamic conversation completes night_group
+PASS: walkable path to pc
+PASS: walk reaches E range pc
+PASS: dynamic conversation completes zhou_warning
+PASS: walkable path to pc
+PASS: walk reaches E range pc
+PASS: dynamic conversation completes xiaoyu_late
+PASS: walkable path to bed
+PASS: walk reaches E range bed
+PASS: dialogue active night
+PASS: knock begins after nighttime review
+PASS: dialogue active knock1
+PASS: call after anonymous knocks
+PASS: dialogue active call
+PASS: identity revealed only after phone
+PASS: dialogue active reveal
+PASS: dialogue active final
+PASS: choice UI quarantine
+PASS: final choice does not prematurely end chapter
+PASS: dialogue active end
+PASS: choice UI public
+PASS: complete chapter through UI route
+PASS: new schema save restore
+PASS: branch delivery
+PASS: branch repair
+PASS: branch group
+PASS: branch lunch
+PASS: branch orders
+PASS: branch 1203
+PASS: branch 1404
+PASS: branch elevator
+PASS: branch store
+PASS: branch night
+PASS: branch knock1
+PASS: branch call
+PASS: branch reveal
+PASS: branch final
+PASS: ending outcome quarantine
+PASS: branch delivery
+PASS: branch repair
+PASS: branch group
+PASS: branch lunch
+PASS: branch orders
+PASS: branch 1203
+PASS: branch 1404
+PASS: branch elevator
+PASS: branch store
+PASS: branch night
+PASS: branch knock1
+PASS: branch call
+PASS: branch reveal
+PASS: branch final
+PASS: ending outcome colleague_help
+PASS: branch delivery
+PASS: branch repair
+PASS: branch group
+PASS: branch lunch
+PASS: branch orders
+PASS: branch 1203
+PASS: branch 1404
+PASS: branch elevator
+PASS: branch store
+PASS: branch night
+PASS: branch knock1
+PASS: branch call
+PASS: branch reveal
+PASS: branch final
+PASS: ending outcome aid_pending
+PASS: branch delivery
+PASS: branch repair
+PASS: branch group
+PASS: branch lunch
+PASS: branch orders
+PASS: branch 1203
+PASS: branch 1404
+PASS: branch elevator
+PASS: branch store
+PASS: branch night
+PASS: branch knock1
+PASS: branch call
+PASS: branch reveal
+PASS: branch final
+PASS: ending outcome missing
+PASS: branch delivery
+PASS: branch repair
+PASS: branch group
+PASS: branch lunch
+PASS: branch orders
+PASS: branch 1203
+PASS: branch 1404
+PASS: branch elevator
+PASS: branch store
+PASS: branch night
+PASS: branch knock1
+PASS: branch call
+PASS: branch reveal
+PASS: branch final
+PASS: ending outcome opened_door
+PASS: branch delivery
+PASS: branch repair
+PASS: branch group
+PASS: branch lunch
+PASS: branch orders
+PASS: branch 1203
+PASS: branch elevator
+PASS: branch store
+PASS: branch night
+PASS: branch knock1
+PASS: branch call
+PASS: branch reveal
+PASS: branch final
+PASS: ending outcome quarantine
+PASS: branch delivery
+PASS: branch repair
+PASS: branch group
+PASS: branch lunch
+PASS: branch orders
+PASS: branch 1203
+PASS: branch elevator
+PASS: branch store
+PASS: branch night
+PASS: branch knock1
+PASS: branch call
+PASS: branch reveal
+PASS: branch final
+PASS: ending outcome colleague_help
+PASS: branch delivery
+PASS: branch repair
+PASS: branch group
+PASS: branch lunch
+PASS: branch orders
+PASS: branch 1203
+PASS: branch elevator
+PASS: branch store
+PASS: branch night
+PASS: branch knock1
+PASS: branch call
+PASS: branch reveal
+PASS: branch final
+PASS: ending outcome aid_pending
+PASS: branch delivery
+PASS: branch repair
+PASS: branch group
+PASS: branch lunch
+PASS: branch orders
+PASS: branch 1203
+PASS: branch elevator
+PASS: branch store
+PASS: branch night
+PASS: branch knock1
+PASS: branch call
+PASS: branch reveal
+PASS: branch final
+PASS: ending outcome missing
+PASS: branch delivery
+PASS: branch repair
+PASS: branch group
+PASS: branch lunch
+PASS: branch orders
+PASS: branch 1203
+PASS: branch elevator
+PASS: branch store
+PASS: branch night
+PASS: branch knock1
+PASS: branch call
+PASS: branch reveal
+PASS: branch final
+PASS: ending outcome opened_door
+PASS: normal encounter blocks home
+PASS: failed escape no infection
+PASS: insufficient durability rejected
+PASS: overweight pickup rejected
+PASS: per-map position retained
+PASS: malformed position rejected before mutation
+QA CHECKS: 229 FAILURES: 0

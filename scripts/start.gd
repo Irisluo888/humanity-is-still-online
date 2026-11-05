@@ -9,6 +9,7 @@ func _ready() -> void:
  box.add_child(HSeparator.new())
  box.add_child(Kit.button("01   开始体验  →", func(): get_tree().change_scene_to_file("res://scenes/city.tscn")))
  box.add_child(Kit.button("02   桌面预览  →", func(): get_tree().change_scene_to_file("res://scenes/desktop.tscn")))
+ box.add_child(Kit.button("03   夜间住所  →", func(): get_tree().change_scene_to_file("res://scenes/bedroom.tscn")))
  var resume = Kit.button("继续游戏 · 尚未开放", func(): pass)
  resume.disabled = true
  box.add_child(resume)

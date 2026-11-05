@@ -1,0 +1,15 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 616.56 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4060 Ti
+
+PASS: reply accepted
+PASS: Xiaoyu replies after player's reply
+PASS: phone open suppresses popup
+PASS: capture 18_phone_followup
+PASS: closed phone resumes incoming popups
+PASS: morning transition active
+PASS: capture 19_morning_transition
+PASS: morning restores delivery controls
+PASS: desktop-specific notification
+PASS: capture 20_desktop_notification
+PASS: desktop notification opens conversation
+TRANSITION FAILURES: 0

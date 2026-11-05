@@ -20,3 +20,63 @@ Thumbs.db
 
 # Downloaded web references (internal only)
 ui/refers/
+
+# Round 2 internal references
+人类暂未下线_UI第二轮视觉重构整合包/
+references/visual_round2/**/*.png
+references/current_build_review/
+artifacts/ui_redesign/baseline_ui_preview/
+
+artifacts/third_round_backup/
+
+# Godot exports, local editor/tool state
+/export/
+/exports/
+/build/
+/dist/
+*.tmp
+*.bak
+__pycache__/
+*.pyc
+CLAUDE.local.md
+.claude/settings.local.json
+# Source development pack stays intact; generated CSV import outputs stay local
+/HISO_CH01_Development_Pack/**/*.translation
+/HISO_CH01_Development_Pack/**/*.import
+# Local recovery copies and bulky historical captures (already tracked files remain tracked)
+/artifacts/*
+!/artifacts/.gdignore
+!/artifacts/ch01_qa/
+/artifacts/ch01_qa/*
+!/artifacts/ch01_qa/*.png
+!/artifacts/ch01_qa/test_summary.json
+!/artifacts/ch01_qa/ch01_qa_test.log
+!/artifacts/ch01_qa/ch01_alternate_qa.log
+!/artifacts/ch01_qa/ch01_edge_test.log
+!/artifacts/ch01_qa/ch01_reload_qa.log
+!/artifacts/ch01_qa/ch01_visual_qa.log
+!/artifacts/ch01_qa/night_system_test.log
+!/artifacts/ch01_qa/round2_smoke.log
+!/artifacts/ch01_qa/cruise_boundary_test.log
+!/artifacts/ch01_qa/walk.log
+!/artifacts/ch01_qa/import.log
+
+!/artifacts/ch01_qa/opening.log
+
+!/artifacts/digital_systems/
+/artifacts/digital_systems/*
+!/artifacts/digital_systems/*.png
+!/artifacts/digital_systems/*.log
+!/artifacts/digital_systems/test_summary.json
+
+/artifacts/digital_systems/leak_diagnosis.log
+/artifacts/digital_systems/chapter.log
+/artifacts/digital_systems/integration.log
+/artifacts/digital_systems/reload.log
+
+# Local extracted review assets; retain inventory, review and offline preview only.
+/assets/review_library/**
+!/assets/review_library/.gdignore
+!/assets/review_library/inventory.json
+!/assets/review_library/README.md
+!/assets/review_library/preview.html

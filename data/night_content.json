@@ -1,0 +1,59 @@
+[
+  {
+    "id": "door_followup",
+    "kind": "post",
+    "title": "七号门口的便签",
+    "person_id": "resident_07",
+    "place_id": "lane_07",
+    "min_day": 1,
+    "prefixes": [
+      "delivered_"
+    ],
+    "text": "今天收到了配送。门铃旁的便签挪过位置，明天方便时可来门口确认一下。请先敲门，不要直接进入楼道。",
+    "image": 2,
+    "followup": true
+  },
+  {
+    "id": "market_passage",
+    "kind": "news",
+    "title": "早市雨棚通道核对",
+    "person_id": "local_8",
+    "place_id": "market",
+    "min_day": 1,
+    "prefixes": [
+      "visit_",
+      "delivered_"
+    ],
+    "text": "你今天到过的早市雨棚已清出一条通道。附近摊主提醒骑手留意地上的箱子，收件位置仍以订单备注为准。",
+    "image": 4,
+    "followup": false
+  },
+  {
+    "id": "shop_shelves",
+    "kind": "news",
+    "title": "便利店公共货架备注",
+    "person_id": "local_4",
+    "place_id": "shop",
+    "min_day": 1,
+    "prefixes": [
+      "visit_"
+    ],
+    "text": "晚班便利店公共货架按用途分层摆放。请保留门口和出口的通行空间；此条来源于今天到店核对的记录。",
+    "image": 1,
+    "followup": false
+  },
+  {
+    "id": "day2_door_video",
+    "kind": "video",
+    "title": "第二晚：门口避雨处",
+    "person_id": "resident_07",
+    "place_id": "lane_07",
+    "min_day": 2,
+    "prefixes": [
+      "followup_"
+    ],
+    "text": "回访后，七号住户整理了一段门口避雨位置的本地模拟片段。内容仅说明核对过的便签和门铃位置，不确认任何未知异常。",
+    "image": 2,
+    "followup": false
+  }
+]

@@ -16,7 +16,10 @@ config/features=PackedStringArray("4.7")
 
 [autoload]
 
-WorldData="*res://scripts/world_data.gd"
+MessageManager="*res://scripts/message_manager.gd"
+
+Chapter="*res://scripts/ch01_director.gd"
+WorldData="*res://scripts/world_night.gd"
 
 [display]
 

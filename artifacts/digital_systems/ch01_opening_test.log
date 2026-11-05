@@ -1,0 +1,17 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 616.56 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4060 Ti
+
+PASS: new game cannot enter later garden
+PASS: new game cannot enter later store
+PASS: last meal starts already picked up
+PASS: capture opening_fixed
+PASS: actual map point delivery
+PASS: E delivery advances opening
+PASS: actual map point repair
+PASS: E starts Zhou repair dialogue
+PASS: E also finishes dialogue without trapping player
+PASS: garden remains locked before nighttime story
+PASS: actual map point home
+PASS: opening reaches home
+PASS: night group cannot be skipped by leaving
+OPENING FAILURES: 0

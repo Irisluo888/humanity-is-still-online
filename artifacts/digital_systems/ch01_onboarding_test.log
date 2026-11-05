@@ -1,0 +1,21 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 616.56 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4060 Ti
+
+PASS: visible task card and delivery route
+PASS: original Xiaoyu delivery message actually arrives
+PASS: phone-shaped notification during delivery
+PASS: capture 13_delivery_guidance
+PASS: opening message opens phone
+PASS: opening original preset reply
+PASS: delivery triggers bike breakdown animation
+PASS: capture 14_bike_fault
+PASS: breakdown ends and repair guidance visible
+PASS: capture 15_repair_guidance
+PASS: repair dialogue accessible
+PASS: desktop toast remains above newly opened windows
+PASS: capture 16_desktop_phone_push
+PASS: notification switches existing desktop chat
+PASS: hand closeup bound to exact elevator story page
+PASS: capture 17_elevator_hand
+PASS: closeup continues original man's dialogue
+ONBOARDING FAILURES: 0

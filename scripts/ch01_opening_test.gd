@@ -1,0 +1,17 @@
+extends "res://scripts/ch01_qa_test.gd"
+func run() -> void:
+ root.size=Vector2i(1280,720);c=root.get_node("Chapter");c.save_path="user://ch01_opening_test.json";c.fresh()
+ check(not c.enter("garden"),"new game cannot enter later garden")
+ check(not c.enter("store"),"new game cannot enter later store")
+ check(World(c).current_order().status=="配送中","last meal starts already picked up")
+ change_scene_to_file("res://scenes/ch01.tscn");await frames(20)
+ await capture("opening_fixed")
+ await at("delivery");check(c.beat().id=="repair","E delivery advances opening")
+ await at("repair");check(c.modal(),"E starts Zhou repair dialogue")
+ while c.state.page<c.beat().pages.size()-1:c.step_page()
+ await frames();current_scene.typing=9999;await frames();await press(KEY_E)
+ check(c.beat().id=="group" and not c.modal(),"E also finishes dialogue without trapping player")
+ check(not c.enter("garden"),"garden remains locked before nighttime story")
+ await at("home");check(c.state.place=="home","opening reaches home")
+ check(not c.enter("street"),"night group cannot be skipped by leaving")
+ print("OPENING FAILURES: ",failures);quit(1 if failures else 0)

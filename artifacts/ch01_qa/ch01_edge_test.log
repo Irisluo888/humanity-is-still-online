@@ -1,0 +1,40 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 616.56 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4060 Ti
+
+PASS: store stock purchase costs money and adds weight
+PASS: consumption updates weight
+PASS: delivery income updates chapter balance
+PASS: duplicate delivery cannot duplicate income
+PASS: store choice accepted weapon
+PASS: Chen outcome persists weapon
+PASS: weapon cost weapon
+PASS: hands health cost weapon
+PASS: store choice accepted extinguisher
+PASS: Chen outcome persists extinguisher
+PASS: weapon cost extinguisher
+PASS: hands health cost extinguisher
+PASS: store choice accepted hands
+PASS: Chen outcome persists hands
+PASS: weapon cost hands
+PASS: hands health cost hands
+PASS: store choice accepted leave
+PASS: Chen outcome persists leave
+PASS: weapon cost leave
+PASS: hands health cost leave
+PASS: low durability cannot rescue by weapon
+PASS: no medicine disables aid
+PASS: door danger blocks home before and after reload
+PASS: mid-danger save resumes locked choice
+PASS: corrupt save leaves memory untouched
+PASS: home free exact resource preservation
+PASS: no contact no encounter
+PASS: actual Area3D overlap triggers encounter
+PASS: resolution physically separates
+PASS: no repeated contact popup after cooldown
+PASS: phone locks movement
+PASS: phone app is real panel
+PASS: building collision blocks entry through facade
+PASS: scaled runtime screenshot
+PASS: prepare fresh process position scene state save
+PASS: legacy chapter schema accepted without new map fields
+EDGE FAILURES: 0

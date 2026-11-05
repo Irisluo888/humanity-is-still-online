@@ -1,0 +1,28 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 616.56 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4060 Ti
+
+PASS: stable sequence IDs deduplicate
+PASS: no transcript dump on arrival
+PASS: first message independently reveals
+PASS: presentation cannot advance game time
+PASS: sequence stops for player reply
+PASS: preset reply available
+PASS: player preset reply sends
+PASS: reply cannot repeat
+PASS: NPC continues after reply
+PASS: future message never leaks
+PASS: queue and presentation state restore
+PASS: reload preserves pending future
+PASS: due message delivers and presents
+PASS: shared read flag
+PASS: bad save rejected atomically
+PASS: scene flags read reply conditions gate delivery
+PASS: all conditions release message
+PASS: future news hidden
+PASS: news publishes on time
+PASS: cannot answer future call
+PASS: call rings and answers once
+PASS: delayed NPC reply stays after the player's earlier send
+PASS: answered phone state persists
+PASS: notification read state shared
+MESSAGE CORE FAILURES: 0

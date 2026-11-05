@@ -1,0 +1,56 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 616.56 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4060 Ti
+
+PASS: new daytime campaign has no private night unlocks
+PASS: locked followup cannot be queued
+PASS: walk reaches (-0.8, 7.5)
+PASS: walk reaches (-0.8, 0.0)
+PASS: walk reaches (-9.0, -1.0)
+PASS: shop visit recorded through actual entrance
+PASS: shop returns to street
+PASS: daytime visit does not reveal night-only information
+CRUISE STOP: 已接订单全部完成，已原地停止。可接新单或自行回家。 / position (-5.50889, -0.009144, -1.090149) / target (-5.0, 0.0, -1.5) / index 8
+PASS: two deliveries finish without automatic night transition
+PASS: daytime deliveries remain gated until return home
+PASS: walk reaches (-0.8, -1.0)
+PASS: walk reaches (-0.8, 2.0)
+PASS: walk reaches (0.0, 8.0)
+PASS: night unlocks match delivery and visited places
+PASS: day-two video remains locked on first night
+PASS: per-person unread messages match incoming delivery records
+PASS: room input enters computer
+PASS: visited places unlock two extra news records
+PASS: capture 07_unlocked_news
+PASS: unlocked post exposes traceable source
+PASS: capture 01_source_and_followup
+PASS: player explicitly queues next-day followup
+PASS: followup button cannot duplicate task
+PASS: night cannot complete a next-day visit
+PASS: visible contact read does not mark others read
+PASS: send action stores local conversation
+PASS: empty chat is rejected
+PASS: close/reopen does not duplicate chat
+PASS: capture 02_persistent_messages
+PASS: save chat read notes assistant clues and scheduled visit
+PASS: notes and clues share game state
+PASS: night investigation advances to next day
+PASS: next-day goal is visible in city
+PASS: followup cannot be completed remotely
+PASS: walk reaches (0.0, 2.0)
+PASS: walk reaches (6.0, 2.0)
+PASS: walk reaches (6.0, -3.8)
+PASS: capture 03_daytime_followup
+PASS: actual E visit completes clue goal without delivery income
+PASS: repeated visit cannot duplicate result
+PASS: capture 06_followup_completed
+PASS: next-day video is still gated during daytime
+CRUISE STOP: 已接订单全部完成，已原地停止。可接新单或自行回家。 / position (5.640776, -0.049169, -3.45624) / target (6.0, 0.0, -4.0) / index 35
+PASS: walk reaches (6.0, 0.0)
+PASS: walk reaches (0.0, 2.0)
+PASS: walk reaches (0.0, 8.0)
+PASS: date-gated video unlocks on second night
+PASS: room input enters computer
+PASS: capture 04_unlocked_video
+PASS: new clip augments rather than replaces six public clips
+PASS: save completed followup and newly unlocked video
+NIGHT SYSTEM FAILURES: 0

@@ -1,0 +1,13 @@
+﻿content_id,chapter_time,surface,required
+ch01_group_night,D0 night,phone/computer chat,must
+ch01_lunch_private,D0 night,phone/computer DM,must
+ch01_1203_delivery,D1,delivery,must
+ch01_1404_optional,D1,hallway scripted,optional
+ch01_elevator,D1,elevator cutscene,must
+ch01_store_attack,D1,store danger modal,must
+ch01_night_messages,D1 night,chat/news,must
+ch01_zhou_warning,D1 night,DM,must
+ch01_knock_part1,D1 late,home peephole,must
+ch01_knock_reveal,D1 late,phone/peephole,must
+ch01_zhou_final,D1 late,danger modal,must
+ch01_end,D2 midnight,computer/news,must
